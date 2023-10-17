@@ -112,6 +112,9 @@
     <title>Create a Linux Kernel Module</title>
     <url>/2023/10/17/Create-a-Linux-Kernel-Module/</url>
     <content><![CDATA[<p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
+<li>WSL2 Ubuntu-20.04</li>
+</ul>
 ]]></content>
   </entry>
   <entry>
