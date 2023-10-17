@@ -111,7 +111,8 @@
   <entry>
     <title>Create a Linux Kernel Module</title>
     <url>/2023/10/17/Create-a-Linux-Kernel-Module/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
+]]></content>
   </entry>
   <entry>
     <title>Hello World</title>
