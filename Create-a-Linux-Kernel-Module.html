@@ -19,9 +19,9 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="创建一个 Linux 内核模块，为 kernel PWN 的学习补充一些基础知识。 英文原文链接：  Kernel modules — The Linux Kernel documentation (linux-kernel-labs.github.io)  代码带库：  linux-kernel-labs&#x2F;linux: Linux kernel source tree (github.">
-<meta property="og:type" content="article">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Create a Linux Kernel Module">
-<meta property="og:url" content="https://czxvan.github.io/2023/10/17/Create-a-Linux-Kernel-Module/index.html">
+<meta property="og:url" content="https://czxvan.github.io/Create-a-Linux-Kernel-Module.html">
 <meta property="og:site_name" content="czxvan&#39;s blog">
 <meta property="og:description" content="创建一个 Linux 内核模块，为 kernel PWN 的学习补充一些基础知识。 英文原文链接：  Kernel modules — The Linux Kernel documentation (linux-kernel-labs.github.io)  代码带库：  linux-kernel-labs&#x2F;linux: Linux kernel source tree (github.">
 <meta property="og:locale" content="zh_CN">
@@ -31,14 +31,15 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://czxvan.github.io/2023/10/17/Create-a-Linux-Kernel-Module/">
+<link rel="canonical" href="https://czxvan.github.io/Create-a-Linux-Kernel-Module">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/17/Create-a-Linux-Kernel-Module/","path":"2023/10/17/Create-a-Linux-Kernel-Module/","title":"Create a Linux Kernel Module"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/Create-a-Linux-Kernel-Module.html","path":"Create-a-Linux-Kernel-Module.html","title":"Create a Linux Kernel Module"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Create a Linux Kernel Module | czxvan's blog</title>
+<title>Create a Linux Kernel Module | czxvan's blog
+</title>
   
 
 
@@ -177,75 +178,26 @@
 
     </div>
 
-    <div class="main-inner post posts-expand">
+    <div class="main-inner page posts-expand">
 
 
-  
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
 
+<h1 class="post-title" itemprop="name headline">Create a Linux Kernel Module
+</h1>
 
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/17/Create-a-Linux-Kernel-Module/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="czxvan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Create a Linux Kernel Module | czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Create a Linux Kernel Module
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-10-17 18:15:09" itemprop="dateCreated datePublished" datetime="2023-10-17T18:15:09+08:00">2023-10-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-19 00:40:24" itemprop="dateModified" datetime="2023-10-19T00:40:24+08:00">2023-10-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux-kernel-labs/" itemprop="url" rel="index"><span itemprop="name">linux-kernel-labs</span></a>
-        </span>
-    </span>
-
-  
+<div class="post-meta-container">
 </div>
 
-        </div>
-      </header>
+</header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody"><p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
+      
+      
+      <div class="post-body">
+          <p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
 <p>英文原文链接：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://linux-kernel-labs.github.io/refs/heads/master/labs/kernel_modules.html">Kernel modules — The Linux Kernel documentation (linux-kernel-labs.github.io)</a></li>
@@ -536,35 +488,14 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">minicom -D /dev/pts/9</span><br><span class="line">或</span><br><span class="line">minicom -D serial.pts</span><br></pre></td></tr></table></figure>
 
 <h3 id="内核模块"><a href="#内核模块" class="headerlink" title="内核模块"></a>内核模块</h3><h3 id="Printk"><a href="#Printk" class="headerlink" title="Printk"></a>Printk</h3><h3 id="Error"><a href="#Error" class="headerlink" title="Error"></a>Error</h3><h3 id="Sub-modules"><a href="#Sub-modules" class="headerlink" title="Sub-modules"></a>Sub-modules</h3><h3 id="Kernel-oops"><a href="#Kernel-oops" class="headerlink" title="Kernel oops"></a>Kernel oops</h3><h3 id="Module-parameters"><a href="#Module-parameters" class="headerlink" title="Module parameters"></a>Module parameters</h3><h3 id="proc-info"><a href="#proc-info" class="headerlink" title="proc info"></a>proc info</h3>
+      </div>
+      
+      
+      
     </div>
 
     
     
-    
-
-    <footer class="post-footer">
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2023/10/17/Create-a-Blog-with-Hexo/" rel="prev" title="Create a Blog with Hexo">
-                  <i class="fa fa-angle-left"></i> Create a Blog with Hexo
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2023/10/19/Exploitme/" rel="next" title="Exploitme">
-                  Exploitme <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
-
-
-
-
 
 
 </div>

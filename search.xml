@@ -443,6 +443,8 @@
 <li><p><a href="https://www.freebuf.com/articles/system/173654.html">Windows漏洞利用开发教程Part 5：返回导向编程(ROP) - FreeBuf网络安全行业门户</a></p>
 </li>
 </ul>
+<span id="more"></span>
+
 <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
 <li><p>visual studio : windows上还是得用这个，mingw不够友好</p>
 <ul>
@@ -497,7 +499,7 @@
 <li><p>运行，以非0的错误代码（如-1073741819）退出</p>
 </li>
 <li><p>调试，显示触发异常的地址为 0x63636363，符合预期</p>
-<p><img src="D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\未经处理的异常.png" alt="未经处理的异常"></p>
+<p><img src="/../pic/Exploitme/%E6%9C%AA%E7%BB%8F%E5%A4%84%E7%90%86%E7%9A%84%E5%BC%82%E5%B8%B8.png" alt="未经处理的异常"></p>
 </li>
 </ul>
 </li>
@@ -513,7 +515,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0:000&gt; g</span><br><span class="line">(31e0.4f48): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=00000000 ebx=0067b000 ecx=0fce700e edx=755d0334 esi=00c868e8 edi=00c8c2a8</span><br><span class="line">eip=63636363 esp=008ff888 ebp=62626262 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246</span><br><span class="line">63636363 ??              ???</span><br></pre></td></tr></table></figure>
 
 <p>查看栈内存，我们希望cccc指向cccc之后的这块内存（当执行完main函数中的ret后，ESP寄存器的值刚好指向这里），我们会在这里填充shellcode。但由于ASLR（地址空间布局随机化，简称地址随机化），两次的ESP值不同，也就意味着我们无法将 cccc 替换为一个固定的地址。</p>
-<p>![aslr for stack](D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\aslr for stack.png)</p>
+<p>![aslr for stack](..&#x2F;pic&#x2F;Exploitme&#x2F;aslr for stack.png)</p>
 <p>不过，可以将 cccc 替换为一个指向 jmp ESP 指令的地址（代码段的指令的地址是固定的），程序执行流就会变成</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ret ——》 jmp ESP --》 [shellcode]</span><br></pre></td></tr></table></figure>
 
@@ -538,7 +540,7 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_ExitThread             0x4b3153e0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WinExec                0x7bb4c07f</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">entryPoint</span><span class="params">()</span> &#123;</span><br><span class="line">    DefineFuncPtr(WinExec);</span><br><span class="line">    DefineFuncPtr(ExitThread);</span><br><span class="line"> </span><br><span class="line">    <span class="type">char</span> calc[] = &#123; <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;\0&#x27;</span> &#125;;     <span class="comment">// makes our shellcode shorter</span></span><br><span class="line">    My_WinExec(calc, SW_SHOW);</span><br><span class="line">    My_ExitThread(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>之后在release模式下运行程序，成功执行<code>shellcode</code>，弹出了一个计算器：</p>
-<p><img src="D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\pwn.png" alt="pwn"></p>
+<p><img src="/../pic/Exploitme/pwn.png" alt="pwn"></p>
 ]]></content>
       <categories>
         <category>Windows-PWN</category>
@@ -548,5 +550,14 @@
     <title>winsock practice</title>
     <url>/2023/10/19/winsock-practice/</url>
     <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Create Shellcode in Windows</title>
+    <url>/2023/10/20/Create-Shellcode-in-Windows/</url>
+    <content><![CDATA[<p>讲解windwos下开发位置无关shellcode的基础知识，并构建框架代码和提取脚本。</p>
+<span id="more"></span>]]></content>
+      <categories>
+        <category>Windows-PWN</category>
+      </categories>
   </entry>
 </search>
