@@ -18,25 +18,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="article">
-<meta property="og:title" content="AWD跳板机搭建">
-<meta property="og:url" content="https://czxvan.github.io/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/index.html">
+    <meta name="description" content="众所周知，ASLR会使得PE文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向kernel32.dll ntdll.dll等dll文件中的特定指令，这是为什么呢？ 参考资料：  ntdll 的内存加载位置  Why are certain DLLs required to be at the same base address system-wide? « Nynaeve">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASLR in Windows">
+<meta property="og:url" content="https://czxvan.github.io/2023/10/22/ASLR-in-Windows/index.html">
 <meta property="og:site_name" content="czxvan&#39;s blog">
+<meta property="og:description" content="众所周知，ASLR会使得PE文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向kernel32.dll ntdll.dll等dll文件中的特定指令，这是为什么呢？ 参考资料：  ntdll 的内存加载位置  Why are certain DLLs required to be at the same base address system-wide? « Nynaeve">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-10-19T07:46:18.000Z">
-<meta property="article:modified_time" content="2023-10-19T07:46:18.436Z">
+<meta property="article:published_time" content="2023-10-22T03:09:00.000Z">
+<meta property="article:modified_time" content="2023-10-22T03:46:03.284Z">
 <meta property="article:author" content="czxvan">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://czxvan.github.io/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/">
+<link rel="canonical" href="https://czxvan.github.io/2023/10/22/ASLR-in-Windows/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/","path":"2023/10/19/AWD跳板机搭建/","title":"AWD跳板机搭建"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/22/ASLR-in-Windows/","path":"2023/10/22/ASLR-in-Windows/","title":"ASLR in Windows"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>AWD跳板机搭建 | czxvan's blog</title>
+<title>ASLR in Windows | czxvan's blog</title>
   
 
 
@@ -122,7 +124,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -135,6 +137,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.</span> <span class="nav-text">开始实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E9%9A%8F%E6%9C%BA%E5%9F%BA%E5%9D%80"><span class="nav-number">1.1.</span> <span class="nav-text">开启随机基址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%9A%8F%E6%9C%BA%E5%9F%BA%E5%9D%80"><span class="nav-number">1.2.</span> <span class="nav-text">关闭随机基址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -185,7 +188,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/22/ASLR-in-Windows/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,12 +201,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="AWD跳板机搭建 | czxvan's blog">
+      <meta itemprop="name" content="ASLR in Windows | czxvan's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          AWD跳板机搭建
+          ASLR in Windows
         </h1>
 
         <div class="post-meta-container">
@@ -213,8 +216,18 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-10-19 15:46:18" itemprop="dateCreated datePublished" datetime="2023-10-19T15:46:18+08:00">2023-10-19</time>
+      <time title="创建时间：2023-10-22 11:09:00 / 修改时间：11:46:03" itemprop="dateCreated datePublished" datetime="2023-10-22T11:09:00+08:00">2023-10-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Windows-PWN/" itemprop="url" rel="index"><span itemprop="name">Windows-PWN</span></a>
+        </span>
     </span>
 
   
@@ -226,7 +239,38 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
+    <div class="post-body" itemprop="articleBody"><p>众所周知，<code>ASLR</code>会使得<code>PE</code>文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向<code>kernel32.dll ntdll.dll</code>等<code>dll</code>文件中的特定指令，这是为什么呢？</p>
+<p>参考资料：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43742894/article/details/105879904">ntdll 的内存加载位置</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.nynaeve.net/?p=198">Why are certain DLLs required to be at the same base address system-wide? « Nynaeve</a></p>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="开启随机基址"><a href="#开启随机基址" class="headerlink" title="开启随机基址"></a>开启随机基址</h3><p>使用visual studio生成一个可执行程序<code>Exploime.exe</code>，开启随机基址</p>
+<p>![ASLR open](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;ASLR open.png)</p>
+<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
+<p>![pic1](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic1.png)</p>
+<p>重启windbg，重复上面操作</p>
+<p>![pic2](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic2.png)</p>
+<p>发现，和之前一样。</p>
+<p>重启电脑，再来一次，得到</p>
+<p>![pic3](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic3.png)</p>
+<p>发现各个基址出现变化。</p>
+<h3 id="关闭随机基址"><a href="#关闭随机基址" class="headerlink" title="关闭随机基址"></a>关闭随机基址</h3><p>关闭随机基址，重新生成<code>Exploime.exe</code></p>
+<p>![ASLR open](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;ASLR CLOSE.png)</p>
+<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
+<p>![pic4](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic4.png)</p>
+<p>重启windbg，重复上面操作</p>
+<p>![pic5](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic5.png)</p>
+<p>和上面一致，重启电脑，再来一次，得到</p>
+<p>![pic6](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic6.png)</p>
+<p>发现关闭了<code>ASLR</code>的模块（<code>Exploitme</code>）基址没有变化，其余默认开启了<code>ASLR</code>的系统模块基址发生了变化。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>Windows（至少Win10）下的<code>ASLR</code>机制，只在系统启动时发挥作用，系统运行过程中，各个模块的基址不会变化。</p>
+<p>（和我预想中不太一样，本来以为只有特定的dll是这样，可是上面可以看到一个普通的可执行程序<code>Exploitme</code>也是这样）。</p>
+
     </div>
 
     
@@ -239,14 +283,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/10/19/Exploitme/" rel="prev" title="Exploitme——栈上执行Shellcode">
-                  <i class="fa fa-angle-left"></i> Exploitme——栈上执行Shellcode
+                <a href="/2023/10/20/Exploitme2/" rel="prev" title="Exploitme——ROP">
+                  <i class="fa fa-angle-left"></i> Exploitme——ROP
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/10/19/winsock-practice/" rel="next" title="winsock practice">
-                  winsock practice <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
