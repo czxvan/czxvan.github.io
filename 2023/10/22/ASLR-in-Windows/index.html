@@ -20,25 +20,34 @@
 
     <meta name="description" content="众所周知，ASLR会使得PE文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向kernel32.dll ntdll.dll等dll文件中的特定指令，这是为什么呢？ 参考资料：  ntdll 的内存加载位置  Why are certain DLLs required to be at the same base address system-wide? « Nynaeve">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ASLR in Windows">
+<meta property="og:title" content="ASLR-in-Windows">
 <meta property="og:url" content="https://czxvan.github.io/2023/10/22/ASLR-in-Windows/index.html">
 <meta property="og:site_name" content="czxvan&#39;s blog">
 <meta property="og:description" content="众所周知，ASLR会使得PE文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向kernel32.dll ntdll.dll等dll文件中的特定指令，这是为什么呢？ 参考资料：  ntdll 的内存加载位置  Why are certain DLLs required to be at the same base address system-wide? « Nynaeve">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/ASLR-YES.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic1.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic2.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic3.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/ASLR-NO.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic4.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic5.png">
+<meta property="og:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/pic6.png">
 <meta property="article:published_time" content="2023-10-22T03:09:00.000Z">
-<meta property="article:modified_time" content="2023-10-22T03:46:03.284Z">
+<meta property="article:modified_time" content="2023-10-22T03:51:34.355Z">
 <meta property="article:author" content="czxvan">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://czxvan.github.io/pic/ASLR-in-Windows/ASLR-YES.png">
 
 
 <link rel="canonical" href="https://czxvan.github.io/2023/10/22/ASLR-in-Windows/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/22/ASLR-in-Windows/","path":"2023/10/22/ASLR-in-Windows/","title":"ASLR in Windows"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/22/ASLR-in-Windows/","path":"2023/10/22/ASLR-in-Windows/","title":"ASLR-in-Windows"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>ASLR in Windows | czxvan's blog</title>
+<title>ASLR-in-Windows | czxvan's blog</title>
   
 
 
@@ -201,12 +210,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="ASLR in Windows | czxvan's blog">
+      <meta itemprop="name" content="ASLR-in-Windows | czxvan's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ASLR in Windows
+          ASLR-in-Windows
         </h1>
 
         <div class="post-meta-container">
@@ -218,7 +227,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-10-22 11:09:00 / 修改时间：11:46:03" itemprop="dateCreated datePublished" datetime="2023-10-22T11:09:00+08:00">2023-10-22</time>
+      <time title="创建时间：2023-10-22 11:09:00 / 修改时间：11:51:34" itemprop="dateCreated datePublished" datetime="2023-10-22T11:09:00+08:00">2023-10-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -250,23 +259,23 @@
 <span id="more"></span>
 
 <h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="开启随机基址"><a href="#开启随机基址" class="headerlink" title="开启随机基址"></a>开启随机基址</h3><p>使用visual studio生成一个可执行程序<code>Exploime.exe</code>，开启随机基址</p>
-<p>![ASLR open](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;ASLR open.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/ASLR-YES.png" alt="ASLR open"></p>
 <p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
-<p>![pic1](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic1.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic1.png" alt="pic1"></p>
 <p>重启windbg，重复上面操作</p>
-<p>![pic2](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic2.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic2.png" alt="pic2"></p>
 <p>发现，和之前一样。</p>
 <p>重启电脑，再来一次，得到</p>
-<p>![pic3](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic3.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic3.png" alt="pic3"></p>
 <p>发现各个基址出现变化。</p>
 <h3 id="关闭随机基址"><a href="#关闭随机基址" class="headerlink" title="关闭随机基址"></a>关闭随机基址</h3><p>关闭随机基址，重新生成<code>Exploime.exe</code></p>
-<p>![ASLR open](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;ASLR CLOSE.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/ASLR-NO.png" alt="ASLR open"></p>
 <p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
-<p>![pic4](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic4.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic4.png" alt="pic4"></p>
 <p>重启windbg，重复上面操作</p>
-<p>![pic5](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic5.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic5.png" alt="pic5"></p>
 <p>和上面一致，重启电脑，再来一次，得到</p>
-<p>![pic6](..&#x2F;pic&#x2F;ASLR in Windows&#x2F;pic6.png)</p>
+<p><img src="/../pic/ASLR-in-Windows/pic6.png" alt="pic6"></p>
 <p>发现关闭了<code>ASLR</code>的模块（<code>Exploitme</code>）基址没有变化，其余默认开启了<code>ASLR</code>的系统模块基址发生了变化。</p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>Windows（至少Win10）下的<code>ASLR</code>机制，只在系统启动时发挥作用，系统运行过程中，各个模块的基址不会变化。</p>
 <p>（和我预想中不太一样，本来以为只有特定的dll是这样，可是上面可以看到一个普通的可执行程序<code>Exploitme</code>也是这样）。</p>
