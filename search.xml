@@ -561,7 +561,7 @@
       </categories>
   </entry>
   <entry>
-    <title>ASLR-in-Windows</title>
+    <title>ASLR in-Windows</title>
     <url>/2023/10/22/ASLR-in-Windows/</url>
     <content><![CDATA[<p>众所周知，<code>ASLR</code>会使得<code>PE</code>文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向<code>kernel32.dll ntdll.dll</code>等<code>dll</code>文件中的特定指令，这是为什么呢？</p>
 <p>参考资料：</p>
