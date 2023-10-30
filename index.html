@@ -310,7 +310,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-29 19:57:10" itemprop="dateModified" datetime="2023-10-29T19:57:10+08:00">2023-10-29</time>
+      <time title="修改时间：2023-10-30 23:19:09" itemprop="dateModified" datetime="2023-10-30T23:19:09+08:00">2023-10-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -332,7 +332,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>当程序开启了<code>ASLR</code>后，程序</p>
+          <p>当程序开启了<code>ASLR</code>后，程序可能通过需要想办法泄露一些模块的基地址，来构建有效的payload。</p>
+<p>下面我们要进行的实验，采取的思路是：泄露系统模块的基址 + 利用对应模块中的gadget构建Ropchain + shellcode。</p>
 <p>参考资料：</p>
 <ul>
 <li>[<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-207073.htm">翻译]Windows Exploit开发教程第十章 Exploitme4(ASLR)-外文翻译-看雪-安全社区|安全招聘|kanxue.com</a></li>
