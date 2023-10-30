@@ -941,4 +941,208 @@
     <url>/2023/10/19/winsock-practice/</url>
     <content><![CDATA[]]></content>
   </entry>
+  <entry>
+    <title>Exploitme——ASLR</title>
+    <url>/2023/10/27/Exploitme4/</url>
+    <content><![CDATA[<p>当程序开启了<code>ASLR</code>后，程序</p>
+<p>参考资料：</p>
+<ul>
+<li>[<a href="https://bbs.kanxue.com/thread-207073.htm">翻译]Windows Exploit开发教程第十章 Exploitme4(ASLR)-外文翻译-看雪-安全社区|安全招聘|kanxue.com</a></li>
+</ul>
+<span id="more"></span>
+
+
+
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="漏洞程序"><a href="#漏洞程序" class="headerlink" title="漏洞程序"></a>漏洞程序</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;conio.h&gt;</span> </span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Name</span> &#123; </span><br><span class="line">    <span class="type">char</span> name[<span class="number">32</span>]; </span><br><span class="line">    <span class="type">int</span> *ptr; </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="built_in">Name</span>() : <span class="built_in">ptr</span>((<span class="type">int</span> *)name) &#123;&#125; </span><br><span class="line">    <span class="function"><span class="type">char</span> *<span class="title">getNameBuf</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> name; &#125; </span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">readFromFile</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *filePath)</span> </span>&#123; </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Reading name from file...\n&quot;</span>); </span><br><span class="line"> </span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">sizeof</span>(name); ++i) </span><br><span class="line">   name[i] = <span class="number">0</span>; </span><br><span class="line"> </span><br><span class="line">  FILE *f = <span class="built_in">fopen</span>(filePath, <span class="string">&quot;rb&quot;</span>); </span><br><span class="line">  <span class="keyword">if</span> (!f) </span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">  <span class="built_in">fseek</span>(f, <span class="number">0L</span>, SEEK_END); </span><br><span class="line">  <span class="type">long</span> bytes = <span class="built_in">ftell</span>(f); </span><br><span class="line">  <span class="built_in">fseek</span>(f, <span class="number">0L</span>, SEEK_SET); </span><br><span class="line">  <span class="built_in">fread</span>(name, <span class="number">1</span>, bytes, f); </span><br><span class="line">  <span class="built_in">fclose</span>(f); </span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>; </span><br><span class="line"> &#125; </span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123; </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hi, %s!\n&quot;</span>, name); </span><br><span class="line"> &#125; </span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">printNameInHex</span><span class="params">()</span> </span>&#123; </span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">sizeof</span>(name) / <span class="number">4</span>; ++i) </span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot; 0x%08x&quot;</span>, ptr[i]); </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>); </span><br><span class="line"> &#125; </span><br><span class="line">&#125;; </span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123; </span><br><span class="line"> Name name; </span><br><span class="line"> </span><br><span class="line"> <span class="keyword">while</span> (<span class="literal">true</span>) &#123; </span><br><span class="line">  <span class="keyword">if</span> (!name.<span class="built_in">readFromFile</span>(<span class="string">&quot;c:\\name.dat&quot;</span>)) </span><br><span class="line">   <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">  name.<span class="built_in">printName</span>(); </span><br><span class="line">  name.<span class="built_in">printNameInHex</span>(); </span><br><span class="line"> </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Do you want to read the name again? [y/n] &quot;</span>); </span><br><span class="line">  <span class="keyword">if</span> (_getch() != <span class="string">&#x27;y&#x27;</span>) </span><br><span class="line">   <span class="keyword">break</span>; </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>); </span><br><span class="line"> &#125; </span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Windows-PWN</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Learning-C++</title>
+    <url>/2023/10/29/Learning-Cpp/</url>
+    <content><![CDATA[<p>c++学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
+<li><p>命名空间 namespace</p>
+</li>
+<li><p>类型增强</p>
+<ul>
+<li><p>常量</p>
+<ul>
+<li><p>const</p>
+<ul>
+<li><p>常量指针</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指针常量</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>constexpr: 编译时求值</p>
+</li>
+</ul>
+</li>
+<li><p>bool</p>
+</li>
+<li><p>enum</p>
+</li>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>运算符重载</p>
+<ul>
+<li>方便混合处理多种类型不同的值</li>
+</ul>
+</li>
+<li><p>变量初始化</p>
+<ul>
+<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
+</ul>
+</li>
+<li><p>auto</p>
+<ul>
+<li>编译期，自动类型推断</li>
+</ul>
+</li>
+<li><p>范围for语句</p>
+<ul>
+<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
+for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>nullptr</p>
+<ul>
+<li>NULL : int 0</li>
+<li>nullptr : std::nullptr_t | void * 0</li>
+<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
+</ul>
+</li>
+<li><p>强制类型转换</p>
+<ul>
+<li>static_cast</li>
+<li>dynamic_cast</li>
+<li>const_cast</li>
+<li>reinterpret_cast</li>
+</ul>
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><p>不占用内存，编译时转换为寄存器赋值</p>
+</li>
+<li><p>变量与引用的隐式转换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>普通引用和常量引用</p>
+<ul>
+<li>不能通过常量引用修改变量</li>
+<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
+</ul>
+</li>
+</ul>
+<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
+<li><p>结构体struct</p>
+<ul>
+<li>除了成员变量，还可以拥有成员函数</li>
+</ul>
+</li>
+<li><p>权限修饰符</p>
+<ul>
+<li>public</li>
+<li>protected</li>
+<li>private</li>
+</ul>
+</li>
+<li><p>类class</p>
+<ul>
+<li>和结构体十分类似</li>
+<li>区别：结构体各成员默认public 类各成员默认private</li>
+</ul>
+</li>
+<li><p>代码组织结构</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
+<li><p>后置返回类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>inline内联函数</p>
+<ul>
+<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
+<li>函数体代替函数调用，节省简单函数的调用开销</li>
+</ul>
+</li>
+<li><p>函数参数</p>
+<ul>
+<li><p>默认参数</p>
+</li>
+<li><p>空参，空着或者 void</p>
+</li>
+</ul>
+</li>
+<li><p>函数重载</p>
+<ul>
+<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
+</li>
+<li><p>比较函数类型时，const关键字会被忽略</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
+<p>可变长字符串</p>
+</blockquote>
+<ul>
+<li><p>初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
+<p>可变长数组</p>
+</blockquote>
+<ul>
+<li><p>不能装引用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
+<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
+<p>能够取代部分指针的作用，且更安全和优雅</p>
+</blockquote>
+<ul>
+<li><p>成员函数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+  </entry>
 </search>
