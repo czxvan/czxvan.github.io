@@ -516,7 +516,7 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Exploitme——ROP</title>
+    <title>Exploitme3——ROP without ASLR</title>
     <url>/2023/10/20/Exploitme-ROP/</url>
     <content><![CDATA[<p>当程序开启数据执行保护（DEP）后，我们无法在栈上执行<code>shellcode</code>，但可以利用程序中自带的代码片段（gadget），使<code>ret</code>指令和栈数据相配合，将 <code>gadget</code>串成一串，也能起到<code>shellcode</code>的效果，这就是返回导向编程<code>ROP</code>。</p>
 <p>参考链接：</p>
@@ -542,6 +542,8 @@
 </ul>
 </li>
 <li><p>DEP：开启操作系统的<code>DEP</code>设置（WIN10下：设置—系统—关于—高级系统设置—性能-设置—数据执行保护—选中“DEP(U)”）</p>
+</li>
+<li><p>随机基址(ASLR): 关闭</p>
 </li>
 </ul>
 <h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="确认漏洞"><a href="#确认漏洞" class="headerlink" title="确认漏洞"></a>确认漏洞</h3><p>编写python脚本，生成一个 test.m3u</p>
@@ -942,7 +944,7 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Exploitme——ASLR</title>
+    <title>Exploitme4——ROP with ASLR</title>
     <url>/2023/10/27/Exploitme4/</url>
     <content><![CDATA[<p>当程序开启了<code>ASLR</code>后，程序可能通过需要想办法泄露一些模块的基地址，来构建有效的payload。</p>
 <p>下面我们要进行的实验，采取的思路是：泄露系统模块的基址 + 利用对应模块中的gadget构建Ropchain + shellcode。</p>
