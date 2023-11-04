@@ -267,7 +267,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/04/Memory-Mountains/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/04/Memory-Mountain/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -285,7 +285,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/11/04/Memory-Mountains/" class="post-title-link" itemprop="url">Memory Mountains</a>
+          <a href="/2023/11/04/Memory-Mountain/" class="post-title-link" itemprop="url">Memory Mountain</a>
         </h2>
 
         <div class="post-meta-container">
@@ -303,7 +303,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-05 00:34:37" itemprop="dateModified" datetime="2023-11-05T00:34:37+08:00">2023-11-05</time>
+      <time title="修改时间：2023-11-05 00:38:23" itemprop="dateModified" datetime="2023-11-05T00:38:23+08:00">2023-11-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -330,190 +330,14 @@
 <ul>
 <li><a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/students.html">CS:APP3e, Bryant and O’Hallaron (cmu.edu)</a></li>
 </ul>
-<h2 id="一、列出cache参数"><a href="#一、列出cache参数" class="headerlink" title="一、列出cache参数"></a>一、列出cache参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">lscpu</span></span><br><span class="line">...</span><br><span class="line">L1d cache:                       192 KiB</span><br><span class="line">L1i cache:                       192 KiB</span><br><span class="line">L2 cache:                        1.5 MiB</span><br><span class="line">L3 cache:                        9 MiB</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>本机共6个cpu（cpu0-5)。每个cpu目录下，都有它能够使用的cache的信息：</p>
-<p><img src="/../pic/memory-mountain/cpu0-cache-ls.png" alt="cpu0-cache-ls"></p>
-<p><img src="/../pic/memory-mountain/cpu0-index0-ls.png" alt="cpu0-index0-ls"></p>
-<p>下面以cpu0和cpu1为例，列出它们各自cache的信息。</p>
-<p>cpu0可以使用的四个缓存的各项参数如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>index0</th>
-<th>index1</th>
-<th>index2</th>
-<th>index3</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>id</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr>
-<td>level</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>type</td>
-<td>Data</td>
-<td>Instruction</td>
-<td>Unified</td>
-<td>Unified</td>
-</tr>
-<tr>
-<td>size</td>
-<td>32K</td>
-<td>32K</td>
-<td>256K</td>
-<td>9216K</td>
-</tr>
-<tr>
-<td>coherency_line_size</td>
-<td>64</td>
-<td>64</td>
-<td>64</td>
-<td>64</td>
-</tr>
-<tr>
-<td>number_of_sets</td>
-<td>64</td>
-<td>64</td>
-<td>1024</td>
-<td>12288</td>
-</tr>
-<tr>
-<td>physical_line_partition</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<td>shared_cpu_list</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0-5</td>
-</tr>
-<tr>
-<td>shared_cpu_map</td>
-<td>01</td>
-<td>01</td>
-<td>01</td>
-<td>3f</td>
-</tr>
-<tr>
-<td>ways_of_associativity</td>
-<td>8</td>
-<td>8</td>
-<td>4</td>
-<td>12</td>
-</tr>
-</tbody></table>
-<p>cpu1可以使用的四个缓存的各项参数如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>index0</th>
-<th>index1</th>
-<th>index2</th>
-<th>index3</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>id</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<td>level</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>type</td>
-<td>Data</td>
-<td>Instruction</td>
-<td>Unified</td>
-<td>Unified</td>
-</tr>
-<tr>
-<td>size</td>
-<td>32K</td>
-<td>32K</td>
-<td>256K</td>
-<td>9216K</td>
-</tr>
-<tr>
-<td>coherency_line_size</td>
-<td>64</td>
-<td>64</td>
-<td>64</td>
-<td>64</td>
-</tr>
-<tr>
-<td>number_of_sets</td>
-<td>64</td>
-<td>64</td>
-<td>1024</td>
-<td>12288</td>
-</tr>
-<tr>
-<td>physical_line_partition</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<td>shared_cpu_list</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>0-5</td>
-</tr>
-<tr>
-<td>shared_cpu_map</td>
-<td>02</td>
-<td>02</td>
-<td>02</td>
-<td>3f</td>
-</tr>
-<tr>
-<td>ways_of_associativity</td>
-<td>8</td>
-<td>8</td>
-<td>4</td>
-<td>12</td>
-</tr>
-</tbody></table>
-<h3 id="二、绘制存储器山"><a href="#二、绘制存储器山" class="headerlink" title="二、绘制存储器山"></a>二、绘制存储器山</h3><p><img src="/../pic/memory-mountain/memory-mountain-2.png" alt="memory-mountain-2"></p>
-<p><img src="/../pic/memory-mountain/memory-mountain-3.png" alt="memory-mountain-3"></p>
-<p>首先运行mountain程序，并将输出结果重定向到<code>mountain.txt</code>中</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mountain &gt; mountain.txt</span><br></pre></td></tr></table></figure>
-
-<p>使用python读取输出结果并绘制图像，代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.family&#x27;</span>] = <span class="string">&#x27;SimHei&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_from_file</span>(<span class="params">path</span>):</span><br><span class="line">    z = []</span><br><span class="line">    y_ticklabels = []</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;./mountain.txt&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">        x_ticklabels = lines[<span class="number">2</span>].strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> lines[<span class="number">3</span>:]:</span><br><span class="line">            line = line.strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(line) != <span class="number">0</span>:</span><br><span class="line">                y_ticklabels.append(line[<span class="number">0</span>])</span><br><span class="line">            z.append([<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> line[<span class="number">1</span>:]])</span><br><span class="line">    <span class="keyword">return</span> np.array(z) , np.array(x_ticklabels), np.array(y_ticklabels)</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个3D图形对象</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax1 = fig.add_subplot(<span class="number">121</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">ax2 = fig.add_subplot(<span class="number">122</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="comment"># 创建网格数据</span></span><br><span class="line">x = np.arange(<span class="number">15</span>)</span><br><span class="line">y = np.arange(<span class="number">14</span>)</span><br><span class="line">x, y = np.meshgrid(x, y)</span><br><span class="line">z, x_ticklabels , y_ticklabels = read_from_file(<span class="string">&quot;./mountain.txt&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制3D曲面图，应用颜色映射</span></span><br><span class="line">colormap = plt.get_cmap(<span class="string">&#x27;plasma&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> ax <span class="keyword">in</span> [ax1, ax2]:</span><br><span class="line">    surf = ax.plot_surface(x, y, z, cmap=colormap)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置轴标签</span></span><br><span class="line">    ax.set_xlabel(<span class="string">&#x27;步长\n(x8 bytes)&#x27;</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">&#x27;大小(bytes)&#x27;</span>)</span><br><span class="line">    ax.set_zlabel(<span class="string">&#x27;读吞吐量(MB/s)&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    ax.set_xticks(<span class="built_in">range</span>(<span class="built_in">len</span>(x_ticklabels)))</span><br><span class="line">    ax.set_yticks(<span class="built_in">range</span>(<span class="built_in">len</span>(y_ticklabels)))</span><br><span class="line">    ax.set_xticklabels(x_ticklabels)</span><br><span class="line">    ax.set_yticklabels(y_ticklabels)</span><br><span class="line"></span><br><span class="line">ax2.view_init(azim=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># ax1.view_init(azim=-90)</span></span><br><span class="line"><span class="comment"># ax2.view_init(elev=90, azim=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-<h2 id="三、测试数据列表"><a href="#三、测试数据列表" class="headerlink" title="三、测试数据列表"></a>三、测试数据列表</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Clock frequency is approx. 2904.0 MHz</span><br><span class="line">Memory mountain (MB/sec)</span><br><span class="line">		s1		s2		s3		s4		s5		s6		s7		s8		s9		s10		s11		s12		s13		s14		s15	</span><br><span class="line">128m	17796	10321	7056	5149	4091	3472	2947	2579	2311	2107	1961	1816	1702	1622	1605	</span><br><span class="line">64m		18269	10471	7119	5137	4180	3492	2965	2617	2360	2161	2010	1874	1790	1659	1619	</span><br><span class="line">32m		18473	10803	7407	5383	4282	3653	3123	2727	2522	2320	2173	2033	1935	1833	1785	</span><br><span class="line">16m		18664	11309	8015	6391	5028	4348	3887	3384	3162	3049	2730	2719	2361	2619	2514	</span><br><span class="line">8m		23334	15252	11627	9366	7769	6600	5734	5283	5387	5436	5431	5417	4865	5070	5181	</span><br><span class="line">4m		32108	23975	19482	15685	13245	11416	10047	8906	8554	8300	8006	7752	7572	7403	7259	</span><br><span class="line">2m		32679	24999	20430	16263	13521	11481	10155	8957	8719	8396	8087	7803	7609	7422	7298	</span><br><span class="line">1024k	32602	24671	20300	16291	13646	11716	10301	9007	8708	8384	8090	7798	7574	7428	7316	</span><br><span class="line">512k	32584	24859	20540	16541	13854	11878	10483	9223	8959	8679	8442	8333	8237	8158	8240	</span><br><span class="line">256k	34448	28029	25647	22996	20533	18201	16064	14173	14305	14053	14115	14685	13959	14389	14288	</span><br><span class="line">128k	34831	28976	26846	23784	20530	17720	15774	13799	13400	13327	13176	12946	12802	12891	12650	</span><br><span class="line">64k		35434	30363	29479	26820	22311	19961	17284	14595	15157	14925	14525	14766	13929	16971	28321	</span><br><span class="line">32k		39849	37582	37625	37701	37023	36207	36250	35507	34772	36590	38266	36201	34197	31754	35832	</span><br><span class="line">16k		38872	37582	36710	36376	34976	38485	32987	36487	33241	34721	35155	33880	35525	29545	33381	</span><br></pre></td></tr></table></figure>
-
-<h2 id="四、存储器山分析"><a href="#四、存储器山分析" class="headerlink" title="四、存储器山分析"></a>四、存储器山分析</h2><p>可以比较清晰的看出，存储器山分成了四层，分别对应三级缓存和主存。</p>
-<p>且前两道山脊分别对应着L1和L2单个缓存芯片的大小（32k和256k）：</p>
-<p><img src="/../pic/memory-mountain/memory-mountain-2-mark.png" alt="memory-mountain-3"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/11/04/Memory-Mountain/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
