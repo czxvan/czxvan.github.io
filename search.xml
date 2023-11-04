@@ -1332,7 +1332,7 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
 
 ]]></content>
       <categories>
-        <category>Learning-Pytho</category>
+        <category>Learning-Python</category>
       </categories>
       <tags>
         <tag>Matpolitlib</tag>
