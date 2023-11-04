@@ -1322,7 +1322,8 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
   <entry>
     <title>Matploitlib</title>
     <url>/2023/11/04/Learning-Python/Matploitlib/</url>
-    <content><![CDATA[<span id="more"></span>
+    <content><![CDATA[<p>学习使用Matploitlib包绘制各类图形。</p>
+<span id="more"></span>
 
 
 
@@ -1331,7 +1332,7 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
 
 ]]></content>
       <categories>
-        <category>Learning-Python</category>
+        <category>Learning-Pytho</category>
       </categories>
       <tags>
         <tag>Matpolitlib</tag>
