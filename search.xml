@@ -1,204 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Learning-C++</title>
-    <url>/2023/10/29/LearningNotes/Learning-Cpp/</url>
-    <content><![CDATA[<p>c++学习笔记。</p>
-<span id="more"></span>
-
-<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
-<li><p>命名空间 namespace</p>
-</li>
-<li><p>类型增强</p>
-<ul>
-<li><p>常量</p>
-<ul>
-<li><p>const</p>
-<ul>
-<li><p>常量指针</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指针常量</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>constexpr: 编译时求值</p>
-</li>
-</ul>
-</li>
-<li><p>bool</p>
-</li>
-<li><p>enum</p>
-</li>
-<li><ul>
-<li></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>运算符重载</p>
-<ul>
-<li>方便混合处理多种类型不同的值</li>
-</ul>
-</li>
-<li><p>变量初始化</p>
-<ul>
-<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
-</ul>
-</li>
-<li><p>auto</p>
-<ul>
-<li>编译期，自动类型推断</li>
-</ul>
-</li>
-<li><p>范围for语句</p>
-<ul>
-<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
-for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
-</code></pre>
-</li>
-</ul>
-</li>
-<li><p>nullptr</p>
-<ul>
-<li>NULL : int 0</li>
-<li>nullptr : std::nullptr_t | void * 0</li>
-<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
-</ul>
-</li>
-<li><p>强制类型转换</p>
-<ul>
-<li>static_cast</li>
-<li>dynamic_cast</li>
-<li>const_cast</li>
-<li>reinterpret_cast</li>
-</ul>
-</li>
-</ul>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
-<li><p>不占用内存，编译时转换为寄存器赋值</p>
-</li>
-<li><p>变量与引用的隐式转换</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>普通引用和常量引用</p>
-<ul>
-<li>不能通过常量引用修改变量</li>
-<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
-</ul>
-</li>
-</ul>
-<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
-<li><p>结构体struct</p>
-<ul>
-<li>除了成员变量，还可以拥有成员函数</li>
-</ul>
-</li>
-<li><p>权限修饰符</p>
-<ul>
-<li>public</li>
-<li>protected</li>
-<li>private</li>
-</ul>
-</li>
-<li><p>类class</p>
-<ul>
-<li>和结构体十分类似</li>
-<li>区别：结构体各成员默认public 类各成员默认private</li>
-</ul>
-</li>
-<li><p>代码组织结构</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
-<li><p>后置返回类型</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>inline内联函数</p>
-<ul>
-<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
-<li>函数体代替函数调用，节省简单函数的调用开销</li>
-</ul>
-</li>
-<li><p>函数参数</p>
-<ul>
-<li><p>默认参数</p>
-</li>
-<li><p>空参，空着或者 void</p>
-</li>
-</ul>
-</li>
-<li><p>函数重载</p>
-<ul>
-<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
-</li>
-<li><p>比较函数类型时，const关键字会被忽略</p>
-</li>
-</ul>
-</li>
-<li><p>成员函数修饰</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">XXX</span> &#123;</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="comment">// const 表示该函数执行过程中不会修改类的成员变量</span></span><br><span class="line">    <span class="keyword">return</span> param;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
-<p>可变长字符串</p>
-</blockquote>
-<ul>
-<li><p>初始化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常用方法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
-<p>可变长数组</p>
-</blockquote>
-<ul>
-<li><p>不能装引用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>初始化</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>常用方法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
-<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
-<p>能够取代部分指针的作用，且更安全和优雅</p>
-</blockquote>
-<ul>
-<li><p>成员函数</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>其它用法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
-<li><p>继承</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mutator</span> &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Mutator</span>(<span class="type">int</span> param) : <span class="built_in">param</span>(param) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> param;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Multiplier</span> : <span class="keyword">public</span> Mutator &#123;</span><br><span class="line">	<span class="type">int</span> reserved[<span class="number">40</span>]; <span class="comment">// 现在没用到!</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Multiplier</span>(<span class="type">int</span> multiplier = <span class="number">0</span>) : <span class="built_in">Mutator</span>(multiplier) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="type">int</span> *ptr = (<span class="type">int</span> *)data;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size / <span class="number">4</span>; ++i)</span><br><span class="line">			ptr[i] *= <span class="built_in">getParam</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>虚函数、虚表与多态</p>
-</li>
-</ul>
-<h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
-<li><p>函数指针数组</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*funcPtr)</span><span class="params">()</span></span>; <span class="comment">// 定义函数指针类型</span></span><br><span class="line">funcPtr functions[] = &#123;...&#125;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>C++</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Create a Linux Kernel Module</title>
     <url>/2023/10/17/LearningNotes/Create-a-Linux-Kernel-Module/</url>
     <content><![CDATA[<p>创建一个 <code>Linux</code> 内核模块，为 <code>kernel PWN</code> 的学习补充一些基础知识。</p>
@@ -522,7 +324,7 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
 </ul>
 <p>在<code>Windwos</code>下，<code>ASLR</code>可由 <code>Visual Studio</code> 下的一个链接器选项——随机基址（<code>/DYNAMICBASE</code>）控制。</p>
 <h2 id="开始实验"><a href="#开始实验" class="headerlink" title="开始实验"></a>开始实验</h2><h3 id="ASLR与程序基址的关系"><a href="#ASLR与程序基址的关系" class="headerlink" title="ASLR与程序基址的关系"></a>ASLR与程序基址的关系</h3><h4 id="开启ASLR"><a href="#开启ASLR" class="headerlink" title="开启ASLR"></a>开启ASLR</h4><p>使用visual studio生成一个可执行程序<code>Exploime.exe</code>，开启随机基址</p>
-<p><img src="/../../pic/ASLR-in-Windows/ASLR-YES.png" alt="ASLR open"></p>
+<p><img src="/../pic/ASLR-in-Windows/ASLR-YES.png" alt="ASLR open"></p>
 <p>使用windbg加载<code>Exploime.exe</code>，然后使用<code>lm</code>命令查看已加载模块的基址</p>
 <p><img src="/../pic/ASLR-in-Windows/pic1.png" alt="pic1"></p>
 <p>重启windbg，重复上面操作</p>
@@ -1263,17 +1065,16 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Memory Mountains</title>
-    <url>/2023/10/31/else/Memory-Mountains/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Exploitme5——Heap Spraying &amp; UAF</title>
     <url>/2023/11/02/Windwos-PWN/Exploitme/Exploitme5/</url>
-    <content><![CDATA[<p>参考资料：</p>
+    <content><![CDATA[<p>堆喷射和UAF漏洞实验。</p>
+<p>Win10下，堆基址的随机化粒度比win7小，导致本实验暂时无法完成……</p>
+<p>参考资料：</p>
 <ul>
 <li><a href="https://bbs.kanxue.com/thread-207103.htm">Exploitme5(heap spraying &amp; UAF)-外文翻译|kanxue.com</a></li>
 </ul>
+<span id="more"></span>
+
 <h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><ul>
 <li>Windows10 VisualStudio2022</li>
 <li>关闭&#x2F;sdl</li>
@@ -1319,5 +1120,417 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
       <categories>
         <category>Windows-PWN</category>
       </categories>
+  </entry>
+  <entry>
+    <title>Memory Mountains</title>
+    <url>/2023/11/04/Memory-Mountains/</url>
+    <content><![CDATA[<p>Memory-Mountain实验。</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="http://csapp.cs.cmu.edu/3e/students.html">CS:APP3e, Bryant and O’Hallaron (cmu.edu)</a></li>
+</ul>
+<h2 id="一、列出cache参数"><a href="#一、列出cache参数" class="headerlink" title="一、列出cache参数"></a>一、列出cache参数</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">lscpu</span></span><br><span class="line">...</span><br><span class="line">L1d cache:                       192 KiB</span><br><span class="line">L1i cache:                       192 KiB</span><br><span class="line">L2 cache:                        1.5 MiB</span><br><span class="line">L3 cache:                        9 MiB</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>本机共6个cpu（cpu0-5)。每个cpu目录下，都有它能够使用的cache的信息：</p>
+<p><img src="/../pic/memory-mountain/cpu0-cache-ls.png" alt="cpu0-cache-ls"></p>
+<p><img src="/../pic/memory-mountain/cpu0-index0-ls.png" alt="cpu0-index0-ls"></p>
+<p>下面以cpu0和cpu1为例，列出它们各自cache的信息。</p>
+<p>cpu0可以使用的四个缓存的各项参数如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>index0</th>
+<th>index1</th>
+<th>index2</th>
+<th>index3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>level</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Data</td>
+<td>Instruction</td>
+<td>Unified</td>
+<td>Unified</td>
+</tr>
+<tr>
+<td>size</td>
+<td>32K</td>
+<td>32K</td>
+<td>256K</td>
+<td>9216K</td>
+</tr>
+<tr>
+<td>coherency_line_size</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+</tr>
+<tr>
+<td>number_of_sets</td>
+<td>64</td>
+<td>64</td>
+<td>1024</td>
+<td>12288</td>
+</tr>
+<tr>
+<td>physical_line_partition</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>shared_cpu_list</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0-5</td>
+</tr>
+<tr>
+<td>shared_cpu_map</td>
+<td>01</td>
+<td>01</td>
+<td>01</td>
+<td>3f</td>
+</tr>
+<tr>
+<td>ways_of_associativity</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>12</td>
+</tr>
+</tbody></table>
+<p>cpu1可以使用的四个缓存的各项参数如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>index0</th>
+<th>index1</th>
+<th>index2</th>
+<th>index3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>level</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Data</td>
+<td>Instruction</td>
+<td>Unified</td>
+<td>Unified</td>
+</tr>
+<tr>
+<td>size</td>
+<td>32K</td>
+<td>32K</td>
+<td>256K</td>
+<td>9216K</td>
+</tr>
+<tr>
+<td>coherency_line_size</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+</tr>
+<tr>
+<td>number_of_sets</td>
+<td>64</td>
+<td>64</td>
+<td>1024</td>
+<td>12288</td>
+</tr>
+<tr>
+<td>physical_line_partition</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>shared_cpu_list</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0-5</td>
+</tr>
+<tr>
+<td>shared_cpu_map</td>
+<td>02</td>
+<td>02</td>
+<td>02</td>
+<td>3f</td>
+</tr>
+<tr>
+<td>ways_of_associativity</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>12</td>
+</tr>
+</tbody></table>
+<h3 id="二、绘制存储器山"><a href="#二、绘制存储器山" class="headerlink" title="二、绘制存储器山"></a>二、绘制存储器山</h3><p><img src="/../pic/memory-mountain/memory-mountain-2.png" alt="memory-mountain-2"></p>
+<p><img src="/../pic/memory-mountain/memory-mountain-3.png" alt="memory-mountain-3"></p>
+<p>首先运行mountain程序，并将输出结果重定向到<code>mountain.txt</code>中</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./mountain &gt; mountain.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用python读取输出结果并绘制图像，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.family&#x27;</span>] = <span class="string">&#x27;SimHei&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_from_file</span>(<span class="params">path</span>):</span><br><span class="line">    z = []</span><br><span class="line">    y_ticklabels = []</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;./mountain.txt&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">        x_ticklabels = lines[<span class="number">2</span>].strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> lines[<span class="number">3</span>:]:</span><br><span class="line">            line = line.strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(line) != <span class="number">0</span>:</span><br><span class="line">                y_ticklabels.append(line[<span class="number">0</span>])</span><br><span class="line">            z.append([<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> line[<span class="number">1</span>:]])</span><br><span class="line">    <span class="keyword">return</span> np.array(z) , np.array(x_ticklabels), np.array(y_ticklabels)</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个3D图形对象</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax1 = fig.add_subplot(<span class="number">121</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">ax2 = fig.add_subplot(<span class="number">122</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="comment"># 创建网格数据</span></span><br><span class="line">x = np.arange(<span class="number">15</span>)</span><br><span class="line">y = np.arange(<span class="number">14</span>)</span><br><span class="line">x, y = np.meshgrid(x, y)</span><br><span class="line">z, x_ticklabels , y_ticklabels = read_from_file(<span class="string">&quot;./mountain.txt&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制3D曲面图，应用颜色映射</span></span><br><span class="line">colormap = plt.get_cmap(<span class="string">&#x27;plasma&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> ax <span class="keyword">in</span> [ax1, ax2]:</span><br><span class="line">    surf = ax.plot_surface(x, y, z, cmap=colormap)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置轴标签</span></span><br><span class="line">    ax.set_xlabel(<span class="string">&#x27;步长\n(x8 bytes)&#x27;</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">&#x27;大小(bytes)&#x27;</span>)</span><br><span class="line">    ax.set_zlabel(<span class="string">&#x27;读吞吐量(MB/s)&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    ax.set_xticks(<span class="built_in">range</span>(<span class="built_in">len</span>(x_ticklabels)))</span><br><span class="line">    ax.set_yticks(<span class="built_in">range</span>(<span class="built_in">len</span>(y_ticklabels)))</span><br><span class="line">    ax.set_xticklabels(x_ticklabels)</span><br><span class="line">    ax.set_yticklabels(y_ticklabels)</span><br><span class="line"></span><br><span class="line">ax2.view_init(azim=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># ax1.view_init(azim=-90)</span></span><br><span class="line"><span class="comment"># ax2.view_init(elev=90, azim=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、测试数据列表"><a href="#三、测试数据列表" class="headerlink" title="三、测试数据列表"></a>三、测试数据列表</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Clock frequency is approx. 2904.0 MHz</span><br><span class="line">Memory mountain (MB/sec)</span><br><span class="line">		s1		s2		s3		s4		s5		s6		s7		s8		s9		s10		s11		s12		s13		s14		s15	</span><br><span class="line">128m	17796	10321	7056	5149	4091	3472	2947	2579	2311	2107	1961	1816	1702	1622	1605	</span><br><span class="line">64m		18269	10471	7119	5137	4180	3492	2965	2617	2360	2161	2010	1874	1790	1659	1619	</span><br><span class="line">32m		18473	10803	7407	5383	4282	3653	3123	2727	2522	2320	2173	2033	1935	1833	1785	</span><br><span class="line">16m		18664	11309	8015	6391	5028	4348	3887	3384	3162	3049	2730	2719	2361	2619	2514	</span><br><span class="line">8m		23334	15252	11627	9366	7769	6600	5734	5283	5387	5436	5431	5417	4865	5070	5181	</span><br><span class="line">4m		32108	23975	19482	15685	13245	11416	10047	8906	8554	8300	8006	7752	7572	7403	7259	</span><br><span class="line">2m		32679	24999	20430	16263	13521	11481	10155	8957	8719	8396	8087	7803	7609	7422	7298	</span><br><span class="line">1024k	32602	24671	20300	16291	13646	11716	10301	9007	8708	8384	8090	7798	7574	7428	7316	</span><br><span class="line">512k	32584	24859	20540	16541	13854	11878	10483	9223	8959	8679	8442	8333	8237	8158	8240	</span><br><span class="line">256k	34448	28029	25647	22996	20533	18201	16064	14173	14305	14053	14115	14685	13959	14389	14288	</span><br><span class="line">128k	34831	28976	26846	23784	20530	17720	15774	13799	13400	13327	13176	12946	12802	12891	12650	</span><br><span class="line">64k		35434	30363	29479	26820	22311	19961	17284	14595	15157	14925	14525	14766	13929	16971	28321	</span><br><span class="line">32k		39849	37582	37625	37701	37023	36207	36250	35507	34772	36590	38266	36201	34197	31754	35832	</span><br><span class="line">16k		38872	37582	36710	36376	34976	38485	32987	36487	33241	34721	35155	33880	35525	29545	33381	</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、存储器山分析"><a href="#四、存储器山分析" class="headerlink" title="四、存储器山分析"></a>四、存储器山分析</h2><p>可以比较清晰的看出，存储器山分成了四层，分别对应三级缓存和主存。</p>
+<p>且前两道山脊分别对应着L1和L2单个缓存芯片的大小（32k和256k）：</p>
+<p><img src="/../pic/memory-mountain/memory-mountain-2-mark.png" alt="memory-mountain-3"></p>
+]]></content>
+      <categories>
+        <category>else</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Learning-C++</title>
+    <url>/2023/10/29/Learning-Cpp/overview/</url>
+    <content><![CDATA[<p>c++学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
+<li><p>命名空间 namespace</p>
+</li>
+<li><p>类型增强</p>
+<ul>
+<li><p>常量</p>
+<ul>
+<li><p>const</p>
+<ul>
+<li><p>常量指针</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指针常量</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>constexpr: 编译时求值</p>
+</li>
+</ul>
+</li>
+<li><p>bool</p>
+</li>
+<li><p>enum</p>
+</li>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>运算符重载</p>
+<ul>
+<li>方便混合处理多种类型不同的值</li>
+</ul>
+</li>
+<li><p>变量初始化</p>
+<ul>
+<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
+</ul>
+</li>
+<li><p>auto</p>
+<ul>
+<li>编译期，自动类型推断</li>
+</ul>
+</li>
+<li><p>范围for语句</p>
+<ul>
+<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
+for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>nullptr</p>
+<ul>
+<li>NULL : int 0</li>
+<li>nullptr : std::nullptr_t | void * 0</li>
+<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
+</ul>
+</li>
+<li><p>强制类型转换</p>
+<ul>
+<li>static_cast</li>
+<li>dynamic_cast</li>
+<li>const_cast</li>
+<li>reinterpret_cast</li>
+</ul>
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><p>不占用内存，编译时转换为寄存器赋值</p>
+</li>
+<li><p>变量与引用的隐式转换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>普通引用和常量引用</p>
+<ul>
+<li>不能通过常量引用修改变量</li>
+<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
+</ul>
+</li>
+</ul>
+<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
+<li><p>结构体struct</p>
+<ul>
+<li>除了成员变量，还可以拥有成员函数</li>
+</ul>
+</li>
+<li><p>权限修饰符</p>
+<ul>
+<li>public</li>
+<li>protected</li>
+<li>private</li>
+</ul>
+</li>
+<li><p>类class</p>
+<ul>
+<li>和结构体十分类似</li>
+<li>区别：结构体各成员默认public 类各成员默认private</li>
+</ul>
+</li>
+<li><p>代码组织结构</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
+<li><p>后置返回类型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>inline内联函数</p>
+<ul>
+<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
+<li>函数体代替函数调用，节省简单函数的调用开销</li>
+</ul>
+</li>
+<li><p>函数参数</p>
+<ul>
+<li><p>默认参数</p>
+</li>
+<li><p>空参，空着或者 void</p>
+</li>
+</ul>
+</li>
+<li><p>函数重载</p>
+<ul>
+<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
+</li>
+<li><p>比较函数类型时，const关键字会被忽略</p>
+</li>
+</ul>
+</li>
+<li><p>成员函数修饰</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">XXX</span> &#123;</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="comment">// const 表示该函数执行过程中不会修改类的成员变量</span></span><br><span class="line">    <span class="keyword">return</span> param;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
+<p>可变长字符串</p>
+</blockquote>
+<ul>
+<li><p>初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
+<p>可变长数组</p>
+</blockquote>
+<ul>
+<li><p>不能装引用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
+<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
+<p>能够取代部分指针的作用，且更安全和优雅</p>
+</blockquote>
+<ul>
+<li><p>成员函数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li><p>继承</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mutator</span> &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Mutator</span>(<span class="type">int</span> param) : <span class="built_in">param</span>(param) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> param;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Multiplier</span> : <span class="keyword">public</span> Mutator &#123;</span><br><span class="line">	<span class="type">int</span> reserved[<span class="number">40</span>]; <span class="comment">// 现在没用到!</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Multiplier</span>(<span class="type">int</span> multiplier = <span class="number">0</span>) : <span class="built_in">Mutator</span>(multiplier) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="type">int</span> *ptr = (<span class="type">int</span> *)data;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size / <span class="number">4</span>; ++i)</span><br><span class="line">			ptr[i] *= <span class="built_in">getParam</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>虚函数、虚表与多态</p>
+</li>
+</ul>
+<h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
+<li><p>函数指针数组</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*funcPtr)</span><span class="params">()</span></span>; <span class="comment">// 定义函数指针类型</span></span><br><span class="line">funcPtr functions[] = &#123;...&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Matploitlib</title>
+    <url>/2023/11/04/Learning-Python/Matploitlib/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+<p>示例代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入绘制三维的模块</span></span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">fig = plt.figure(figsize=(<span class="number">20</span>,<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维曲线</span></span><br><span class="line">axl = fig.add_subplot(<span class="number">221</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">theta = np.linspace(-<span class="number">4</span>*np.pi, <span class="number">4</span>*np.pi, <span class="number">500</span>)</span><br><span class="line">z = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">r = z**<span class="number">2</span> + <span class="number">1</span></span><br><span class="line">x = r*np.sin(theta)</span><br><span class="line">y = r*np.conj(theta)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法与绘制二维曲线图相同</span></span><br><span class="line">axl.plot(x,y,z)</span><br><span class="line">axl.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl.set_zlabel(<span class="string">&#x27;z&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维散点图</span></span><br><span class="line">axl2 = fig.add_subplot(<span class="number">222</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x = np.random.randn(<span class="number">500</span>)</span><br><span class="line">y = np.random.randn(<span class="number">500</span>)</span><br><span class="line">z = np.random.randn(<span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法与绘制二维曲线图相同</span></span><br><span class="line">axl2.scatter(x,y,z,c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">axl2.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl2.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl2.set_zlabel(<span class="string">&#x27;z&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维曲面图</span></span><br><span class="line">axl3 = fig.add_subplot(<span class="number">223</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">x = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">y = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">x,y = np.meshgrid(x,y)</span><br><span class="line">z = np.sqrt(x**<span class="number">2</span> + y**<span class="number">2</span>)</span><br><span class="line">axl3.plot_surface(x,y,z,cmap=plt.cm.winter)</span><br><span class="line">axl3.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl3.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl3.set_zlabel(<span class="string">&#x27;z&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维条形图</span></span><br><span class="line">axl4 = fig.add_subplot(<span class="number">224</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> z <span class="keyword">in</span> np.arange(<span class="number">0</span>,<span class="number">40</span>,<span class="number">10</span>):</span><br><span class="line">    x = np.arange(<span class="number">20</span>)</span><br><span class="line">    y = np.random.randn(<span class="number">20</span>)</span><br><span class="line">    axl4.bar(x,y,zs=z,zdir=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">axl4.set_xlabel(<span class="string">&#x27;x&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line">axl4.set_ylabel(<span class="string">&#x27;y&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line">axl4.set_zlabel(<span class="string">&#x27;z&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Learning-Python</category>
+      </categories>
+      <tags>
+        <tag>Matpolitlib</tag>
+      </tags>
   </entry>
 </search>

