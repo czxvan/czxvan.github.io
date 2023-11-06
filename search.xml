@@ -1536,4 +1536,203 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
         <category>else</category>
       </categories>
   </entry>
+  <entry>
+    <title>PythonConfig</title>
+    <url>/2023/11/06/Learning-Python/PythonConfig/</url>
+    <content><![CDATA[<p>python相关的一些配置。</p>
+<span id="more"></span>
+
+<h2 id="pip"><a href="#pip" class="headerlink" title="pip"></a>pip</h2><p>换源</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip config <span class="built_in">set</span> <span class="keyword">global</span>.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Learning-Python</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Learning-git</title>
+    <url>/2023/11/06/Learning-git/</url>
+    <content><![CDATA[<p>git学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone &lt;URL&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><p>产看本地分支</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git brach</span><br></pre></td></tr></table></figure>
+
+<p>删除本地分支</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git branch -d &lt;branch_name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>新建本地分支并推送到远程</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git checkout -b &lt;branch_name&gt;</span><br><span class="line">git push --set-upstream origin dl_modify</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Learning-git</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>pipreqs</title>
+    <url>/2023/11/06/Learning-Python/pipreqs/</url>
+    <content><![CDATA[<p>使用pipreqs快速生成python项目依赖列表requirements.txt。</p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pip install pipreqs</span><br><span class="line">pipreqs . --encoding=utf8 --force</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Learning-Python</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>pytorch</title>
+    <url>/2023/11/06/Learning-Python/pytorch/</url>
+    <content><![CDATA[<p>pytorch和神经网络学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官网地址：<a href="https://pytorch.org/get-started/locally/">Start Locally | PyTorch</a></p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118</span><br></pre></td></tr></table></figure>
+
+<p>如果网络老是中断，可以先从.whl文件安装torch</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install D:\Users\xxx\Downloads\torch-<span class="number">2.1</span><span class="number">.0</span>+cu118-cp311-cp311-win_amd64.whl</span><br></pre></td></tr></table></figure>
+
+<p>然后在执行第一个命令，安装torchvision torchaudio。</p>
+<h2 id="神经网络概述"><a href="#神经网络概述" class="headerlink" title="神经网络概述"></a>神经网络概述</h2><p>DNN (Deep Neural Network)、RNN (Recurrent Neural Network)、CNN (Convolutional Neural Network) 和图神经网络 (Graph Neural Network) 都是深度学习领域中常见的神经网络架构，它们各自适用于不同类型的数据和任务。以下是对每种神经网络的简要介绍：</p>
+<ol>
+<li>深度神经网络 (DNN):<ul>
+<li>DNN是一种标准的前馈神经网络，它由输入层、多个隐藏层和输出层组成。</li>
+<li>DNN广泛用于图像分类、文本分类、回归、语音识别等任务。</li>
+<li>深层结构允许DNN从数据中自动学习高级特征表示，从而提高性能。</li>
+</ul>
+</li>
+<li>循环神经网络 (RNN):<ul>
+<li>RNN是一种递归神经网络，具有循环连接，能够处理序列数据。</li>
+<li>RNN具有内部状态，允许它记忆先前的信息并将其传递到后续时间步。</li>
+<li>RNN常用于自然语言处理 (NLP)、时间序列分析、语音识别等需要考虑上下文的任务。</li>
+</ul>
+</li>
+<li>卷积神经网络 (CNN):<ul>
+<li>CNN是专门设计用于图像处理的神经网络。</li>
+<li>它使用卷积层来检测图像中的特征，如边缘、纹理和形状。</li>
+<li>CNN在计算机视觉任务中表现出色，如图像分类、目标检测和图像分割。</li>
+</ul>
+</li>
+<li>图神经网络 (Graph Neural Network, GNN):<ul>
+<li>GNN是为处理图数据而设计的神经网络，如社交网络、知识图谱和分子结构。</li>
+<li>GNN能够在节点和边上执行信息传递，考虑了图数据的拓扑结构。</li>
+<li>GNN用于图分类、节点分类、链接预测等任务，并在推荐系统和生物信息学中也有广泛应用。</li>
+</ul>
+</li>
+</ol>
+<h2 id="基本成员"><a href="#基本成员" class="headerlink" title="基本成员"></a>基本成员</h2><h3 id="Tensor"><a href="#Tensor" class="headerlink" title="Tensor"></a>Tensor</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.cuda()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Module-Model"><a href="#Module-Model" class="headerlink" title="Module(Model)"></a>Module(Model)</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.cuda()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><h3 id="randn"><a href="#randn" class="headerlink" title="randn"></a>randn</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">torch.randn(5, 3, 224, 224) -&gt; tensor</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="预设模型"><a href="#预设模型" class="headerlink" title="预设模型"></a>预设模型</h2><h3 id="torchvision-models"><a href="#torchvision-models" class="headerlink" title="torchvision.models"></a>torchvision.models</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">resnet18()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Profiler"><a href="#Profiler" class="headerlink" title="Profiler"></a>Profiler</h2><blockquote>
+<p>参考文档：<a href="https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html">PyTorch Profiler — PyTorch Tutorials 2.1.0+cu121 documentation</a></p>
+</blockquote>
+<h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>pytorch profiler通过上下文管理器开启，可以接收很多设置参数，比如：</p>
+<ul>
+<li><code>activities</code> - 分析活动的列表<ul>
+<li><code>ProfilerActivity.CPU</code> - Pytorch操作符，TorchScript函数，和用户定义的代码标签（见下面的<code>record_function</code>）</li>
+<li><code>ProfileActivity.CUDA</code> - 设备上的CUDA内核</li>
+</ul>
+</li>
+<li><code>record_shapes</code> - 是否记录每次操作的输入的形状</li>
+<li><code>profile_memory</code> -  是否报告模型张量消耗的内存量</li>
+<li><code>use_cuda</code> - 是否测量CUDA内核的执行时间</li>
+</ul>
+<p>注意：当使用CUDA时，profiler还会展示主机上发生的运行时CUDA事件。</p>
+<h3 id="导入库"><a href="#导入库" class="headerlink" title="导入库"></a>导入库</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> profile, record_function, ProfilerActivity</span><br></pre></td></tr></table></figure>
+
+<h3 id="实例化一个简单的Resnet模型"><a href="#实例化一个简单的Resnet模型" class="headerlink" title="实例化一个简单的Resnet模型"></a>实例化一个简单的Resnet模型</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = models.resnet18() <span class="comment"># 在CPU上</span></span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用profiler分析执行时间"><a href="#使用profiler分析执行时间" class="headerlink" title="使用profiler分析执行时间"></a>使用profiler分析执行时间</h3><h4 id="only-CPU"><a href="#only-CPU" class="headerlink" title="only CPU"></a>only CPU</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU], record_shapes=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">	<span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">        model(inputs)</span><br></pre></td></tr></table></figure>
+
+<p>从上面我们可以看到，我们可以通过<code>record_function</code>上下文管理器，使用用户提供的名字来标记任意代码范围（在上面的例子中，<code>model_inference</code>被用作标签)。</p>
+<p>在执行被上下文管理器包装的代码范围期间，profiler允许检查哪些操作符被调用了。如果多个profiler范围同时处于活动(active)状态（例如，在并行的pytorch线程中），则每个profiling上下文管理器仅跟踪其相应范围的运算。</p>
+<p>Profiler还会自动评测使用<code>torch.jit_fork</code>启动的异步任务，以及（在向后传递的情况下）用<code>backward()</code>调用启动的向后传递运算符。</p>
+<p>下面打印以上执行的数据：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages())</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cpu_time_total&quot;</span>, row_limit=<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  </span><br><span class="line">                             Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls</span><br><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------</span><br><span class="line">                  model_inference         2.88%       4.048ms       100.00%     140.643ms     140.643ms             1</span><br><span class="line">                     aten::conv2d         0.10%     140.000us        65.89%      92.664ms       4.633ms            20</span><br><span class="line">                aten::convolution         0.34%     485.000us        65.79%      92.524ms       4.626ms            20</span><br><span class="line">               aten::_convolution         0.18%     255.000us        65.44%      92.039ms       4.602ms            20</span><br><span class="line">         aten::mkldnn_convolution        64.72%      91.030ms        65.26%      91.784ms       4.589ms            20</span><br><span class="line">                 aten::max_pool2d         0.03%      36.000us        14.84%      20.866ms      20.866ms             1</span><br><span class="line">    aten::max_pool2d_with_indices        14.81%      20.830ms        14.81%      20.830ms      20.830ms             1</span><br><span class="line">                 aten::batch_norm         0.20%     277.000us        12.02%      16.899ms     844.950us            20</span><br><span class="line">     aten::_batch_norm_impl_index         0.17%     234.000us        11.95%      16.813ms     840.650us            20</span><br><span class="line">          aten::native_batch_norm        11.59%      16.301ms        11.77%      16.551ms     827.550us            20</span><br><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------</span><br><span class="line">Self CPU time total: 140.643ms</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>aten::mkldnn_convolution</code>函数的<code>Self CPU</code>最高。</p>
+<p>其中 Self CPU 和 CPU 的区别在于，前者减去了子操作的执行时间，后者保留了子操作的执行时间。</p>
+<p>可以在<code>table()</code>中使用<code>sort_by=&quot;self_cpu_time_total</code>“，根据 self cpu 时间对输出进行排序。</p>
+<p>为了获得<strong>更细粒度</strong>的输出，包含操作输入的形状，可以使用<code>group_by_input_shape</code>(要求运行profiler时开启<code>record_shapes=True</code>)：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages(group_by_input_shape=<span class="literal">True</span>)).table(sort_by=<span class="string">&quot;self_cpu_time_total&quot;</span>, row_limit=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出如下（省略了一些列）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">                             Name    Self CPU %      Self CPU ...                                               Input Shapes  </span><br><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">         aten::mkldnn_convolution        19.26%      22.064ms ...      [[5, 64, 56, 56], [64, 64, 3, 3], [], [], [], [], []]  </span><br><span class="line">    aten::max_pool2d_with_indices        15.51%      17.759ms ...                    [[5, 64, 112, 112], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution        10.50%      12.026ms ...     [[5, 512, 7, 7], [512, 512, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution        10.10%      11.566ms ...   [[5, 256, 14, 14], [256, 256, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         6.59%       7.553ms ...   [[5, 128, 28, 28], [128, 128, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         6.49%       7.428ms ...      [[5, 3, 224, 224], [64, 3, 7, 7], [], [], [], [], []]  </span><br><span class="line">          aten::native_batch_norm         3.30%       3.777ms ... [[5, 128, 28, 28], [128], [128], [128], [128], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         3.20%       3.660ms ...   [[5, 256, 14, 14], [512, 256, 3, 3], [], [], [], [], []]  </span><br><span class="line">                  model_inference         3.16%       3.616ms ...                                                         []  </span><br><span class="line">         aten::mkldnn_convolution         3.10%       3.552ms ...   [[5, 128, 28, 28], [256, 128, 3, 3], [], [], [], [], []]  </span><br><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">Self CPU time total: 114.529ms</span><br></pre></td></tr></table></figure>
+
+<h4 id="with-GPU"><a href="#with-GPU" class="headerlink" title="with GPU"></a>with GPU</h4><p>profiler也可以用来分析在GPU上执行的模型的性能：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = models.resnet18().cuda()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">	<span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">		model(inputs)</span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cuda_time_total&quot;</span>, row_limit=<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出如下（省略了一些行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">                        Name  Self CPU %   Self CPU  Self CUDA  Self CUDA %  CUDA total  CUDA time avg # of Calls</span><br><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">             model_inference       0.79%    3.720ms  258.000us        0.07%   346.300ms     346.300ms           1</span><br><span class="line">                aten::conv2d       0.03%  151.000us  102.000us        0.03%   289.635ms      14.482ms          20</span><br><span class="line">           aten::convolution       0.09%  418.000us   98.000us        0.03%   289.533ms      14.477ms          20</span><br><span class="line">          aten::_convolution       0.07%  332.000us   98.000us        0.03%   289.435ms      14.472ms          20</span><br><span class="line">     aten::cudnn_convolution      87.95%  412.414ms  289.337ms       83.55%   289.337ms      14.467ms          20</span><br><span class="line">                  aten::add_       2.19%   10.283ms   32.463ms        9.37%    32.463ms       1.159ms          28</span><br><span class="line">            aten::batch_norm       0.02%  111.000us   91.000us        0.03%    10.973ms     548.650us          20</span><br><span class="line">aten::_batch_norm_impl_index       0.04%  207.000us   99.000us        0.03%    10.882ms     544.100us          20</span><br><span class="line">      aten::cudnn_batch_norm       4.35%   20.415ms   10.402ms        3.00%    10.783ms     539.150us          20</span><br><span class="line">            aten::max_pool2d       0.01%   32.000us    4.000us        0.00%     4.379ms       4.379ms           1</span><br><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">Self CPU time total: 468.945ms</span><br><span class="line">Self CUDA time total: 346.300ms</span><br></pre></td></tr></table></figure>
+
+<p>注：第一次使用cuda profiling会引入<strong>额外的开销</strong>，导致运行时间较长，之后就相对正常了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Self CPU time total: 192.059ms</span><br><span class="line">Self CUDA time total: 155.963ms</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用profiler分析内存开销"><a href="#使用profiler分析内存开销" class="headerlink" title="使用profiler分析内存开销"></a>使用profiler分析内存开销</h3><p>profiler能够统计模型运行过程中tensor使用获释放的内存数量，<code>profile_memory=True</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> profile, record_function, ProfilerActivity</span><br><span class="line"></span><br><span class="line">model = models.resnet18()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU], record_shapes=<span class="literal">True</span>, profile_memory=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">    <span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">        model(inputs)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;self_cpu_memory_usage&quot;</span>, row_limit=<span class="number">10</span>))</span><br><span class="line"><span class="comment"># (omitting some columns)</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------  </span></span><br><span class="line"><span class="comment">#                              Name    Self CPU %      Self CPU      CPU Mem  Self CPU Mem    # of Calls</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment">#                       aten::empty         0.31%     403.000us     94.35 Mb      94.35 Mb           200</span></span><br><span class="line"><span class="comment">#     aten::max_pool2d_with_indices        18.90%      24.260ms     11.48 Mb      11.48 Mb             1</span></span><br><span class="line"><span class="comment">#                  aten::empty_like         0.05%      60.000us     47.37 Mb     490.00 Kb            20</span></span><br><span class="line"><span class="comment">#                       aten::addmm         0.24%     302.000us     19.53 Kb      19.53 Kb             1</span></span><br><span class="line"><span class="comment">#                        aten::mean         0.05%      61.000us     10.00 Kb      10.00 Kb             1</span></span><br><span class="line"><span class="comment">#               aten::empty_strided         0.01%       7.000us          4 b           4 b             1</span></span><br><span class="line"><span class="comment">#                      aten::conv2d         0.13%     173.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                 aten::convolution         0.29%     375.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                aten::_convolution         0.17%     224.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#          aten::mkldnn_convolution        60.82%      78.050ms     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment"># Self CPU time total: 128.330ms</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cpu_memory_usage&quot;</span>, row_limit=<span class="number">10</span>))</span><br><span class="line"><span class="comment"># (omitting some columns)</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------  </span></span><br><span class="line"><span class="comment">#                              Name    Self CPU %      Self CPU      CPU Mem  Self CPU Mem    # of Calls</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment">#                       aten::empty         0.31%     403.000us     94.35 Mb      94.35 Mb           200</span></span><br><span class="line"><span class="comment">#                  aten::batch_norm         1.19%       1.528ms     47.41 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#      aten::_batch_norm_impl_index         0.21%     272.000us     47.41 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#           aten::native_batch_norm        10.43%      13.379ms     47.41 Mb     -47.00 Kb            20</span></span><br><span class="line"><span class="comment">#                      aten::conv2d         0.13%     173.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                 aten::convolution         0.29%     375.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                aten::_convolution         0.17%     224.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#          aten::mkldnn_convolution        60.82%      78.050ms     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                  aten::empty_like         0.05%      60.000us     47.37 Mb     490.00 Kb            20</span></span><br><span class="line"><span class="comment">#                  aten::max_pool2d         0.02%      20.000us     11.48 Mb           0 b             1</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment"># Self CPU time total: 128.330ms</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用跟踪功能"><a href="#使用跟踪功能" class="headerlink" title="使用跟踪功能"></a>使用跟踪功能</h3><p>通过<code>export_chrome_trace</code>，profiler的分析结果能够输出为一个<code>.json</code>（跟踪）文件。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = models.resnet18().cuda()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) <span class="keyword">as</span> prof:</span><br><span class="line">    model(inputs)</span><br><span class="line"></span><br><span class="line">prof.export_chrome_trace(<span class="string">&quot;trace.json&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在浏览中访问<code>chrome//tracing</code>或<code>edge://tracing</code>，加载生成的<code>trace.json</code>文件，界面如下：</p>
+<p><img src="/../../pic/Learning-Python/pytorch/edge-tracing.png" alt="edge-tracing"></p>
+<h3 id="检查栈跟踪"><a href="#检查栈跟踪" class="headerlink" title="检查栈跟踪"></a>检查栈跟踪</h3><p>Profiler能够被用来分析Python和TorchScript的栈跟踪：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> profile(</span><br><span class="line">    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],</span><br><span class="line">    with_stack=<span class="literal">True</span></span><br><span class="line">) <span class="keyword">as</span> prof:</span><br><span class="line">    model(inputs)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages(group_by_stack_n=<span class="number">5</span>).table(sort_by=<span class="string">&quot;self_cuda_time_total&quot;</span>, row_limit=<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p>【测试失败!】（未输出堆栈信息）</p>
+<h3 id="将数据可视化为火焰图"><a href="#将数据可视化为火焰图" class="headerlink" title="将数据可视化为火焰图"></a>将数据可视化为火焰图</h3><p>执行时间（<code>self_cpu_time_total</code>和<code>self_cuda_time_total</code>）和栈跟踪能够被可视化为一个火焰图。</p>
+<p>首先使用<code>export_stacks</code>导出原始数据（需要<code>with_stack=True</code>）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">prof.export_stacks(<span class="string">&quot;./profiler_stacks.txt&quot;</span>, <span class="string">&quot;self_cuda_time_total&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>【测试失败!】（生成的文件为空）</p>
+<p>推荐使用 <a href="https://github.com/brendangregg/FlameGraph">Flamegraph tool</a> 生成一个可交互的<code>.svg</code>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/brendangregg/FlameGraph</span><br><span class="line">cd FlameGraph</span><br><span class="line">./flamegraph.pl --title &quot;CUDA time&quot; --countname &quot;us.&quot; /tmp/profiler_stacks.txt &gt; perf_viz.svg</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用profiler分析长时间运行的工作"><a href="#使用profiler分析长时间运行的工作" class="headerlink" title="使用profiler分析长时间运行的工作"></a>使用profiler分析长时间运行的工作</h3><p>Pytorch profiler提供一个额外的API用于处理长时间运行的工作（如训练循环）。如果跟踪所有的执行，会很慢，生成的跟踪文件也会很大。为了避免这样，可以使用以下可选参数：</p>
+<ul>
+<li><code>schedule</code> - 指定一个以整数参数(步长)为输入的函数，如 <code>torch.profiler.schedule</code>帮助函数，生成一个shcedule。</li>
+<li><code>on-trace-ready</code> -  指定一个以profiler引用为输入的回调函数，每次当新跟踪准备好时，去调用该函数</li>
+</ul>
+<p>首先考虑以下示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> schedule</span><br><span class="line"></span><br><span class="line">my_schedule = schedule(</span><br><span class="line">    skip_first=<span class="number">10</span>,	<span class="comment"># 跳过前10步</span></span><br><span class="line">    wait=<span class="number">5</span>,			<span class="comment"># 每轮前5步空转等待</span></span><br><span class="line">    warmup=<span class="number">1</span>,		<span class="comment"># 1步热身，测量但不记录，丢掉刚开始测量时由于额外开销导致的不准确的数据</span></span><br><span class="line">    active=<span class="number">3</span>,		<span class="comment"># 3步活动，测量并记录</span></span><br><span class="line">    repeat=<span class="number">2</span>)		<span class="comment"># 可选参数，最多两轮</span></span><br></pre></td></tr></table></figure>
+
+<p>下面是更完整的示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace_handler</span>(<span class="params">p</span>):</span><br><span class="line">    output = p.key_averages().table(sort_by=<span class="string">&quot;self_cuda_time_total&quot;</span>, row_limit=<span class="number">10</span>)</span><br><span class="line">    <span class="built_in">print</span>(output)</span><br><span class="line">    p.export_chrome_trace(<span class="string">&quot;./trace_&quot;</span> + <span class="built_in">str</span>(p.step_num) + <span class="string">&quot;.json&quot;</span>)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">with</span> profile(</span><br><span class="line">	activities=[ProfilerActivity.CPU, ProfilerActivity],</span><br><span class="line">    schedule=torch.profiler.schedule(</span><br><span class="line">    	wait=<span class="number">1</span>,</span><br><span class="line">    	warmup=<span class="number">2</span>,</span><br><span class="line">    	active=<span class="number">2</span>),</span><br><span class="line">    on_trace_ready=trace_handler</span><br><span class="line">) <span class="keyword">as</span> p:</span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        model(inputs)</span><br><span class="line">        p.step()	<span class="comment"># 告诉profiler，到下一步了。增加p.step_num计数</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Learning-Python</category>
+      </categories>
+  </entry>
 </search>
