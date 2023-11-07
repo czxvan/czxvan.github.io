@@ -12,7 +12,7 @@ git学习笔记。
 ## 克隆
 
 ```shell
-git clone <URL>
+git clone <URL> <local_repo_name>(可选)
 ```
 
 ## 分支管理
