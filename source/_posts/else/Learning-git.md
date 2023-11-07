@@ -1,8 +1,8 @@
 ---
 title: Learning-git
 date: 2023-11-06 10:20:00
-tags:
-categories: Learning-git
+tags: git
+categories: else
 ---
 
 git学习笔记。
@@ -14,8 +14,6 @@ git学习笔记。
 ```shell
 git clone <URL>
 ```
-
-
 
 ## 分支管理
 
@@ -36,5 +34,11 @@ git branch -d <branch_name>
 ```shell
 git checkout -b <branch_name>
 git push --set-upstream origin <branch_name>
+```
+
+切换分支（切换之后，本地文件目录会变为该分支的内容）
+
+```
+git checkout <branch_name>
 ```
 

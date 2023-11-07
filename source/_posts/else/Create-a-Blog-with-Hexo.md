@@ -5,7 +5,7 @@ tags:
 - blog
 - hexo
 - next
-categories: 其它
+categories: else
 ---
 
 `Windows`下使用 `Hexo` 和 `github pages` 快速构建个人博客，
