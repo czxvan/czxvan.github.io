@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="pytorch和神经网络学习笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch">
+<meta property="og:url" content="https://czxvan.github.io/2023/11/06/Learning-Python/pytorch/index.html">
+<meta property="og:site_name" content="czxvan&#39;s blog">
+<meta property="og:description" content="pytorch和神经网络学习笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://czxvan.github.io/pic/Learning-Python/pytorch/edge-tracing.png">
+<meta property="article:published_time" content="2023-11-06T03:02:05.000Z">
+<meta property="article:modified_time" content="2023-11-06T12:29:57.375Z">
+<meta property="article:author" content="czxvan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://czxvan.github.io/pic/Learning-Python/pytorch/edge-tracing.png">
+
+
+<link rel="canonical" href="https://czxvan.github.io/2023/11/06/Learning-Python/pytorch/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/11/06/Learning-Python/pytorch/","path":"2023/11/06/Learning-Python/pytorch/","title":"pytorch"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pytorch | czxvan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">czxvan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">神经网络概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%88%90%E5%91%98"><span class="nav-number">3.</span> <span class="nav-text">基本成员</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tensor"><span class="nav-number">3.1.</span> <span class="nav-text">Tensor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Module-Model"><span class="nav-number">3.2.</span> <span class="nav-text">Module(Model)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">基本方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#randn"><span class="nav-number">4.1.</span> <span class="nav-text">randn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%BE%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">预设模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#torchvision-models"><span class="nav-number">5.1.</span> <span class="nav-text">torchvision.models</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Profiler"><span class="nav-number">6.</span> <span class="nav-text">Profiler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">6.1.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%BA%93"><span class="nav-number">6.2.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Resnet%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">实例化一个简单的Resnet模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8profiler%E5%88%86%E6%9E%90%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="nav-number">6.4.</span> <span class="nav-text">使用profiler分析执行时间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#only-CPU"><span class="nav-number">6.4.1.</span> <span class="nav-text">only CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#with-GPU"><span class="nav-number">6.4.2.</span> <span class="nav-text">with GPU</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8profiler%E5%88%86%E6%9E%90%E5%86%85%E5%AD%98%E5%BC%80%E9%94%80"><span class="nav-number">6.5.</span> <span class="nav-text">使用profiler分析内存开销</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%B7%9F%E8%B8%AA%E5%8A%9F%E8%83%BD"><span class="nav-number">6.6.</span> <span class="nav-text">使用跟踪功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%A0%88%E8%B7%9F%E8%B8%AA"><span class="nav-number">6.7.</span> <span class="nav-text">检查栈跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B8%BA%E7%81%AB%E7%84%B0%E5%9B%BE"><span class="nav-number">6.8.</span> <span class="nav-text">将数据可视化为火焰图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8profiler%E5%88%86%E6%9E%90%E9%95%BF%E6%97%B6%E9%97%B4%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="nav-number">6.9.</span> <span class="nav-text">使用profiler分析长时间运行的工作</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">czxvan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/06/Learning-Python/pytorch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="pytorch | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pytorch
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-06 11:02:05 / 修改时间：20:29:57" itemprop="dateCreated datePublished" datetime="2023-11-06T11:02:05+08:00">2023-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Learning-Python/" itemprop="url" rel="index"><span itemprop="name">Learning-Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>pytorch和神经网络学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官网地址：<a target="_blank" rel="noopener" href="https://pytorch.org/get-started/locally/">Start Locally | PyTorch</a></p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118</span><br></pre></td></tr></table></figure>
+
+<p>如果网络老是中断，可以先从.whl文件安装torch</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install D:\Users\xxx\Downloads\torch-<span class="number">2.1</span><span class="number">.0</span>+cu118-cp311-cp311-win_amd64.whl</span><br></pre></td></tr></table></figure>
+
+<p>然后在执行第一个命令，安装torchvision torchaudio。</p>
+<h2 id="神经网络概述"><a href="#神经网络概述" class="headerlink" title="神经网络概述"></a>神经网络概述</h2><p>DNN (Deep Neural Network)、RNN (Recurrent Neural Network)、CNN (Convolutional Neural Network) 和图神经网络 (Graph Neural Network) 都是深度学习领域中常见的神经网络架构，它们各自适用于不同类型的数据和任务。以下是对每种神经网络的简要介绍：</p>
+<ol>
+<li>深度神经网络 (DNN):<ul>
+<li>DNN是一种标准的前馈神经网络，它由输入层、多个隐藏层和输出层组成。</li>
+<li>DNN广泛用于图像分类、文本分类、回归、语音识别等任务。</li>
+<li>深层结构允许DNN从数据中自动学习高级特征表示，从而提高性能。</li>
+</ul>
+</li>
+<li>循环神经网络 (RNN):<ul>
+<li>RNN是一种递归神经网络，具有循环连接，能够处理序列数据。</li>
+<li>RNN具有内部状态，允许它记忆先前的信息并将其传递到后续时间步。</li>
+<li>RNN常用于自然语言处理 (NLP)、时间序列分析、语音识别等需要考虑上下文的任务。</li>
+</ul>
+</li>
+<li>卷积神经网络 (CNN):<ul>
+<li>CNN是专门设计用于图像处理的神经网络。</li>
+<li>它使用卷积层来检测图像中的特征，如边缘、纹理和形状。</li>
+<li>CNN在计算机视觉任务中表现出色，如图像分类、目标检测和图像分割。</li>
+</ul>
+</li>
+<li>图神经网络 (Graph Neural Network, GNN):<ul>
+<li>GNN是为处理图数据而设计的神经网络，如社交网络、知识图谱和分子结构。</li>
+<li>GNN能够在节点和边上执行信息传递，考虑了图数据的拓扑结构。</li>
+<li>GNN用于图分类、节点分类、链接预测等任务，并在推荐系统和生物信息学中也有广泛应用。</li>
+</ul>
+</li>
+</ol>
+<h2 id="基本成员"><a href="#基本成员" class="headerlink" title="基本成员"></a>基本成员</h2><h3 id="Tensor"><a href="#Tensor" class="headerlink" title="Tensor"></a>Tensor</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.cuda()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Module-Model"><a href="#Module-Model" class="headerlink" title="Module(Model)"></a>Module(Model)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.cuda()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><h3 id="randn"><a href="#randn" class="headerlink" title="randn"></a>randn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">torch.randn(5, 3, 224, 224) -&gt; tensor</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="预设模型"><a href="#预设模型" class="headerlink" title="预设模型"></a>预设模型</h2><h3 id="torchvision-models"><a href="#torchvision-models" class="headerlink" title="torchvision.models"></a>torchvision.models</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">resnet18()</span><br><span class="line">AlexNet: 一种深度卷积神经网络，用于图像分类。它是深度学习的里程碑之一，拥有多层卷积和池化层。</span><br><span class="line"></span><br><span class="line">VGG: 基于卷积神经网络的一系列模型，包括 VGG11、VGG16 和 VGG19，用于图像分类。它们都具有深度卷积结构。</span><br><span class="line"></span><br><span class="line">ResNet: 残差网络是一种非常深的卷积神经网络，通过引入残差块，克服了深度神经网络的退化问题。包括 ResNet18、ResNet50 等不同深度的模型。</span><br><span class="line"></span><br><span class="line">DenseNet: 密集连接网络，将每一层的特征图与前面所有层的特征图连接，从而实现了更好的信息传递。</span><br><span class="line"></span><br><span class="line">Inception (GoogLeNet): Inception 模型是一种具有多个分支的网络，用于同时提取不同尺度和类型的特征。</span><br><span class="line"></span><br><span class="line">MobileNet: 非常轻量级的卷积神经网络，适用于移动设备和嵌入式系统。</span><br><span class="line"></span><br><span class="line">ResNeXt: ResNeXt 模型是一种卷积神经网络，引入了组卷积的概念，以提高模型的性能。</span><br><span class="line"></span><br><span class="line">ShuffleNet: 一种具有轻量级网络结构的模型，适用于资源受限的环境。</span><br><span class="line"></span><br><span class="line">SqueezeNet: 另一个轻量级神经网络模型，具有较少的参数和计算量。</span><br><span class="line"></span><br><span class="line">Wide ResNet: 基于 ResNet 的变种，拥有更宽的网络结构，以提高性能。</span><br><span class="line"></span><br><span class="line">InceptionResNetV2: 结合了 Inception 和 ResNet 的特点，具有较高的性能。</span><br><span class="line"></span><br><span class="line">MNASNet: 一种轻量级的神经网络，适用于移动设备和嵌入式系统。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Profiler"><a href="#Profiler" class="headerlink" title="Profiler"></a>Profiler</h2><blockquote>
+<p>参考文档：<a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html">PyTorch Profiler — PyTorch Tutorials 2.1.0+cu121 documentation</a></p>
+</blockquote>
+<h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>pytorch profiler通过上下文管理器开启，可以接收很多设置参数，比如：</p>
+<ul>
+<li><code>activities</code> - 分析活动的列表<ul>
+<li><code>ProfilerActivity.CPU</code> - Pytorch操作符，TorchScript函数，和用户定义的代码标签（见下面的<code>record_function</code>）</li>
+<li><code>ProfileActivity.CUDA</code> - 设备上的CUDA内核</li>
+</ul>
+</li>
+<li><code>record_shapes</code> - 是否记录每次操作的输入的形状</li>
+<li><code>profile_memory</code> -  是否报告模型张量消耗的内存量</li>
+<li><code>use_cuda</code> - 是否测量CUDA内核的执行时间</li>
+</ul>
+<p>注意：当使用CUDA时，profiler还会展示主机上发生的运行时CUDA事件。</p>
+<h3 id="导入库"><a href="#导入库" class="headerlink" title="导入库"></a>导入库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> profile, record_function, ProfilerActivity</span><br></pre></td></tr></table></figure>
+
+<h3 id="实例化一个简单的Resnet模型"><a href="#实例化一个简单的Resnet模型" class="headerlink" title="实例化一个简单的Resnet模型"></a>实例化一个简单的Resnet模型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model = models.resnet18() <span class="comment"># 在CPU上</span></span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用profiler分析执行时间"><a href="#使用profiler分析执行时间" class="headerlink" title="使用profiler分析执行时间"></a>使用profiler分析执行时间</h3><h4 id="only-CPU"><a href="#only-CPU" class="headerlink" title="only CPU"></a>only CPU</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU], record_shapes=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">	<span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">        model(inputs)</span><br></pre></td></tr></table></figure>
+
+<p>从上面我们可以看到，我们可以通过<code>record_function</code>上下文管理器，使用用户提供的名字来标记任意代码范围（在上面的例子中，<code>model_inference</code>被用作标签)。</p>
+<p>在执行被上下文管理器包装的代码范围期间，profiler允许检查哪些操作符被调用了。如果多个profiler范围同时处于活动(active)状态（例如，在并行的pytorch线程中），则每个profiling上下文管理器仅跟踪其相应范围的运算。</p>
+<p>Profiler还会自动评测使用<code>torch.jit_fork</code>启动的异步任务，以及（在向后传递的情况下）用<code>backward()</code>调用启动的向后传递运算符。</p>
+<p>下面打印以上执行的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages())</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cpu_time_total&quot;</span>, row_limit=<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  </span><br><span class="line">                             Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg    # of Calls</span><br><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------</span><br><span class="line">                  model_inference         2.88%       4.048ms       100.00%     140.643ms     140.643ms             1</span><br><span class="line">                     aten::conv2d         0.10%     140.000us        65.89%      92.664ms       4.633ms            20</span><br><span class="line">                aten::convolution         0.34%     485.000us        65.79%      92.524ms       4.626ms            20</span><br><span class="line">               aten::_convolution         0.18%     255.000us        65.44%      92.039ms       4.602ms            20</span><br><span class="line">         aten::mkldnn_convolution        64.72%      91.030ms        65.26%      91.784ms       4.589ms            20</span><br><span class="line">                 aten::max_pool2d         0.03%      36.000us        14.84%      20.866ms      20.866ms             1</span><br><span class="line">    aten::max_pool2d_with_indices        14.81%      20.830ms        14.81%      20.830ms      20.830ms             1</span><br><span class="line">                 aten::batch_norm         0.20%     277.000us        12.02%      16.899ms     844.950us            20</span><br><span class="line">     aten::_batch_norm_impl_index         0.17%     234.000us        11.95%      16.813ms     840.650us            20</span><br><span class="line">          aten::native_batch_norm        11.59%      16.301ms        11.77%      16.551ms     827.550us            20</span><br><span class="line">---------------------------------  ------------  ------------  ------------  ------------  ------------  ------------</span><br><span class="line">Self CPU time total: 140.643ms</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>aten::mkldnn_convolution</code>函数的<code>Self CPU</code>最高。</p>
+<p>其中 Self CPU 和 CPU 的区别在于，前者减去了子操作的执行时间，后者保留了子操作的执行时间。</p>
+<p>可以在<code>table()</code>中使用<code>sort_by=&quot;self_cpu_time_total</code>“，根据 self cpu 时间对输出进行排序。</p>
+<p>为了获得<strong>更细粒度</strong>的输出，包含操作输入的形状，可以使用<code>group_by_input_shape</code>(要求运行profiler时开启<code>record_shapes=True</code>)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(prof.key_averages(group_by_input_shape=<span class="literal">True</span>)).table(sort_by=<span class="string">&quot;self_cpu_time_total&quot;</span>, row_limit=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出如下（省略了一些列）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">                             Name    Self CPU %      Self CPU ...                                               Input Shapes  </span><br><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">         aten::mkldnn_convolution        19.26%      22.064ms ...      [[5, 64, 56, 56], [64, 64, 3, 3], [], [], [], [], []]  </span><br><span class="line">    aten::max_pool2d_with_indices        15.51%      17.759ms ...                    [[5, 64, 112, 112], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution        10.50%      12.026ms ...     [[5, 512, 7, 7], [512, 512, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution        10.10%      11.566ms ...   [[5, 256, 14, 14], [256, 256, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         6.59%       7.553ms ...   [[5, 128, 28, 28], [128, 128, 3, 3], [], [], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         6.49%       7.428ms ...      [[5, 3, 224, 224], [64, 3, 7, 7], [], [], [], [], []]  </span><br><span class="line">          aten::native_batch_norm         3.30%       3.777ms ... [[5, 128, 28, 28], [128], [128], [128], [128], [], [], []]  </span><br><span class="line">         aten::mkldnn_convolution         3.20%       3.660ms ...   [[5, 256, 14, 14], [512, 256, 3, 3], [], [], [], [], []]  </span><br><span class="line">                  model_inference         3.16%       3.616ms ...                                                         []  </span><br><span class="line">         aten::mkldnn_convolution         3.10%       3.552ms ...   [[5, 128, 28, 28], [256, 128, 3, 3], [], [], [], [], []]  </span><br><span class="line">---------------------------------  ------------  ------------ ... ----------------------------------------------------------  </span><br><span class="line">Self CPU time total: 114.529ms</span><br></pre></td></tr></table></figure>
+
+<h4 id="with-GPU"><a href="#with-GPU" class="headerlink" title="with GPU"></a>with GPU</h4><p>profiler也可以用来分析在GPU上执行的模型的性能：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model = models.resnet18().cuda()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">	<span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">		model(inputs)</span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cuda_time_total&quot;</span>, row_limit=<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出如下（省略了一些行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">                        Name  Self CPU %   Self CPU  Self CUDA  Self CUDA %  CUDA total  CUDA time avg # of Calls</span><br><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">             model_inference       0.79%    3.720ms  258.000us        0.07%   346.300ms     346.300ms           1</span><br><span class="line">                aten::conv2d       0.03%  151.000us  102.000us        0.03%   289.635ms      14.482ms          20</span><br><span class="line">           aten::convolution       0.09%  418.000us   98.000us        0.03%   289.533ms      14.477ms          20</span><br><span class="line">          aten::_convolution       0.07%  332.000us   98.000us        0.03%   289.435ms      14.472ms          20</span><br><span class="line">     aten::cudnn_convolution      87.95%  412.414ms  289.337ms       83.55%   289.337ms      14.467ms          20</span><br><span class="line">                  aten::add_       2.19%   10.283ms   32.463ms        9.37%    32.463ms       1.159ms          28</span><br><span class="line">            aten::batch_norm       0.02%  111.000us   91.000us        0.03%    10.973ms     548.650us          20</span><br><span class="line">aten::_batch_norm_impl_index       0.04%  207.000us   99.000us        0.03%    10.882ms     544.100us          20</span><br><span class="line">      aten::cudnn_batch_norm       4.35%   20.415ms   10.402ms        3.00%    10.783ms     539.150us          20</span><br><span class="line">            aten::max_pool2d       0.01%   32.000us    4.000us        0.00%     4.379ms       4.379ms           1</span><br><span class="line">----------------------------  ----------  --------- ----------  -----------  ----------  ------------  ----------</span><br><span class="line">Self CPU time total: 468.945ms</span><br><span class="line">Self CUDA time total: 346.300ms</span><br></pre></td></tr></table></figure>
+
+<p>注：第一次使用cuda profiling会引入<strong>额外的开销</strong>，导致运行时间较长，之后就相对正常了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Self CPU time total: 192.059ms</span><br><span class="line">Self CUDA time total: 155.963ms</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用profiler分析内存开销"><a href="#使用profiler分析内存开销" class="headerlink" title="使用profiler分析内存开销"></a>使用profiler分析内存开销</h3><p>profiler能够统计模型运行过程中tensor使用获释放的内存数量，<code>profile_memory=True</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> profile, record_function, ProfilerActivity</span><br><span class="line"></span><br><span class="line">model = models.resnet18()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU], record_shapes=<span class="literal">True</span>, profile_memory=<span class="literal">True</span>) <span class="keyword">as</span> prof:</span><br><span class="line">    <span class="keyword">with</span> record_function(<span class="string">&quot;model_inference&quot;</span>):</span><br><span class="line">        model(inputs)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;self_cpu_memory_usage&quot;</span>, row_limit=<span class="number">10</span>))</span><br><span class="line"><span class="comment"># (omitting some columns)</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------  </span></span><br><span class="line"><span class="comment">#                              Name    Self CPU %      Self CPU      CPU Mem  Self CPU Mem    # of Calls</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment">#                       aten::empty         0.31%     403.000us     94.35 Mb      94.35 Mb           200</span></span><br><span class="line"><span class="comment">#     aten::max_pool2d_with_indices        18.90%      24.260ms     11.48 Mb      11.48 Mb             1</span></span><br><span class="line"><span class="comment">#                  aten::empty_like         0.05%      60.000us     47.37 Mb     490.00 Kb            20</span></span><br><span class="line"><span class="comment">#                       aten::addmm         0.24%     302.000us     19.53 Kb      19.53 Kb             1</span></span><br><span class="line"><span class="comment">#                        aten::mean         0.05%      61.000us     10.00 Kb      10.00 Kb             1</span></span><br><span class="line"><span class="comment">#               aten::empty_strided         0.01%       7.000us          4 b           4 b             1</span></span><br><span class="line"><span class="comment">#                      aten::conv2d         0.13%     173.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                 aten::convolution         0.29%     375.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                aten::_convolution         0.17%     224.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#          aten::mkldnn_convolution        60.82%      78.050ms     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment"># Self CPU time total: 128.330ms</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages().table(sort_by=<span class="string">&quot;cpu_memory_usage&quot;</span>, row_limit=<span class="number">10</span>))</span><br><span class="line"><span class="comment"># (omitting some columns)</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------  </span></span><br><span class="line"><span class="comment">#                              Name    Self CPU %      Self CPU      CPU Mem  Self CPU Mem    # of Calls</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment">#                       aten::empty         0.31%     403.000us     94.35 Mb      94.35 Mb           200</span></span><br><span class="line"><span class="comment">#                  aten::batch_norm         1.19%       1.528ms     47.41 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#      aten::_batch_norm_impl_index         0.21%     272.000us     47.41 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#           aten::native_batch_norm        10.43%      13.379ms     47.41 Mb     -47.00 Kb            20</span></span><br><span class="line"><span class="comment">#                      aten::conv2d         0.13%     173.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                 aten::convolution         0.29%     375.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                aten::_convolution         0.17%     224.000us     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#          aten::mkldnn_convolution        60.82%      78.050ms     47.37 Mb           0 b            20</span></span><br><span class="line"><span class="comment">#                  aten::empty_like         0.05%      60.000us     47.37 Mb     490.00 Kb            20</span></span><br><span class="line"><span class="comment">#                  aten::max_pool2d         0.02%      20.000us     11.48 Mb           0 b             1</span></span><br><span class="line"><span class="comment"># ---------------------------------  ------------  ------------ ------------  ------------  ------------</span></span><br><span class="line"><span class="comment"># Self CPU time total: 128.330ms</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用跟踪功能"><a href="#使用跟踪功能" class="headerlink" title="使用跟踪功能"></a>使用跟踪功能</h3><p>通过<code>export_chrome_trace</code>，profiler的分析结果能够输出为一个<code>.json</code>（跟踪）文件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model = models.resnet18().cuda()</span><br><span class="line">inputs = torch.randn(<span class="number">5</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) <span class="keyword">as</span> prof:</span><br><span class="line">    model(inputs)</span><br><span class="line"></span><br><span class="line">prof.export_chrome_trace(<span class="string">&quot;trace.json&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在浏览中访问<code>chrome//tracing</code>或<code>edge://tracing</code>，加载生成的<code>trace.json</code>文件，界面如下：</p>
+<p><img src="/../../pic/Learning-Python/pytorch/edge-tracing.png" alt="edge-tracing"></p>
+<h3 id="检查栈跟踪"><a href="#检查栈跟踪" class="headerlink" title="检查栈跟踪"></a>检查栈跟踪</h3><p>Profiler能够被用来分析Python和TorchScript的栈跟踪：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> profile(</span><br><span class="line">    activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],</span><br><span class="line">    with_stack=<span class="literal">True</span></span><br><span class="line">) <span class="keyword">as</span> prof:</span><br><span class="line">    model(inputs)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(prof.key_averages(group_by_stack_n=<span class="number">5</span>).table(sort_by=<span class="string">&quot;self_cuda_time_total&quot;</span>, row_limit=<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p>【测试失败!】（未输出堆栈信息）</p>
+<h3 id="将数据可视化为火焰图"><a href="#将数据可视化为火焰图" class="headerlink" title="将数据可视化为火焰图"></a>将数据可视化为火焰图</h3><p>执行时间（<code>self_cpu_time_total</code>和<code>self_cuda_time_total</code>）和栈跟踪能够被可视化为一个火焰图。</p>
+<p>首先使用<code>export_stacks</code>导出原始数据（需要<code>with_stack=True</code>）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prof.export_stacks(<span class="string">&quot;./profiler_stacks.txt&quot;</span>, <span class="string">&quot;self_cuda_time_total&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>【测试失败!】（生成的文件为空）</p>
+<p>推荐使用 <a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">Flamegraph tool</a> 生成一个可交互的<code>.svg</code>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/brendangregg/FlameGraph</span><br><span class="line">cd FlameGraph</span><br><span class="line">./flamegraph.pl --title &quot;CUDA time&quot; --countname &quot;us.&quot; /tmp/profiler_stacks.txt &gt; perf_viz.svg</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用profiler分析长时间运行的工作"><a href="#使用profiler分析长时间运行的工作" class="headerlink" title="使用profiler分析长时间运行的工作"></a>使用profiler分析长时间运行的工作</h3><p>Pytorch profiler提供一个额外的API用于处理长时间运行的工作（如训练循环）。如果跟踪所有的执行，会很慢，生成的跟踪文件也会很大。为了避免这样，可以使用以下可选参数：</p>
+<ul>
+<li><code>schedule</code> - 指定一个以整数参数(步长)为输入的函数，如 <code>torch.profiler.schedule</code>帮助函数，生成一个shcedule。</li>
+<li><code>on-trace-ready</code> -  指定一个以profiler引用为输入的回调函数，每次当新跟踪准备好时，去调用该函数</li>
+</ul>
+<p>首先考虑以下示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.profiler <span class="keyword">import</span> schedule</span><br><span class="line"></span><br><span class="line">my_schedule = schedule(</span><br><span class="line">    skip_first=<span class="number">10</span>,	<span class="comment"># 跳过前10步</span></span><br><span class="line">    wait=<span class="number">5</span>,			<span class="comment"># 每轮前5步空转等待</span></span><br><span class="line">    warmup=<span class="number">1</span>,		<span class="comment"># 1步热身，测量但不记录，丢掉刚开始测量时由于额外开销导致的不准确的数据</span></span><br><span class="line">    active=<span class="number">3</span>,		<span class="comment"># 3步活动，测量并记录</span></span><br><span class="line">    repeat=<span class="number">2</span>)		<span class="comment"># 可选参数，最多两轮</span></span><br></pre></td></tr></table></figure>
+
+<p>下面是更完整的示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace_handler</span>(<span class="params">p</span>):</span><br><span class="line">    output = p.key_averages().table(sort_by=<span class="string">&quot;self_cuda_time_total&quot;</span>, row_limit=<span class="number">10</span>)</span><br><span class="line">    <span class="built_in">print</span>(output)</span><br><span class="line">    p.export_chrome_trace(<span class="string">&quot;./trace_&quot;</span> + <span class="built_in">str</span>(p.step_num) + <span class="string">&quot;.json&quot;</span>)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">with</span> profile(</span><br><span class="line">	activities=[ProfilerActivity.CPU, ProfilerActivity],</span><br><span class="line">    schedule=torch.profiler.schedule(</span><br><span class="line">    	wait=<span class="number">1</span>,</span><br><span class="line">    	warmup=<span class="number">2</span>,</span><br><span class="line">    	active=<span class="number">2</span>),</span><br><span class="line">    on_trace_ready=trace_handler</span><br><span class="line">) <span class="keyword">as</span> p:</span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        model(inputs)</span><br><span class="line">        p.step()	<span class="comment"># 告诉profiler，到下一步了。增加p.step_num计数</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/06/Learning-Python/pipreqs/" rel="prev" title="pipreqs">
+                  <i class="fa fa-angle-left"></i> pipreqs
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/06/Learning-Python/PythonConfig/" rel="next" title="PythonConfig">
+                  PythonConfig <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">czxvan</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

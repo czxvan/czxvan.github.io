@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="c++学习笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning-C++">
+<meta property="og:url" content="https://czxvan.github.io/2023/10/29/Learning-Cpp/overview/index.html">
+<meta property="og:site_name" content="czxvan&#39;s blog">
+<meta property="og:description" content="c++学习笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-29T08:45:50.000Z">
+<meta property="article:modified_time" content="2023-11-02T07:53:21.143Z">
+<meta property="article:author" content="czxvan">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://czxvan.github.io/2023/10/29/Learning-Cpp/overview/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/10/29/Learning-Cpp/overview/","path":"2023/10/29/Learning-Cpp/overview/","title":"Learning-C++"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Learning-C++ | czxvan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">czxvan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">基础新特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%92%8C%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">结构体和类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%96%B0%E7%89%B9%E6%96%B0"><span class="nav-number">4.</span> <span class="nav-text">函数新特新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%BA%93"><span class="nav-number">5.</span> <span class="nav-text">标准库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">5.1.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vector"><span class="nav-number">5.2.</span> <span class="nav-text">vector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="nav-number">5.3.</span> <span class="nav-text">迭代器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tricks"><span class="nav-number">7.</span> <span class="nav-text">Tricks</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">czxvan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/10/29/Learning-Cpp/overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Learning-C++ | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Learning-C++
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-29 16:45:50" itemprop="dateCreated datePublished" datetime="2023-10-29T16:45:50+08:00">2023-10-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-02 15:53:21" itemprop="dateModified" datetime="2023-11-02T15:53:21+08:00">2023-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>c++学习笔记。</p>
+<span id="more"></span>
+
+<h2 id="基础新特性"><a href="#基础新特性" class="headerlink" title="基础新特性"></a>基础新特性</h2><ul>
+<li><p>命名空间 namespace</p>
+</li>
+<li><p>类型增强</p>
+<ul>
+<li><p>常量</p>
+<ul>
+<li><p>const</p>
+<ul>
+<li><p>常量指针</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>* p = <span class="string">&quot;hello world&quot;</span>; <span class="comment">// const char* == char const*</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 出错，常量指针，指向的是常量，无法通过常量指针修改所指内容</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指针常量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span>* <span class="type">const</span> p = <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">p++; <span class="comment">// 出错，指针常量，无法修改p的值</span></span><br><span class="line">p[<span class="number">0</span>] = <span class="string">&#x27;H&#x27;</span>; <span class="comment">// 但可以修改所指向的内容</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>constexpr: 编译时求值</p>
+</li>
+</ul>
+</li>
+<li><p>bool</p>
+</li>
+<li><p>enum</p>
+</li>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>运算符重载</p>
+<ul>
+<li>方便混合处理多种类型不同的值</li>
+</ul>
+</li>
+<li><p>变量初始化</p>
+<ul>
+<li>除了“&#x3D;”，还可以使用 <code>&#123;&#125;</code>和<code>()</code>进行初始化</li>
+</ul>
+</li>
+<li><p>auto</p>
+<ul>
+<li>编译期，自动类型推断</li>
+</ul>
+</li>
+<li><p>范围for语句</p>
+<ul>
+<li><pre><code class="c">for(auto x : v) &#123;&#125; // 存在内存复制操作
+for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- new/delete</span><br><span class="line"></span><br><span class="line">  - ```</span><br><span class="line">    指针变量名 = new 类型名; // delete p;</span><br><span class="line">    指针变量名 = new 类型名(初值); // delete p;</span><br><span class="line">    指针变量名 = new 类型名[变量个数];	// delete[] p;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>nullptr</p>
+<ul>
+<li>NULL : int 0</li>
+<li>nullptr : std::nullptr_t | void * 0</li>
+<li>nullptr &#x3D;&#x3D; NULL &#x3D;&#x3D; 0 √</li>
+</ul>
+</li>
+<li><p>强制类型转换</p>
+<ul>
+<li>static_cast</li>
+<li>dynamic_cast</li>
+<li>const_cast</li>
+<li>reinterpret_cast</li>
+</ul>
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><p>不占用内存，编译时转换为寄存器赋值</p>
+</li>
+<li><p>变量与引用的隐式转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int a = 10;</span><br><span class="line">int &amp;a1 = a; // 同一个变量，一般不额外占内存：变量-&gt;引用</span><br><span class="line">int &amp;a2 = a1; // 仍是同一个变量</span><br><span class="line">int b = a; // 创建新变量：变量-&gt;变量</span><br><span class="line">int b1 = a1; // 创建新变量：引用-&gt;变量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>普通引用和常量引用</p>
+<ul>
+<li>不能通过常量引用修改变量</li>
+<li>作函数参数时，常量引用可以接收普通引用，但普通引用不能接收常量引用(常量)</li>
+</ul>
+</li>
+</ul>
+<h2 id="结构体和类"><a href="#结构体和类" class="headerlink" title="结构体和类"></a>结构体和类</h2><ul>
+<li><p>结构体struct</p>
+<ul>
+<li>除了成员变量，还可以拥有成员函数</li>
+</ul>
+</li>
+<li><p>权限修饰符</p>
+<ul>
+<li>public</li>
+<li>protected</li>
+<li>private</li>
+</ul>
+</li>
+<li><p>类class</p>
+<ul>
+<li>和结构体十分类似</li>
+<li>区别：结构体各成员默认public 类各成员默认private</li>
+</ul>
+</li>
+<li><p>代码组织结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">student.h ：类Student的定义</span><br><span class="line">student.cpp ：#include &quot;student.h&quot; + 类Student的定义</span><br><span class="line">other.cpp : #include &quot;student.h&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="函数新特新"><a href="#函数新特新" class="headerlink" title="函数新特新"></a>函数新特新</h2><ul>
+<li><p>后置返回类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">auto func(int, int);</span><br><span class="line">auto func(int, int) -&gt; int &#123;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>inline内联函数</p>
+<ul>
+<li>普通函数的定义一般放在.cpp文件，inline函数可以直接放在.h文件中（普通函数只能定义一次，但内联函数可以多次定义(得一致)）</li>
+<li>函数体代替函数调用，节省简单函数的调用开销</li>
+</ul>
+</li>
+<li><p>函数参数</p>
+<ul>
+<li><p>默认参数</p>
+</li>
+<li><p>空参，空着或者 void</p>
+</li>
+</ul>
+</li>
+<li><p>函数重载</p>
+<ul>
+<li><p>函数允许同名，但函数类型或参数要有明显区别</p>
+</li>
+<li><p>比较函数类型时，const关键字会被忽略</p>
+</li>
+</ul>
+</li>
+<li><p>成员函数修饰</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">XXX</span> &#123;</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="comment">// const 表示该函数执行过程中不会修改类的成员变量</span></span><br><span class="line">    <span class="keyword">return</span> param;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><blockquote>
+<p>可变长字符串</p>
+</blockquote>
+<ul>
+<li><p>初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">string s1;</span><br><span class="line">string s2 = &quot;hello world&quot;;</span><br><span class="line">string s3 = s2; // 存在拷贝</span><br><span class="line">string s4(&quot;hello world&quot;);</span><br><span class="line">string s5(6, &#x27;a&#x27;); // 连续6个&#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size() .length()</span><br><span class="line">.c_str() // 返回一个指向string对象内部内容（正规c字符串，以&#x27;\0&#x27;结尾）的指针</span><br><span class="line">for(auto c : s) // 支持范围for，c的类型是char</span><br><span class="line">for(auto &amp;c : s) // 可以修改s中的字符</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[] == &gt; &lt; + &gt;&gt; &lt;&lt;</span><br><span class="line">+ 存在隐式类型转换，可以处理混合类型</span><br><span class="line">  s1+&#x27;a&#x27; s1+&quot;a&quot;+“b&quot; 允许</span><br><span class="line">  &quot;abc&quot; + &quot;def&quot; + s2 不允许，先执行前两项的相加，但他们现在的类型无法相加</span><br><span class="line">  </span><br><span class="line">.touppper() // 针对char?</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><blockquote>
+<p>可变长数组</p>
+</blockquote>
+<ul>
+<li><p>不能装引用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;int &amp;&gt; v; // 出错，引用在需要的时候加载到寄存器中，不占用内存</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv1; <span class="comment">// string默认初值为“”，int默认初值为0</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv2</span><span class="params">(strv1)</span>; <span class="comment">// 存在内容拷贝 ()内部是vector时尝试拷贝，是整数时，认为是元素个数</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>)</span>; <span class="comment">// 10个空字符串</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = str1; <span class="comment">// 存在内容拷贝</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; strv3 = &#123;<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;bbb&quot;</span>, <span class="string">&quot;ccc&quot;</span>&#125;; <span class="comment">// c++11，使用初始化列表 &#123;&#125;内部数据一般被认为初始化列表，如果失败，可能会尝试认为它是元素个数。</span></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; <span class="title function_">strv3</span><span class="params">(<span class="number">10</span>, <span class="string">&quot;abc&quot;</span>)</span>; <span class="comment">// 10个”abc</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>常用方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.empty()</span><br><span class="line">.size()</span><br><span class="line">.push_back()</span><br><span class="line">.insert(place_iter, value) // 返回一个指向被插入元素的迭代器，可能和第一个参数已经不一样了</span><br><span class="line"></span><br><span class="line">.clear()</span><br><span class="line">for(auto x : v) // 支持范围for</span><br><span class="line">for(auto &amp;x : v) // 注意不要在范围for中改变vector对象的大小</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[] == !=</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><blockquote>
+<p>标准库中的每一个容器内都定义了相应的迭代器类型（包括iterator, reverse_iterator, const_iterator)</p>
+<p>能够取代部分指针的作用，且更安全和优雅</p>
+</blockquote>
+<ul>
+<li><p>成员函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.begin() // 返回一个指向容器第一个元素的iter  vector&lt;xxx&gt;::iterator</span><br><span class="line">.end() // 返回一个指向容器最后一个元素的后面的iter,不指向元素</span><br><span class="line">// 如果容器为空。则.begin() = .end(())</span><br><span class="line">.rbegin() // 返回一个指向容器最后一个元素的iter vector&lt;xxx&gt;::reverse_iterator</span><br><span class="line">.rend() // 返回一个指向容器第一个元素的前面的iter,不指向元素</span><br><span class="line">.cbegin() // 返回常量迭代器</span><br><span class="line">.cend() // c++ 11</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其它用法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* -&gt; ++ -- == !=</span><br><span class="line">*iter : 返回iter所指向元素的 引用</span><br><span class="line">(*iter).num == iter-&gt;num : 类似指针，当迭代器iter指向结构体时，可以使用*iter返回结构提的引用，也可以直接使用iter-&gt; 访问结构体成员</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li><p>继承</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mutator</span> &#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="type">int</span> param;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Mutator</span>(<span class="type">int</span> param) : <span class="built_in">param</span>(param) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">getParam</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> param;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Multiplier</span> : <span class="keyword">public</span> Mutator &#123;</span><br><span class="line">	<span class="type">int</span> reserved[<span class="number">40</span>]; <span class="comment">// 现在没用到!</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Multiplier</span>(<span class="type">int</span> multiplier = <span class="number">0</span>) : <span class="built_in">Mutator</span>(multiplier) &#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">mutate</span><span class="params">(<span class="type">void</span> *data, <span class="type">int</span> size)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="type">int</span> *ptr = (<span class="type">int</span> *)data;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size / <span class="number">4</span>; ++i)</span><br><span class="line">			ptr[i] *= <span class="built_in">getParam</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>虚函数、虚表与多态</p>
+</li>
+</ul>
+<h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
+<li><p>函数指针数组</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*funcPtr)</span><span class="params">()</span></span>; <span class="comment">// 定义函数指针类型</span></span><br><span class="line">funcPtr functions[] = &#123;...&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/27/Windwos-PWN/Exploitme/Exploitme4/" rel="prev" title="Exploitme4——ROP with ASLR">
+                  <i class="fa fa-angle-left"></i> Exploitme4——ROP with ASLR
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/02/Windwos-PWN/Exploitme/Exploitme5/" rel="next" title="Exploitme5——Heap Spraying & UAF">
+                  Exploitme5——Heap Spraying & UAF <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">czxvan</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
