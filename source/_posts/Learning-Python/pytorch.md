@@ -64,10 +64,33 @@ DNN (Deep Neural Network)、RNN (Recurrent Neural Network)、CNN (Convolutional 
 
 ### Module(Model)
 
-
-
 ```
 .cuda()
+```
+
+
+
+### optim
+
+#### SGD
+
+```python
+#1. 创建模型
+net = LSHModel(feature_dim, hidden_dim)
+optimizer = optim.SGD([{'params': net.parameters()}], lr=0.1)
+
+#2. 训练
+for a, b in train_data*100:
+    loss = net(a, b, True)
+    print(loss)
+
+    # compute gradient and do SGD step
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+#3. 保存模型参数
+torch.save(net.state_dict(), 'LSH.pt')
 ```
 
 
@@ -83,8 +106,6 @@ torch.randn(5, 3, 224, 224) -> tensor
 
 
 ## 预设模型
-
-
 
 ### torchvision.models
 
@@ -116,6 +137,42 @@ MNASNet: 一种轻量级的神经网络，适用于移动设备和嵌入式系�
 ```
 
 
+
+## 常用模型
+
+### LSHModel
+
+> 局部哈希敏感模型
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+class LSHModel(nn.Module):
+    def __init__(self, feature_dim, hidden_dim):
+        super(LSHModel, self).__init__()
+        self.linear = nn.Linear(feature_dim, hidden_dim)
+        self.loss = nn.MSELoss()
+
+    def euclidean(self, x, y):
+        return torch.sqrt(torch.sum((x-y)**2))
+
+    def similarity(self, distance):
+        return 1 / (1 + distance**0.5)
+
+    def forward(self, x, y, train=False):
+        output_x = self.linear(x)
+        output_y = self.linear(y)
+        distance = self.euclidean(output_x, output_y)
+        if train:
+            loss = self.loss(distance, self.euclidean(x, y))
+            return loss
+        else:
+            return self.similarity(float(distance))
+
+```
 
 
 
