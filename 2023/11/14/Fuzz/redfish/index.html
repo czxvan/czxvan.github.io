@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="redfish协议模拟执行环境搭建。 参考资料：  【精选】Redfish 模型工具：Redfish Mockup Creator 和 Redfish Mockup Server_redfish模拟器-CSDN博客  DMTF&#x2F;Redfish-Mockup-Creator: A Python3 program that creates a Redfish Mockup folder st">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redfish">
+<meta property="og:url" content="https://czxvan.github.io/2023/11/14/Fuzz/redfish/index.html">
+<meta property="og:site_name" content="czxvan&#39;s blog">
+<meta property="og:description" content="redfish协议模拟执行环境搭建。 参考资料：  【精选】Redfish 模型工具：Redfish Mockup Creator 和 Redfish Mockup Server_redfish模拟器-CSDN博客  DMTF&#x2F;Redfish-Mockup-Creator: A Python3 program that creates a Redfish Mockup folder st">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-14T13:14:30.000Z">
+<meta property="article:modified_time" content="2023-11-15T13:29:21.733Z">
+<meta property="article:author" content="czxvan">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://czxvan.github.io/2023/11/14/Fuzz/redfish/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/11/14/Fuzz/redfish/","path":"2023/11/14/Fuzz/redfish/","title":"redfish"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>redfish | czxvan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">czxvan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redfish-Mockup-Creator"><span class="nav-number">1.</span> <span class="nav-text">Redfish Mockup Creator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">1.2.</span> <span class="nav-text">本地运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E8%BF%90%E8%A1%8C"><span class="nav-number">1.3.</span> <span class="nav-text">docker运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redfish-Mockup-Server"><span class="nav-number">2.</span> <span class="nav-text">Redfish Mockup Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python-redfish-library"><span class="nav-number">3.</span> <span class="nav-text">python redfish library</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">czxvan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/14/Fuzz/redfish/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="redfish | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redfish
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-14 21:14:30" itemprop="dateCreated datePublished" datetime="2023-11-14T21:14:30+08:00">2023-11-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-15 21:29:21" itemprop="dateModified" datetime="2023-11-15T21:29:21+08:00">2023-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><code>redfish</code>协议模拟执行环境搭建。</p>
+<p>参考资料：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/yeiris/article/details/122827845">【精选】Redfish 模型工具：Redfish Mockup Creator 和 Redfish Mockup Server_redfish模拟器-CSDN博客</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/DMTF/Redfish-Mockup-Creator">DMTF&#x2F;Redfish-Mockup-Creator: A Python3 program that creates a Redfish Mockup folder structure from a real live Redfish service. (github.com)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/DMTF/python-redfish-library">DMTF&#x2F;python-redfish-library: Python3 library for interacting with devices that support a Redfish service (github.com)</a></p>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Redfish-Mockup-Creator"><a href="#Redfish-Mockup-Creator" class="headerlink" title="Redfish Mockup Creator"></a>Redfish Mockup Creator</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>Redfish模型创建器是一个从已开启的红鱼服务创建红鱼模型的工具。创建的实体模型可以与Redfish实体模型服务器一起使用。</p>
+<p>Live Redfish Service -&gt; Redfish Mockup</p>
+<h3 id="本地运行"><a href="#本地运行" class="headerlink" title="本地运行"></a>本地运行</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拉取代码</span></span><br><span class="line">git clone https://github.com/DMTF/Redfish-Mockup-Creator.git</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装refish</span></span><br><span class="line">pip install redfish</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">运行</span></span><br><span class="line">python redfishMockupCreate.py -u root -p root -r 192.168.1.100 -S -D /home/user/redfish-mockup</span><br></pre></td></tr></table></figure>
+
+<h3 id="docker运行"><a href="#docker运行" class="headerlink" title="docker运行"></a>docker运行</h3><p>获取容器镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从dockerhub拉取容器镜像</span></span><br><span class="line">docker pull dmtf/redfish-mockup-creator:latest</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用本地源码编译容器镜像</span></span><br><span class="line">docker build -t dmtf/redfish-mockup-creator:latest .</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从github编译容器镜像</span></span><br><span class="line">docker build -t dmtf/redfish-mockup-creator:latest https://github.com/DMTF/Redfish-Mockup-Creator.git</span><br></pre></td></tr></table></figure>
+
+<p>运行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式</span></span><br><span class="line">docker run --rm --user=&quot;$(id -u):$(id -g)&quot; -v &lt;path-to-mockup&gt;:/mockup dmtf/redfish-mockup-creator:latest -u root -p root -r 192.168.1.100 -S</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">实例</span></span><br><span class="line">docker run --rm  -v  $&#123;PWD&#125;/mockup_iris:/mockup dmtf/redfish-mockup-creator:latest -u root -p 0penBmc -r 192.168.0.123 -S</span><br></pre></td></tr></table></figure>
+
+<h2 id="Redfish-Mockup-Server"><a href="#Redfish-Mockup-Server" class="headerlink" title="Redfish Mockup Server"></a>Redfish Mockup Server</h2><p>Redifsh模型服务器针对红鱼模型提供红鱼请求。服务器运行在指定的IP地址和端口上，默认运行在127.0.0.1:8000上。</p>
+<p>可以在<a target="_blank" rel="noopener" href="https://www.dmtf.org/dsp/DSP2043">DSP2043</a>中找到DMTF发布的实例模型。</p>
+<p>要从真实服务创建实体模型，可以使用Redfish mockup Creator。</p>
+<p>Redfish Mockup -&gt; Simulated Redfish Service</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拉取代码</span></span><br><span class="line">git clone git@github.com:DMTF/Redfish-Mockup-Server.git</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">运行默认Mockup</span></span><br><span class="line">python .\redfishMockupServer.py -H 0.0.0.0</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">向redfish服务发送请求，可以使用curl,postman,也可以使用python的request库或者redfish库</span></span><br><span class="line">curl -k -H &quot;content-type: application/json&quot; -X GET http://127.0.0.1:8000/redfish/v1/Managers</span><br></pre></td></tr></table></figure>
+
+<h2 id="python-redfish-library"><a href="#python-redfish-library" class="headerlink" title="python redfish library"></a>python redfish library</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装</span></span><br><span class="line">pip install redfish</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/13/Fuzz/1-xpdf/" rel="prev" title="xpdf">
+                  <i class="fa fa-angle-left"></i> xpdf
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">czxvan</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
