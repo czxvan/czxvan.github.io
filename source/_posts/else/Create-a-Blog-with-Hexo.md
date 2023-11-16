@@ -10,7 +10,17 @@ categories: else
 
 `Windows`下使用 `Hexo` 和 `github pages` 快速构建个人博客，
 
-并针对`next`主题进行如下配置：修改语言、切换小主题、添加分类标签、文章折叠、本地搜索等。
+并针对`next`主题进行如下配置：修改语言、切换小主题、添加分类标签、文章折叠、本地搜索、多端同步等。
+
+参考链接：
+
+- [Hexo-Next 主题博客个性化配置超详细，超全面(两万字)-CSDN博客](https://blog.csdn.net/as480133937/article/details/100138838)
+
+- [Hexo NexT文章中标题自动编号 | 孤傲小黑的博客 (guaoxiaohei.me)](https://blog.guaoxiaohei.me/posts/Hexo-Level/)
+
+- [Hexo搭建博客的多终端同步问题 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/476603074?utm_id=0)
+
+
 
 <!-- more -->
 
@@ -256,17 +266,72 @@ local_search:
   enable: true
 ```
 
-## 多端同步
+### 多端同步
 
+本地任意一空白目录下 git clone 之前的代码
 
+```shell
+git clone git@github.com:<your rep url ,eg :name.github.io.git>
+```
 
+新建hexo分支，并同步到远程
 
+```
+git checkout -b hexo
+git push --set-upstream origin hexo
+```
 
-参考链接
+删除.git外的所有文件夹。
 
-- [Hexo-Next 主题博客个性化配置超详细，超全面(两万字)-CSDN博客](https://blog.csdn.net/as480133937/article/details/100138838)
+将之前的博客源文件复制过来，除去.deploy_git
 
-- [Hexo NexT文章中标题自动编号 | 孤傲小黑的博客 (guaoxiaohei.me)](https://blog.guaoxiaohei.me/posts/Hexo-Level/)
+新建或修改`.gitnore`文件：
 
-- [Hexo搭建博客的多终端同步问题 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/476603074?utm_id=0)
+```
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/
+```
 
+如果你在`themes`文件夹下 clone 过其它主题文件，把其中的 `.git`文件夹删除掉
+
+上传文件到hexo分支
+
+```
+git add .
+git commit -m "backup blog source"
+git push 
+```
+
+另一台电脑的操作：
+
+```
+npm install hexo-cli -g			# intall hexo
+
+# 在该电脑的本地文件夹下clone Blog源文件
+git clone <url>
+```
+
+clone结束后，进入blog文件夹下，安装原来的插件
+
+```
+npm install
+npm install hexo-deployer-git --save
+npm install hexo-hexo-renderer-marked #图片
+```
+
+写了博客后，这样上传：
+
+```shell
+## 多台终端写blog ，记得先和github端 同步 ##
+git pull
+
+## 上传博客
+git add .
+git commit -m ""
+git push 
+```
