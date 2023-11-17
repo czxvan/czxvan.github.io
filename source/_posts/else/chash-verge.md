@@ -10,15 +10,122 @@ clash-verge规则配置。
 
 - [clash-tutorials/教程合集/分享篇/分享自己使用 Clash Verge 搭配 rule-set 方案的一套配置.md at main · DustinWin/clash-tutorials (github.com)](https://github.com/DustinWin/clash-tutorials/blob/main/教程合集/分享篇/分享自己使用 Clash Verge 搭配 rule-set 方案的一套配置.md)
 
+profile中新建merge类型的配置，将以下内容粘贴到其中，建议使用黑名单。
+
+之后开启tun mode和service mode即可。
+
+### 黑名单
+
+```yaml
+proxy-providers:
+  # 获取机场订阅链接内的所有节点
+  🛫 我的机场 1:
+    type: http
+    # 机场订阅链接，使用 Clash 链接
+    url: "https://example.com/xxx/xxx&flag=clash"
+    path: ./proxies/airport1.yaml
+    interval: 43200
+    # 初步筛选需要的节点，可有效减轻路由器压力，支持正则表达式，不筛选可删除此配置项
+    filter: "(?i)港|hk|hongkong|hong kong|台|tw|taiwan|日本|jp|japan|新|sg|singapore|美|us|unitedstates|united states"
+    health-check:
+      enable: true
+      # 未选择到当前策略组时，不会进行测试，有多个 proxy-providers 时可使用
+      lazy: true
+      url: "https://www.gstatic.com/generate_204"
+      interval: 600
+
+  🛫 我的机场 2:
+    type: http
+    url: "https://example.com/xxx/xxx&flag=clash"
+    path: ./proxies/airport2.yaml
+    interval: 43200
+    filter: "(?i)港|hk|hongkong|hong kong|台|tw|taiwan|日本|jp|japan|新|sg|singapore|美|us|unitedstates|united states"
+    health-check:
+      enable: true
+      lazy: true
+      url: "https://www.gstatic.com/generate_204"
+      interval: 600
+
+proxy-groups:
+  # 手动选择国家或地区节点；根据 proxy-groups 中（下方）国家或地区的节点名称对 proxies 值进行增删改，须一一对应
+  - {name: 🚀 节点选择, type: select, proxies: [🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点]}
+
+  # Speedtest 测速网站：选择“全球直连”为测试本地网络速度（运营商网络速度），可选择其它节点用于测试机场节点速度
+  - {name: 📈 网络测试, type: select, proxies: [🎯 全球直连, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点]}
+
+  - {name: 🐟 漏网之鱼, type: select, proxies: [🎯 全球直连, 🚀 节点选择]}
+
+  - {name: 🪜 代理域名, type: select, proxies: [🚀 节点选择, 🎯 全球直连]}
+
+  - {name: ✈️ Telegram, type: select, proxies: [🚀 节点选择]}
+
+  - {name: ⛔️ 广告域名, type: select, proxies: [🛑 全球拦截]}
+
+  - {name: 🎯 全球直连, type: select, proxies: [DIRECT]}
+
+  - {name: 🛑 全球拦截, type: select, proxies: [REJECT]}
+
+  # -----------------国家或地区节点----------------------
+
+  # 自动选择节点，即按照 url 测试结果使用延迟最低的节点；测试后容差大于 100ms 才会切换到延迟低的那个节点；未选择到当前策略组时不会进行延迟测试；筛选出“香港”节点，支持正则表达式
+  - {name: 🇭🇰 香港节点, type: url-test, tolerance: 100, lazy: true, use: [🛫 我的机场 1, 🛫 我的机场 2], filter: "(?i)港|hk|hongkong|hong kong"}
+
+  # 节点负载均衡，即将请求均匀分配到多个节点上，优点是更稳定，速度可能有提升；将相同顶级域名的请求分配给策略组内的同一个代理节点；推荐在节点复用比较多的情况下使用
+  - {name: 🇹🇼 台湾节点, type: load-balance, strategy: consistent-hashing, lazy: true, use: [🛫 我的机场 1, 🛫 我的机场 2], filter: "(?i)台|tw|taiwan"}
+
+  - {name: 🇯🇵 日本节点, type: url-test, tolerance: 100, lazy: true, use: [🛫 我的机场 1, 🛫 我的机场 2], filter: "(?i)日本|jp|japan"}
+
+  - {name: 🇸🇬 新加坡节点, type: url-test, tolerance: 100, lazy: true, use: [🛫 我的机场 1, 🛫 我的机场 2], filter: "(?i)新|sg|singapore"}
+
+  - {name: 🇺🇸 美国节点, type: url-test, tolerance: 100, lazy: true, use: [🛫 我的机场 1, 🛫 我的机场 2], filter: "(?i)美|us|unitedstates|united states"}
+
+# 规则集 .yaml 文件；每天自动更新
+rule-providers:
+  ads:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/DustinWin/clash-ruleset@release/ads.yaml"
+    path: ./ruleset/ads.yaml
+    interval: 86400
+
+  networktest:
+    type: http
+    behavior: classical
+    url: "https://cdn.jsdelivr.net/gh/DustinWin/clash-ruleset@release/networktest.yaml"
+    path: ./ruleset/networktest.yaml
+    interval: 86400
+
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/DustinWin/clash-ruleset@release/proxy.yaml"
+    path: ./ruleset/proxy.yaml
+    interval: 86400
+
+  telegramip:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/DustinWin/clash-ruleset@release/telegramip.yaml"
+    path: ./ruleset/telegramip.yaml
+    interval: 86400
+
+rules:
+  - RULE-SET,ads,⛔️ 广告域名
+  - RULE-SET,networktest,📈 网络测试
+  - RULE-SET,proxy,🪜 代理域名
+  - RULE-SET,telegramip,✈️ Telegram
+  - MATCH,🐟 漏网之鱼
+```
 
 
-profile中新建merge类型的配置，将以下内容粘贴到其中。之后开启tun mode和service mode即可。
+
+### 白名单
 
 ```yaml
 proxy-providers:
   🛫 我的机场:
     type: http
-    # 修改为你的 Clash 订阅链接
+    # 修改为你的 Clash 订阅链接，其实也可以不设置
     url: "https://example.com/xxx/xxx&flag=clash"
     path: ./proxies/airport.yaml
     interval: 43200
