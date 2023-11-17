@@ -313,7 +313,7 @@ git push
 npm install hexo-cli -g			# intall hexo
 
 # 在该电脑的本地文件夹下clone Blog源文件
-git clone <url>
+git -b hexo clone <url>
 ```
 
 clone结束后，进入blog文件夹下，安装原来的插件

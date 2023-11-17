@@ -10,6 +10,8 @@ clash-verge规则配置。
 
 - [clash-tutorials/教程合集/分享篇/分享自己使用 Clash Verge 搭配 rule-set 方案的一套配置.md at main · DustinWin/clash-tutorials (github.com)](https://github.com/DustinWin/clash-tutorials/blob/main/教程合集/分享篇/分享自己使用 Clash Verge 搭配 rule-set 方案的一套配置.md)
 
+<!-- more -->
+
 profile中新建merge类型的配置，将以下内容粘贴到其中，建议使用黑名单。
 
 之后开启tun mode和service mode即可。
