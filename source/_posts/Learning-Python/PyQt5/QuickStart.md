@@ -3,6 +3,7 @@ title: PyQt5
 date: 2023-11-07 10:57:59
 tags: PyQt5
 categories: Learning-Python
+typora-root-url: ./..
 ---
 
 PyQt5学习笔记——快速入门。
