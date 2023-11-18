@@ -312,3 +312,35 @@ rules:
   - MATCH,🐟 漏网之鱼
 ```
 
+### wsl使用本机代理
+
+开启clash-verge的allow Lan
+
+修改wsl的bashrc，添加以下内容：
+
+```shell
+# add proxy
+export hostip=$(ip route | grep default | awk '{print $3}')
+export socks_hostport=7890
+export http_hostport=7890
+alias proxy='
+    export https_proxy="http://${hostip}:${http_hostport}"
+    export http_proxy="http://${hostip}:${http_hostport}"
+    export ALL_PROXY="socks5://${hostip}:${socks_hostport}"
+    export all_proxy="socks5://${hostip}:${socks_hostport}"
+'
+alias unproxy='
+    unset ALL_PROXY
+    unset https_proxy
+    unset http_proxy
+    unset all_proxy
+'
+alias echoproxy='
+    echo $ALL_PROXY
+    echo $all_proxy
+    echo $https_proxy
+    echo $http_proxy
+'
+#end proxy
+```
+

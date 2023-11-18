@@ -18,6 +18,8 @@ AFL和Fuzz学习笔记。
 
 ## 安装
 
+### AFL
+
 安装clang和llvm
 
 ```shell
@@ -43,6 +45,12 @@ cd qemu_mode
 ./build_qemu_support.sh
 cd ..
 make install 
+```
+
+### AFL++
+
+```shell
+sudo apt intsall afl++
 ```
 
 

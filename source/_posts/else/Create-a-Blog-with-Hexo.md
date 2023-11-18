@@ -318,10 +318,10 @@ git -b hexo clone <url>
 
 clone结束后，进入blog文件夹下，安装原来的插件
 
-```
+```shell
 npm install
 npm install hexo-deployer-git --save
-npm install hexo-hexo-renderer-marked #图片
+npm install hexo-renderer-marked #图片
 ```
 
 写了博客后，这样上传：
