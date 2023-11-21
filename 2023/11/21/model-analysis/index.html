@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="参考链接：  统计深度学习模型的参数和显存占用（pytorch）_python深度学习任务计算参数和内存占用-CSDN博客  torchsummary和torchstat使用方法和结果分析_无码不欢的我的博客-CSDN博客   python库 用于分析和统计深度学习模型的python库  torchsummary : 获得详细参数量 thop ：获得总参数量，总浮点运算次数 torchstat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="model_analysis">
+<meta property="og:url" content="https://czxvan.github.io/2023/11/21/model-analysis/index.html">
+<meta property="og:site_name" content="czxvan&#39;s blog">
+<meta property="og:description" content="参考链接：  统计深度学习模型的参数和显存占用（pytorch）_python深度学习任务计算参数和内存占用-CSDN博客  torchsummary和torchstat使用方法和结果分析_无码不欢的我的博客-CSDN博客   python库 用于分析和统计深度学习模型的python库  torchsummary : 获得详细参数量 thop ：获得总参数量，总浮点运算次数 torchstat">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-21T08:55:38.000Z">
+<meta property="article:modified_time" content="2023-11-21T14:19:51.910Z">
+<meta property="article:author" content="czxvan">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://czxvan.github.io/2023/11/21/model-analysis/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/11/21/model-analysis/","path":"2023/11/21/model-analysis/","title":"model_analysis"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>model_analysis | czxvan's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">czxvan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#torchsummary"><span class="nav-number">1.</span> <span class="nav-text">torchsummary</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#thop"><span class="nav-number">1.1.</span> <span class="nav-text">thop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#torchstat"><span class="nav-number">1.2.</span> <span class="nav-text">torchstat</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">czxvan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/21/model-analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="czxvan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="model_analysis | czxvan's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          model_analysis
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-21 16:55:38 / 修改时间：22:19:51" itemprop="dateCreated datePublished" datetime="2023-11-21T16:55:38+08:00">2023-11-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>参考链接：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhaoxr233/article/details/103667640">统计深度学习模型的参数和显存占用（pytorch）_python深度学习任务计算参数和内存占用-CSDN博客</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_56192771/article/details/124672273">torchsummary和torchstat使用方法和结果分析_无码不欢的我的博客-CSDN博客</a></p>
+</li>
+</ul>
+<p>python库</p>
+<p>用于分析和统计深度学习模型的python库</p>
+<ul>
+<li>torchsummary : 获得详细参数量</li>
+<li>thop ：获得总参数量，总浮点运算次数</li>
+<li>torchstat</li>
+</ul>
+<h2 id="torchsummary"><a href="#torchsummary" class="headerlink" title="torchsummary"></a>torchsummary</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torchsummary <span class="keyword">import</span> summary</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"></span><br><span class="line">model = models.resnet18()</span><br><span class="line"><span class="comment"># 打印模型摘要信息</span></span><br><span class="line">summary(model, (<span class="number">3</span>, <span class="number">244</span>, <span class="number">244</span>), device=<span class="string">&#x27;cpu&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">----------------------------------------------------------------</span><br><span class="line">        Layer (type)               Output Shape         Param #</span><br><span class="line">================================================================</span><br><span class="line">            Conv2d-1         [-1, 64, 122, 122]           9,408</span><br><span class="line">       BatchNorm2d-2         [-1, 64, 122, 122]             128</span><br><span class="line">              ReLU-3         [-1, 64, 122, 122]               0</span><br><span class="line">         ... 					...						...</span><br><span class="line">           Conv2d-60            [-1, 512, 8, 8]       2,359,296</span><br><span class="line">             ReLU-62            [-1, 512, 8, 8]               0</span><br><span class="line">      BatchNorm2d-64            [-1, 512, 8, 8]           1,024</span><br><span class="line">       BasicBlock-66            [-1, 512, 8, 8]               0</span><br><span class="line">           Linear-68                 [-1, 1000]         513,000</span><br><span class="line">Total params: 11,689,512</span><br><span class="line">Trainable params: 11,689,512</span><br><span class="line">Non-trainable params: 0</span><br><span class="line">----------------------------------------------------------------</span><br><span class="line">Input size (MB): 0.68</span><br><span class="line">Forward/backward pass size (MB): 76.08</span><br><span class="line">Params size (MB): 44.59</span><br><span class="line">Estimated Total Size (MB): 121.36</span><br><span class="line">----------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h3 id="thop"><a href="#thop" class="headerlink" title="thop"></a>thop</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> thop <span class="keyword">import</span> profile</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义一个示例模型</span></span><br><span class="line">model = models.resnet18()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个随机输入</span></span><br><span class="line">input_data = torch.randn(<span class="number">1</span>, <span class="number">3</span>, <span class="number">244</span>, <span class="number">244</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 thop 分析模型</span></span><br><span class="line">flops, params = profile(model, inputs=(input_data,))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;FLOPs: <span class="subst">&#123;flops&#125;</span>, Params: <span class="subst">&#123;params&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[INFO] Register count_convNd() for &lt;class &#x27;torch.nn.modules.conv.Conv2d&#x27;&gt;.</span><br><span class="line">[INFO] Register count_normalization() for &lt;class &#x27;torch.nn.modules.batchnorm.BatchNorm2d&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.activation.ReLU&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.pooling.MaxPool2d&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.container.Sequential&#x27;&gt;.</span><br><span class="line">[INFO] Register count_adap_avgpool() for &lt;class &#x27;torch.nn.modules.pooling.AdaptiveAvgPool2d&#x27;&gt;.</span><br><span class="line">[INFO] Register count_linear() for &lt;class &#x27;torch.nn.modules.linear.Linear&#x27;&gt;.</span><br><span class="line">FLOPs: 2278887168.0, Params: 11689512.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="torchstat"><a href="#torchstat" class="headerlink" title="torchstat"></a>torchstat</h3><p>输出</p>
+<ul>
+<li><p>理论计算次数</p>
+</li>
+<li><p>理论耗时  一轮*n </p>
+<ul>
+<li>只输入模型结构 loss optim </li>
+<li>不输入数据，后台随机生成</li>
+<li>没有loss图像</li>
+</ul>
+</li>
+<li><p>模型存储占用：模型参数量大小</p>
+</li>
+<li><p>指标：</p>
+<ul>
+<li>结构匹配度</li>
+<li>算法适应度：理论耗时&#x2F;理论计算次数  转换到 -&gt; %</li>
+<li>并行程度</li>
+</ul>
+</li>
+</ul>
+<p>响应时间：</p>
+<ul>
+<li>3s内</li>
+</ul>
+<p>跑一轮：</p>
+<ul>
+<li>tqdm</li>
+</ul>
+<p>进度条：跑完</p>
+<p>存储</p>
+<p>- </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/20/Learning-Python/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E7%BB%BC%E8%BF%B0/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">czxvan</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

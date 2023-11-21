@@ -2164,4 +2164,105 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
 
 ]]></content>
   </entry>
+  <entry>
+    <title>model_analysis</title>
+    <url>/2023/11/21/model-analysis/</url>
+    <content><![CDATA[<p>参考链接：</p>
+<ul>
+<li><p><a href="https://blog.csdn.net/zhaoxr233/article/details/103667640">统计深度学习模型的参数和显存占用（pytorch）_python深度学习任务计算参数和内存占用-CSDN博客</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/m0_56192771/article/details/124672273">torchsummary和torchstat使用方法和结果分析_无码不欢的我的博客-CSDN博客</a></p>
+</li>
+</ul>
+<p>python库</p>
+<p>用于分析和统计深度学习模型的python库</p>
+<ul>
+<li>torchsummary : 获得详细参数量</li>
+<li>thop ：获得总参数量，总浮点运算次数</li>
+<li>torchstat</li>
+</ul>
+<h2 id="torchsummary"><a href="#torchsummary" class="headerlink" title="torchsummary"></a>torchsummary</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> torchsummary <span class="keyword">import</span> summary</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"></span><br><span class="line">model = models.resnet18()</span><br><span class="line"><span class="comment"># 打印模型摘要信息</span></span><br><span class="line">summary(model, (<span class="number">3</span>, <span class="number">244</span>, <span class="number">244</span>), device=<span class="string">&#x27;cpu&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">----------------------------------------------------------------</span><br><span class="line">        Layer (type)               Output Shape         Param #</span><br><span class="line">================================================================</span><br><span class="line">            Conv2d-1         [-1, 64, 122, 122]           9,408</span><br><span class="line">       BatchNorm2d-2         [-1, 64, 122, 122]             128</span><br><span class="line">              ReLU-3         [-1, 64, 122, 122]               0</span><br><span class="line">         ... 					...						...</span><br><span class="line">           Conv2d-60            [-1, 512, 8, 8]       2,359,296</span><br><span class="line">             ReLU-62            [-1, 512, 8, 8]               0</span><br><span class="line">      BatchNorm2d-64            [-1, 512, 8, 8]           1,024</span><br><span class="line">       BasicBlock-66            [-1, 512, 8, 8]               0</span><br><span class="line">           Linear-68                 [-1, 1000]         513,000</span><br><span class="line">Total params: 11,689,512</span><br><span class="line">Trainable params: 11,689,512</span><br><span class="line">Non-trainable params: 0</span><br><span class="line">----------------------------------------------------------------</span><br><span class="line">Input size (MB): 0.68</span><br><span class="line">Forward/backward pass size (MB): 76.08</span><br><span class="line">Params size (MB): 44.59</span><br><span class="line">Estimated Total Size (MB): 121.36</span><br><span class="line">----------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h3 id="thop"><a href="#thop" class="headerlink" title="thop"></a>thop</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> thop <span class="keyword">import</span> profile</span><br><span class="line"><span class="keyword">import</span> torchvision.models <span class="keyword">as</span> models</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义一个示例模型</span></span><br><span class="line">model = models.resnet18()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个随机输入</span></span><br><span class="line">input_data = torch.randn(<span class="number">1</span>, <span class="number">3</span>, <span class="number">244</span>, <span class="number">244</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 thop 分析模型</span></span><br><span class="line">flops, params = profile(model, inputs=(input_data,))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;FLOPs: <span class="subst">&#123;flops&#125;</span>, Params: <span class="subst">&#123;params&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[INFO] Register count_convNd() for &lt;class &#x27;torch.nn.modules.conv.Conv2d&#x27;&gt;.</span><br><span class="line">[INFO] Register count_normalization() for &lt;class &#x27;torch.nn.modules.batchnorm.BatchNorm2d&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.activation.ReLU&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.pooling.MaxPool2d&#x27;&gt;.</span><br><span class="line">[INFO] Register zero_ops() for &lt;class &#x27;torch.nn.modules.container.Sequential&#x27;&gt;.</span><br><span class="line">[INFO] Register count_adap_avgpool() for &lt;class &#x27;torch.nn.modules.pooling.AdaptiveAvgPool2d&#x27;&gt;.</span><br><span class="line">[INFO] Register count_linear() for &lt;class &#x27;torch.nn.modules.linear.Linear&#x27;&gt;.</span><br><span class="line">FLOPs: 2278887168.0, Params: 11689512.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="torchstat"><a href="#torchstat" class="headerlink" title="torchstat"></a>torchstat</h3><p>输出</p>
+<ul>
+<li><p>理论计算次数</p>
+</li>
+<li><p>理论耗时  一轮*n </p>
+<ul>
+<li>只输入模型结构 loss optim </li>
+<li>不输入数据，后台随机生成</li>
+<li>没有loss图像</li>
+</ul>
+</li>
+<li><p>模型存储占用：模型参数量大小</p>
+</li>
+<li><p>指标：</p>
+<ul>
+<li>结构匹配度</li>
+<li>算法适应度：理论耗时&#x2F;理论计算次数  转换到 -&gt; %</li>
+<li>并行程度</li>
+</ul>
+</li>
+</ul>
+<p>响应时间：</p>
+<ul>
+<li>3s内</li>
+</ul>
+<p>跑一轮：</p>
+<ul>
+<li>tqdm</li>
+</ul>
+<p>进度条：跑完</p>
+<p>存储</p>
+<p>- </p>
+]]></content>
+  </entry>
+  <entry>
+    <title>诗词</title>
+    <url>/2023/11/19/%E6%96%87%E8%89%BA/%E8%AF%97%E8%AF%8D/</url>
+    <content><![CDATA[<p>雪 【唐】罗隐</p>
+<p>尽道丰年瑞，</p>
+<p>丰年事若何。</p>
+<p>长安有饥者，</p>
+<p>为瑞不宜多。</p>
+<p>踏莎行·雪似梅花 【宋】吕本中</p>
+<p>雪似梅花。梅花似雪，似和不似都奇绝。</p>
+<p>恼人风味阿谁知？请君问取南楼月。</p>
+<p>去年今日，探梅时节，老来旧事无人说。</p>
+<p>为谁醉倒为谁醒？到今犹恨轻离别。</p>
+]]></content>
+      <categories>
+        <category>文艺</category>
+      </categories>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2023/11/20/Learning-Python/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E7%BB%BC%E8%BF%B0/</url>
+    <content><![CDATA[<h1 id="网络协议模糊测试综述-笔记"><a href="#网络协议模糊测试综述-笔记" class="headerlink" title="网络协议模糊测试综述-笔记"></a>网络协议模糊测试综述-笔记</h1><p>协议模糊测试工具：</p>
+<ul>
+<li>Peach</li>
+<li>Sulley</li>
+<li><strong>AFLNet</strong></li>
+</ul>
+<p>流程：</p>
+<ul>
+<li>预处理</li>
+<li>种子生成</li>
+<li>执行过程监测以及结果分析</li>
+</ul>
+<p>技术：AutoFuzz</p>
+<p>历史：</p>
+<ul>
+<li>AFLNet出现前(基本)都是黑盒，出现后(基本)都是灰盒</li>
+</ul>
+]]></content>
+  </entry>
 </search>
