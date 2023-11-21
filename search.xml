@@ -2265,4 +2265,20 @@ for(auto &amp;x : v) &#123;&#125; // 省去了内存复制操作
 </ul>
 ]]></content>
   </entry>
+  <entry>
+    <title>Vue</title>
+    <url>/2023/11/21/Web/Vue/</url>
+    <content><![CDATA[<p>Vue学习笔记。</p>
+<span id="more"></span>
+
+<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><p>router -&gt; index.js -&gt; routes -&gt; createrRouter -&gt; router</p>
+<p>this.$router</p>
+<h3 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h3><p>template</p>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>components&#x2F;</p>
+<p>main.html main.js</p>
+]]></content>
+      <categories>
+        <category>Web</category>
+      </categories>
+  </entry>
 </search>

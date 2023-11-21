@@ -18,27 +18,23 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"czxvan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Fuzz实验1——xpdf 参考资料：  [Fuzzing101&#x2F;Exercise 1 at main · antonio-morales&#x2F;Fuzzing101 (github.com)](https:&#x2F;&#x2F;github.com&#x2F;antonio-morales&#x2F;Fuzzing101&#x2F;tree&#x2F;main&#x2F;Exercise 1) AFL++ (PlusPlus) 介绍与实践 - We">
-<meta property="og:type" content="article">
-<meta property="og:title" content="xpdf">
-<meta property="og:url" content="https://czxvan.github.io/2023/11/13/Fuzz/1-xpdf/index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="czxvan&#39;s blog">
+<meta property="og:url" content="https://czxvan.github.io/categories/Web/index.html">
 <meta property="og:site_name" content="czxvan&#39;s blog">
-<meta property="og:description" content="Fuzz实验1——xpdf 参考资料：  [Fuzzing101&#x2F;Exercise 1 at main · antonio-morales&#x2F;Fuzzing101 (github.com)](https:&#x2F;&#x2F;github.com&#x2F;antonio-morales&#x2F;Fuzzing101&#x2F;tree&#x2F;main&#x2F;Exercise 1) AFL++ (PlusPlus) 介绍与实践 - We">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-11-13T12:55:41.000Z">
-<meta property="article:modified_time" content="2023-11-18T14:09:55.124Z">
 <meta property="article:author" content="czxvan">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://czxvan.github.io/2023/11/13/Fuzz/1-xpdf/">
+<link rel="canonical" href="https://czxvan.github.io/categories/Web/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://czxvan.github.io/2023/11/13/Fuzz/1-xpdf/","path":"2023/11/13/Fuzz/1-xpdf/","title":"xpdf"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/Web/index.html","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>xpdf | czxvan's blog</title>
+<title>分类: Web | czxvan's blog</title>
   
 
 
@@ -124,7 +120,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -137,7 +133,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -177,116 +172,50 @@
 
     </div>
 
-    <div class="main-inner post posts-expand">
+    <div class="main-inner category posts-collapse">
 
 
   
-
-
-<div class="post-block">
   
   
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://czxvan.github.io/2023/11/13/Fuzz/1-xpdf/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="czxvan">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="xpdf | czxvan's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          xpdf
+  <div class="post-block">
+    <div class="post-content">
+      <div class="collection-title">
+        <h1 class="collection-header">Web
+          <small>分类</small>
         </h1>
+      </div>
 
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-11-13 20:55:41" itemprop="dateCreated datePublished" datetime="2023-11-13T20:55:41+08:00">2023-11-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-18 22:09:55" itemprop="dateModified" datetime="2023-11-18T22:09:55+08:00">2023-11-18</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody"><p>Fuzz实验1——xpdf</p>
-<p>参考资料：</p>
-<ul>
-<li>[Fuzzing101&#x2F;Exercise 1 at main · antonio-morales&#x2F;Fuzzing101 (github.com)](<a target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise">https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise</a> 1)</li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/welkinchan/p/15930226.html#%E4%B8%80afl%E7%AE%80%E4%BB%8B">AFL++ (PlusPlus) 介绍与实践 - WelkinChan - 博客园 (cnblogs.com)</a></li>
-</ul>
-<span id="more"></span>
-
-<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>创建工作目录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir fuzzing_xpdf &amp;&amp; cd fuzzing_xpdf/</span><br></pre></td></tr></table></figure>
-
-<p>创建测试文件目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir pdf_examples &amp;&amp; cd pdf_examples</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载测试文件</span></span><br><span class="line">wget https://github.com/mozilla/pdf.js-sample-files/raw/master/helloworld.pdf</span><br><span class="line">wget http://www.africau.edu/images/default/sample.pdf</span><br><span class="line">wget https://www.melbpc.org.au/wp-content/uploads/2017/10/small-example-pdf-file.pdf</span><br></pre></td></tr></table></figure>
-
-<p>源码插桩编译</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置</span></span><br><span class="line">CC=afl-clang-fast CXX=afl-clang-fast++ ./configure --prefix=&quot;/mnt/d/Users/czxvan/Desktop/fuzz/fuzzing_xpdf/install/&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">afl编译</span></span><br><span class="line">make -j7</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>源码fuzz</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-s 设置随机数种子</span></span><br><span class="line">afl-fuzz -i ./pdf_examples/ -o ./out/ -s 123 -- ./install/bin/pdftotext @@ ./output</span><br></pre></td></tr></table></figure>
-
-
+      
+    <div class="collection-year">
+      <span class="collection-header">2023</span>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2023-11-21T11:04:48+08:00"
+              content="2023-11-21">
+          11-21
+        </time>
+      </div>
 
-    <footer class="post-footer">
+      <div class="post-title">
+        <a class="post-title-link" href="/2023/11/21/Web/Vue/" itemprop="url">
+          <span itemprop="name">Vue</span>
+        </a>
+      </div>
 
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2023/11/09/Learning-Python/PyQt5/tutorial/" rel="prev" title="tutorial">
-                  <i class="fa fa-angle-left"></i> tutorial
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2023/11/14/Fuzz/redfish/" rel="next" title="redfish">
-                  redfish <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
+      
+    </header>
   </article>
-</div>
 
-
-
-
-
+    </div>
+  </div>
+  
+  
+  
 
 </div>
   </main>
